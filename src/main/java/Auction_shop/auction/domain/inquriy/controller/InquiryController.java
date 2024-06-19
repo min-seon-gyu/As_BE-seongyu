@@ -80,11 +80,9 @@ public class InquiryController {
 
     //수정
     @PutMapping("/{inquiryId}")
-    public ResponseEntity<InquiryResponseDto> updateInquiry(@PathVariable Long inquiryId, InquiryUpdateDto inquiryDto){
+    public ResponseEntity<InquiryResponseDto> updateInquiry(@PathVariable Long inquiryId, @RequestBody InquiryUpdateDto inquiryDto){
         Inquiry inquiry = inquiryService.updateInquiry(inquiryId, inquiryDto);
-        System.out.println("inquiry.getId() = " + inquiry.getId());
-        System.out.println("inquiry.getTitle() = " + inquiry.getTitle());
-        System.out.println("inquiry.getContent() = " + inquiry.getContent());
+
         InquiryResponseDto collect = InquiryResponseDto.builder()
                 .id(inquiry.getId())
                 .title(inquiry.getTitle())
