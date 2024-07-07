@@ -22,7 +22,7 @@ public class ChatController {
     }
 
     @MessageMapping("/chat/{roomId}")
-    public void processMessage(@DestinationVariable String roomId,Chat chat) throws Exception {
+    public void processMessage(@DestinationVariable String roomId, Chat chat) throws Exception {
         String destination = "/sub/roomId/" + roomId;
         chatService.createChat(chat);
         try {
