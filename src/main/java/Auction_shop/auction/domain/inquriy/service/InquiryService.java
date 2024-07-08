@@ -1,5 +1,7 @@
 package Auction_shop.auction.domain.inquriy.service;
 
+import Auction_shop.auction.domain.image.Image;
+import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.inquriy.Inquiry;
 import Auction_shop.auction.domain.inquriy.repository.InquiryRepository;
 import Auction_shop.auction.web.dto.InquiryCreateDto;
@@ -7,6 +9,7 @@ import Auction_shop.auction.web.dto.InquiryUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,11 +19,12 @@ import java.util.List;
 public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
+    private final ImageService imageService;
 
     //문의 등록
     //User 관련 주석처리
     @Transactional
-    public Inquiry createInquiry(InquiryCreateDto inquiryDto){
+    public Inquiry createInquiry(InquiryCreateDto inquiryDto, List<MultipartFile> images){
 //        Long memberId = inquiryDto.getId();
 //        Member member = memberRepository.findById(memberId)
 //                .orElseThrow(() -> new EntityNotFoundException(memberId + "에 해당하는 유저가 없습니다."));
@@ -28,8 +32,12 @@ public class InquiryService {
 //                .member(member);
                 .title(inquiryDto.getTitle())
                 .content(inquiryDto.getContent())
-                .status(true)
+                .status(false)
                 .build();
+
+        List<Image> imageList = imageService.saveImages(images);
+        inquiry.setImageList(imageList);
+
         return inquiryRepository.save(inquiry);
     }
 

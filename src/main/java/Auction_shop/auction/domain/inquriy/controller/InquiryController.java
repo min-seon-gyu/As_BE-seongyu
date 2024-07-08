@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.inquriy.controller;
 
+import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.inquriy.Inquiry;
 import Auction_shop.auction.domain.inquriy.service.InquiryService;
 import Auction_shop.auction.web.dto.InquiryCreateDto;
@@ -10,11 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +25,19 @@ public class InquiryController {
 
     //등록
     @PostMapping
-    public ResponseEntity<Inquiry> createInquiry(@RequestBody final InquiryCreateDto inquiryDto){
-        Inquiry inquiry = inquiryService.createInquiry(inquiryDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(inquiry);
+    public ResponseEntity<InquiryResponseDto> createInquiry(
+            @RequestPart("inquiry") final InquiryCreateDto inquiryDto,
+            @RequestPart("images") final List<MultipartFile> images){
+        Inquiry inquiry = inquiryService.createInquiry(inquiryDto, images);
+        InquiryResponseDto collect = InquiryResponseDto.builder()
+                .id(inquiry.getId())
+                .title(inquiry.getTitle())
+                .content(inquiry.getContent())
+                .status(inquiry.isStatus())
+                .imageUrls(inquiry.getImageUrls())
+//                .member(inquiry.getMember.getName())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(collect);
     }
 
     //전체 조회
