@@ -29,10 +29,10 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	//AWS SDK 의존성
+	//AWS 의존성
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.415'
-	//AWS 서비스 의존성
 	implementation 'io.awspring.cloud:spring-cloud-aws-s3:3.0.2'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
