@@ -2,7 +2,6 @@ package Auction_shop.auction.domain.image.service;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.repository.ImageRepository;
-import Auction_shop.auction.web.dto.ImageSaveDto;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
@@ -28,20 +27,19 @@ public class ImageService {
     private final AmazonS3Client amazonS3Client;
 
     @Transactional
-    public List<String> saveImages(ImageSaveDto saveDto) {
-        System.out.println(bucketName);
-        List<String> resultList = new ArrayList<>();
+    public List<Image> saveImages(List<MultipartFile> images) {
+        List<Image> imageList = new ArrayList<>();
 
-        for(MultipartFile multipartFile : saveDto.getImages()) {
-            String value = saveImage(multipartFile);
-            resultList.add(value);
+        for(MultipartFile multipartFile : images) {
+            Image image = saveImage(multipartFile);
+            imageList.add(image);
         }
 
-        return resultList;
+        return imageList;
     }
 
     @Transactional
-    public String saveImage(MultipartFile multipartFile){
+    public Image saveImage(MultipartFile multipartFile){
 
         String originName = multipartFile.getOriginalFilename();
         Image image = new Image(originName);
@@ -58,7 +56,7 @@ public class ImageService {
             image.setAccessUrl(accessUrl);
         }catch (IOException e){
         }
-        imageRepository.save(image);
-        return image.getAccessUrl();
+
+        return imageRepository.save(image);
     }
 }
