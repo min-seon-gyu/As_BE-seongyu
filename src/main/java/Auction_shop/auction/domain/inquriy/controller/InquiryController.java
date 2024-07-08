@@ -1,6 +1,5 @@
 package Auction_shop.auction.domain.inquriy.controller;
 
-import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.inquriy.Inquiry;
 import Auction_shop.auction.domain.inquriy.service.InquiryService;
 import Auction_shop.auction.web.dto.InquiryCreateDto;
@@ -65,12 +64,14 @@ public class InquiryController {
     //개별 조회
     @GetMapping("/{inquiryId}")
     public ResponseEntity<InquiryResponseDto> getByInquiryId(@PathVariable Long inquiryId){
+        System.out.println("진입");
         Inquiry inquiry = inquiryService.getById(inquiryId);
         InquiryResponseDto collect = InquiryResponseDto.builder()
                 .id(inquiry.getId())
                 .title(inquiry.getTitle())
                 .content(inquiry.getContent())
                 .status(inquiry.isStatus())
+                .imageUrls(inquiry.getImageUrls())
 //                .member(inquiry.getMember.getName())
                 .build();
 

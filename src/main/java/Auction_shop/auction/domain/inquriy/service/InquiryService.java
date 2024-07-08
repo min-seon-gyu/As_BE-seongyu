@@ -16,6 +16,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+//Image 관련 내용은 InquiryImageService로 분리 예정
 public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
@@ -82,4 +83,5 @@ public class InquiryService {
     public void deleteInquiry(Long inquiryId){
         inquiryRepository.deleteById(inquiryId);
     }
+
 }
