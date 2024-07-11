@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.image.service;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.repository.ImageRepository;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +32,11 @@ public class ImageService {
     public List<Image> saveImages(List<MultipartFile> images) {
         List<Image> imageList = new ArrayList<>();
 
-        for(MultipartFile multipartFile : images) {
-            Image image = saveImage(multipartFile);
-            imageList.add(image);
+        if (images != null) {
+            for (MultipartFile multipartFile : images) {
+                Image image = saveImage(multipartFile);
+                imageList.add(image);
+            }
         }
 
         return imageList;
@@ -58,5 +62,13 @@ public class ImageService {
         }
 
         return imageRepository.save(image);
+    }
+
+    public void deleteImage(String imageName){
+        try{
+            amazonS3Client.deleteObject(bucketName, (imageName).replace(File.separatorChar, '/'));
+        } catch (AmazonServiceException e) {
+            System.err.println(e.getErrorMessage());
+        }
     }
 }

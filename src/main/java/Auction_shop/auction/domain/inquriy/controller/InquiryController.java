@@ -26,7 +26,7 @@ public class InquiryController {
     @PostMapping
     public ResponseEntity<InquiryResponseDto> createInquiry(
             @RequestPart("inquiry") final InquiryCreateDto inquiryDto,
-            @RequestPart("images") final List<MultipartFile> images){
+            @RequestPart(value = "images", required = false) final List<MultipartFile> images){
         Inquiry inquiry = inquiryService.createInquiry(inquiryDto, images);
         InquiryResponseDto collect = InquiryResponseDto.builder()
                 .id(inquiry.getId())
@@ -64,7 +64,6 @@ public class InquiryController {
     //개별 조회
     @GetMapping("/{inquiryId}")
     public ResponseEntity<InquiryResponseDto> getByInquiryId(@PathVariable Long inquiryId){
-        System.out.println("진입");
         Inquiry inquiry = inquiryService.getById(inquiryId);
         InquiryResponseDto collect = InquiryResponseDto.builder()
                 .id(inquiry.getId())

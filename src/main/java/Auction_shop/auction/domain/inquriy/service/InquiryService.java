@@ -74,6 +74,13 @@ public class InquiryService {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new IllegalArgumentException(inquiryId + "에 해당하는 게시글이 없습니다."));
 
+        //기존 사진 삭제
+        if (inquiry.getImageUrls() != null){
+            for (Image image : inquiry.getImageList()){
+                imageService.deleteImage(image.getStoredName());
+            }
+        }
+
         inquiry.updateInquiry(inquiryDto.getTitle(), inquiryDto.getContent());
         return inquiry;
     }
