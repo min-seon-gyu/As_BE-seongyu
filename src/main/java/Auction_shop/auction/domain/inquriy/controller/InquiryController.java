@@ -10,11 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +24,19 @@ public class InquiryController {
 
     //등록
     @PostMapping
-    public ResponseEntity<Inquiry> createInquiry(@RequestBody final InquiryCreateDto inquiryDto){
-        Inquiry inquiry = inquiryService.createInquiry(inquiryDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(inquiry);
+    public ResponseEntity<InquiryResponseDto> createInquiry(
+            @RequestPart("inquiry") final InquiryCreateDto inquiryDto,
+            @RequestPart(value = "images", required = false) final List<MultipartFile> images){
+        Inquiry inquiry = inquiryService.createInquiry(inquiryDto, images);
+        InquiryResponseDto collect = InquiryResponseDto.builder()
+                .id(inquiry.getId())
+                .title(inquiry.getTitle())
+                .content(inquiry.getContent())
+                .status(inquiry.isStatus())
+                .imageUrls(inquiry.getImageUrls())
+//                .member(inquiry.getMember.getName())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(collect);
     }
 
     //전체 조회
@@ -61,6 +70,7 @@ public class InquiryController {
                 .title(inquiry.getTitle())
                 .content(inquiry.getContent())
                 .status(inquiry.isStatus())
+                .imageUrls(inquiry.getImageUrls())
 //                .member(inquiry.getMember.getName())
                 .build();
 
@@ -80,13 +90,16 @@ public class InquiryController {
 
     //수정
     @PutMapping("/{inquiryId}")
-    public ResponseEntity<InquiryResponseDto> updateInquiry(@PathVariable Long inquiryId, @RequestBody InquiryUpdateDto inquiryDto){
-        Inquiry inquiry = inquiryService.updateInquiry(inquiryId, inquiryDto);
+    public ResponseEntity<InquiryResponseDto> updateInquiry(
+            @PathVariable Long inquiryId, @RequestPart(value = "inquiry") InquiryUpdateDto inquiryDto,
+            @RequestPart(value = "images", required = false) final List<MultipartFile> images){
+        Inquiry inquiry = inquiryService.updateInquiry(inquiryId, inquiryDto, images);
 
         InquiryResponseDto collect = InquiryResponseDto.builder()
                 .id(inquiry.getId())
                 .title(inquiry.getTitle())
                 .content(inquiry.getContent())
+                .imageUrls(inquiry.getImageUrls())
 //                .member(inquiry.getMember.getName())
                 .build();
 
