@@ -32,7 +32,7 @@ public class ImageService {
     public List<Image> saveImages(List<MultipartFile> images) {
         List<Image> imageList = new ArrayList<>();
 
-        if (images != null) {
+        if (images != null && !images.isEmpty()) {
             for (MultipartFile multipartFile : images) {
                 Image image = saveImage(multipartFile);
                 imageList.add(image);
@@ -67,6 +67,7 @@ public class ImageService {
     public void deleteImage(String imageName){
         try{
             amazonS3Client.deleteObject(bucketName, (imageName).replace(File.separatorChar, '/'));
+            imageRepository.deleteByStoredName(imageName);
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
         }
