@@ -90,13 +90,16 @@ public class InquiryController {
 
     //수정
     @PutMapping("/{inquiryId}")
-    public ResponseEntity<InquiryResponseDto> updateInquiry(@PathVariable Long inquiryId, @RequestBody InquiryUpdateDto inquiryDto){
-        Inquiry inquiry = inquiryService.updateInquiry(inquiryId, inquiryDto);
+    public ResponseEntity<InquiryResponseDto> updateInquiry(
+            @PathVariable Long inquiryId, @RequestPart(value = "inquiry") InquiryUpdateDto inquiryDto,
+            @RequestPart(value = "images", required = false) final List<MultipartFile> images){
+        Inquiry inquiry = inquiryService.updateInquiry(inquiryId, inquiryDto, images);
 
         InquiryResponseDto collect = InquiryResponseDto.builder()
                 .id(inquiry.getId())
                 .title(inquiry.getTitle())
                 .content(inquiry.getContent())
+                .imageUrls(inquiry.getImageUrls())
 //                .member(inquiry.getMember.getName())
                 .build();
 

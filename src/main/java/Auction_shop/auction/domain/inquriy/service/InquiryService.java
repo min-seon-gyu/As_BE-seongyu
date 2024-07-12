@@ -70,7 +70,7 @@ public class InquiryService {
 
     //문의 게시글 업데이트
     @Transactional
-    public Inquiry updateInquiry(Long inquiryId, InquiryUpdateDto inquiryDto){
+    public Inquiry updateInquiry(Long inquiryId, InquiryUpdateDto inquiryDto, List<MultipartFile> images){
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new IllegalArgumentException(inquiryId + "에 해당하는 게시글이 없습니다."));
 
@@ -79,7 +79,11 @@ public class InquiryService {
             for (Image image : inquiry.getImageList()){
                 imageService.deleteImage(image.getStoredName());
             }
+            inquiry.getImageList().clear();
         }
+
+        List<Image> imageList = imageService.saveImages(images);
+        inquiry.getImageList().addAll(imageList);
 
         inquiry.updateInquiry(inquiryDto.getTitle(), inquiryDto.getContent());
         return inquiry;
@@ -88,7 +92,15 @@ public class InquiryService {
     //문의 게시글 삭제
     @Transactional
     public void deleteInquiry(Long inquiryId){
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new IllegalArgumentException(inquiryId + "에 해당하는 게시글이 없습니다."));
+
+        if (inquiry.getImageUrls() != null){
+            for (Image image : inquiry.getImageList()){
+                imageService.deleteImage(image.getStoredName());
+            }
+        }
+
         inquiryRepository.deleteById(inquiryId);
     }
-
 }
