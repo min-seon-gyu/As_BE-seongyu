@@ -4,15 +4,18 @@ import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.product.domain.Product;
 import Auction_shop.auction.product.dto.ProductDto;
+import Auction_shop.auction.product.dto.ProductListResponseDto;
 import Auction_shop.auction.product.dto.ProductResponseDto;
 import Auction_shop.auction.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -56,6 +59,23 @@ public class ProductServiceImpl implements ProductService{
                 .build();
 
         return responseDto;
+    }
+
+    @Override
+    public List<ProductListResponseDto> findAllProduct(){
+        List<Product> products = productRepository.findAll();
+        List<ProductListResponseDto> collect = products.stream()
+                .map(product -> {
+                    ProductListResponseDto dto = ProductListResponseDto.builder()
+                            .product_id(product.getProduct_id())
+                            .title(product.getTitle())
+                            .details(product.getDetails())
+                            .initial_price(product.getInitial_price())
+                            .build();
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return collect;
     }
 
     @Override

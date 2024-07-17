@@ -1,6 +1,7 @@
 package Auction_shop.auction.product.controller;
 
 import Auction_shop.auction.product.dto.ProductDto;
+import Auction_shop.auction.product.dto.ProductListResponseDto;
 import Auction_shop.auction.product.dto.ProductResponseDto;
 import Auction_shop.auction.product.service.ProductService;
 import Auction_shop.auction.product.validation.ProductValidator;
@@ -51,6 +52,19 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error");
         }
     }
+
+    /**
+     * 상품 조회
+     */
+    @GetMapping()
+    public ResponseEntity<Object> getAllProduct(){
+        List<ProductListResponseDto> collect = productService.findAllProduct();
+        if (collect == null){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(collect);
+    }
+
 
     /**
      * 상품 상세 조회
