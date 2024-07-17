@@ -1,6 +1,7 @@
 package Auction_shop.auction.product.controller;
 
 import Auction_shop.auction.product.dto.ProductDto;
+import Auction_shop.auction.product.dto.ProductListResponseDto;
 import Auction_shop.auction.product.dto.ProductResponseDto;
 import Auction_shop.auction.product.service.ProductService;
 import Auction_shop.auction.product.validation.ProductValidator;
@@ -53,6 +54,19 @@ public class ProductController {
     }
 
     /**
+     * 상품 조회
+     */
+    @GetMapping()
+    public ResponseEntity<Object> getAllProduct(){
+        List<ProductListResponseDto> collect = productService.findAllProduct();
+        if (collect == null){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(collect);
+    }
+
+
+    /**
      * 상품 상세 조회
      */
     @GetMapping("/search/{product_id}")
@@ -69,7 +83,9 @@ public class ProductController {
      * 상품 수정
      */
     @PutMapping("/update/{product_id}")
-    public ResponseEntity<Object> updateProductById(@RequestBody ProductDto productDto, @PathVariable Long product_id, BindingResult bindingResult) {
+    public ResponseEntity<Object> updateProductById(
+            @PathVariable Long product_id, @RequestPart(value = "product") ProductDto productDto,
+            @RequestPart(value = "images", required = false) final List<MultipartFile> images, BindingResult bindingResult) {
         productValidator.validate(productDto, bindingResult);
         log.info("bindingResult={}", bindingResult);
 
@@ -78,7 +94,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
         }
         try {
-            ProductResponseDto productResponseDto = productService.updateProductById(productDto, product_id);
+            ProductResponseDto productResponseDto = productService.updateProductById(productDto, product_id, images);
             if (productResponseDto == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("product_id doesn't exist in Database");
             } else {

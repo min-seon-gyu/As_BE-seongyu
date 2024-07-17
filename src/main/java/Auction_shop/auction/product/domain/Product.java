@@ -42,13 +42,14 @@ public class Product {
 
     @Builder
     public Product(Long product_id, Long seller, String title, String product_type, String trade, int initial_price,
-                   String details, LocalDateTime start_at, LocalDateTime end_at) {
+                   List<Image> imageList, String details, LocalDateTime start_at, LocalDateTime end_at) {
         this.product_id = product_id;
         this.seller = seller;
         this.title = title;
         this.product_type = product_type;
         this.trade = trade;
         this.initial_price = initial_price;
+        this.imageList = imageList;
         this.details = details;
         this.start_at = start_at;
         this.end_at = end_at;
@@ -62,5 +63,11 @@ public class Product {
         return imageList.stream()
                 .map(Image::getAccessUrl)
                 .collect(Collectors.toList());
+    }
+
+    public void updateProduct(String title, String product_type, String details){
+        this.title = title;
+        this.product_type = product_type;
+        this.details = details;
     }
 }
