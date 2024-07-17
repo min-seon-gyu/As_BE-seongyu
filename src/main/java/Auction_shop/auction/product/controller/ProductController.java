@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -28,7 +31,10 @@ public class ProductController {
      * 상품 등록
      */
     @PostMapping("/registration")
-    public ResponseEntity<Object> createProduct(@RequestBody ProductDto productDto, BindingResult bindingResult) {
+    public ResponseEntity<Object> createProduct(
+            @RequestPart(value = "product") ProductDto productDto,
+            @RequestPart(value = "images", required = false) final List<MultipartFile> images,
+            BindingResult bindingResult) {
         productValidator.validate(productDto, bindingResult);
         log.info("bindingResult={}", bindingResult);
 
@@ -37,7 +43,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
         }
         try {
-            ProductResponseDto productResponseDto = productService.save(productDto);
+            ProductResponseDto productResponseDto = productService.save(productDto, images);
             return ResponseEntity.status(HttpStatus.OK).body(productResponseDto);
         } catch (Exception e) {
             // 서버 에러 500

@@ -1,10 +1,14 @@
 package Auction_shop.auction.product.domain;
 
+import Auction_shop.auction.domain.image.Image;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,7 +31,10 @@ public class Product {
     private int initial_price;       // 시작 가격
 
     private String details;         // 설명
-    private String image_url;       // 제품 이미지
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
+    private List<Image> imageList = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime start_at; // 시작 날짜
@@ -35,7 +42,7 @@ public class Product {
 
     @Builder
     public Product(Long product_id, Long seller, String title, String product_type, String trade, int initial_price,
-                   String details, String image_url, LocalDateTime start_at, LocalDateTime end_at) {
+                   String details, LocalDateTime start_at, LocalDateTime end_at) {
         this.product_id = product_id;
         this.seller = seller;
         this.title = title;
@@ -43,8 +50,17 @@ public class Product {
         this.trade = trade;
         this.initial_price = initial_price;
         this.details = details;
-        this.image_url = image_url;
         this.start_at = start_at;
         this.end_at = end_at;
+    }
+
+    public void setImageList(List<Image> imageList){
+        this.imageList = imageList;
+    }
+
+    public List<String> getImageUrls(){
+        return imageList.stream()
+                .map(Image::getAccessUrl)
+                .collect(Collectors.toList());
     }
 }
