@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberUpdateDto {
-    private String city;
-    private String street;
-    private String zipcode;
+    private String name;
+    private String phone;
+    private String address;
+    private String detailAddress;
 }

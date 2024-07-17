@@ -57,6 +57,7 @@ public class AuthService {
         refreshTokenRepository.save(token);
 
         return AuthResponseDto.builder()
+                .id(member.getId())
                 .accessToken(accessToken)
                 .available(member.isAvailable())
                 .build();
@@ -115,6 +116,7 @@ public class AuthService {
         response.addCookie(createCookie("refresh", refreshToken));
 
         return AuthResponseDto.builder()
+                .id(jwtUtil.getId(accessToken))
                 .accessToken(accessToken)
                 .available(true)
                 .build();
