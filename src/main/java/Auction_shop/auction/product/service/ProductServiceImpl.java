@@ -70,6 +70,7 @@ public class ProductServiceImpl implements ProductService{
                     .trade(findProduct.getTrade())
                     .initial_price(findProduct.getInitial_price())
                     .details(findProduct.getDetails())
+                    .imageUrls(findProduct.getImageUrls())
                     .build();
 
             return responseDto;
