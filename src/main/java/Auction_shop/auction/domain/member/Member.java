@@ -28,7 +28,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String role;
 
-    @Column(nullable = false, unique = true, length = 13)
+    @Column(nullable = false, length = 13)
     private String phone;
 
     @Column(nullable = false)
@@ -40,7 +40,9 @@ public class Member extends BaseEntity {
     @Embedded
     private Address address;
 
-    public void update(String city, String street, String zipcode) {
-        this.address = new Address(city, street, zipcode);
+    public void update(String name, String phone, String address, String detailAddress) {
+        this.name = name;
+        this.phone = phone;
+        this.address = new Address(address, detailAddress);
     }
 }
