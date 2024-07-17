@@ -1,6 +1,7 @@
 package Auction_shop.auction.domain.member;
 
 import Auction_shop.auction.domain.BaseEntity;
+import Auction_shop.auction.domain.image.Image;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +35,9 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Long point;
 
-    @Column(name = "profile_img")
-    private String profileImage;
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id")
+    private Image profileImage;
 
     @Column
     private boolean available = false;
@@ -47,5 +49,9 @@ public class Member extends BaseEntity {
         this.name = name;
         this.phone = phone;
         this.address = new Address(address, detailAddress);
+    }
+
+    public void setProfileImage(Image profileImage){
+        this.profileImage = profileImage;
     }
 }

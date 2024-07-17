@@ -1,11 +1,15 @@
 package Auction_shop.auction.domain.member.service;
 
+import Auction_shop.auction.domain.image.Image;
+import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
 import Auction_shop.auction.web.dto.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Optional;
 
 @Service
@@ -13,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final ImageService imageService;
 
     @Transactional
     public Member save(String uuid){
@@ -41,9 +46,21 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMember(Long memberId, MemberUpdateDto memberUpdateDto){
+    public Member updateMember(Long memberId, MemberUpdateDto memberUpdateDto, MultipartFile image){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 회원이 없습니다."));
+        System.out.println("member.getProfileImage() = " + member.getProfileImage());
+        if (member.getProfileImage() != null){
+            imageService.deleteImage(member.getProfileImage().getStoredName());
+        }
+
+        if (image != null && !image.isEmpty()) {
+            Image profileImage = imageService.saveImage(image);
+            member.setProfileImage(profileImage);
+        }else{
+            member.setProfileImage(null);
+        }
+
         member.update(memberUpdateDto.getName(), memberUpdateDto.getPhone(), memberUpdateDto.getAddress(), memberUpdateDto.getDetailAddress());
         return member;
     }

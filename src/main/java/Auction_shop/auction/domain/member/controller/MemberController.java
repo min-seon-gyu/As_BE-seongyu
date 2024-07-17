@@ -7,6 +7,7 @@ import Auction_shop.auction.web.dto.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +23,9 @@ public class MemberController {
 
     @PatchMapping("/{memberId}")
     public ResponseEntity<MemberResponseDto> updateMember(@PathVariable("memberId") Long memberId,
-                                                          @RequestBody MemberUpdateDto memberUpdateDto){
-        Member member = memberService.updateMember(memberId, memberUpdateDto);
+                                                          @RequestPart(value = "member") MemberUpdateDto memberUpdateDto,
+                                                          @RequestPart(value = "image", required = false) MultipartFile image){
+        Member member = memberService.updateMember(memberId, memberUpdateDto, image);
         return ResponseEntity.ok(MemberResponseDto.create(member));
     }
 
