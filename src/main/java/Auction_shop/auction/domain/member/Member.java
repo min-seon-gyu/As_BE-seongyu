@@ -34,6 +34,9 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Long point;
 
+    @Column(name = "profile_img")
+    private String profileImage;
+
     @Column
     private boolean available = false;
 

@@ -1,25 +1,35 @@
 package Auction_shop.auction.product.service;
 
+import Auction_shop.auction.domain.image.Image;
+import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.product.domain.Product;
 import Auction_shop.auction.product.dto.ProductDto;
+import Auction_shop.auction.product.dto.ProductListResponseDto;
 import Auction_shop.auction.product.dto.ProductResponseDto;
 import Auction_shop.auction.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
+    private final ImageService imageService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, ImageService imageService) {
         this.productRepository = productRepository;
+        this.imageService = imageService;
     }
 
     @Override
-    public ProductResponseDto save(ProductDto productDto) {
+    public ProductResponseDto save(ProductDto productDto, List<MultipartFile> images) {
         // DTO를 엔티티로 변환
         Product product = Product.builder()
                 .seller(productDto.getSeller())
@@ -28,8 +38,10 @@ public class ProductServiceImpl implements ProductService{
                 .trade(productDto.getTrade())
                 .initial_price(productDto.getInitial_price())
                 .details(productDto.getDetails())
-                .image_url(productDto.getImage_url())
                 .build();
+
+        List<Image> imageList = imageService.saveImages(images);
+        product.setImageList(imageList);
 
         // 엔티티 저장
         Product savedProduct = productRepository.save(product);
@@ -43,10 +55,27 @@ public class ProductServiceImpl implements ProductService{
                 .trade(savedProduct.getTrade())
                 .initial_price(savedProduct.getInitial_price())
                 .details(savedProduct.getDetails())
-                .image_url(savedProduct.getImage_url())
+                .imageUrls(savedProduct.getImageUrls())
                 .build();
 
         return responseDto;
+    }
+
+    @Override
+    public List<ProductListResponseDto> findAllProduct(){
+        List<Product> products = productRepository.findAll();
+        List<ProductListResponseDto> collect = products.stream()
+                .map(product -> {
+                    ProductListResponseDto dto = ProductListResponseDto.builder()
+                            .product_id(product.getProduct_id())
+                            .title(product.getTitle())
+                            .details(product.getDetails())
+                            .initial_price(product.getInitial_price())
+                            .build();
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return collect;
     }
 
     @Override
@@ -62,7 +91,7 @@ public class ProductServiceImpl implements ProductService{
                     .trade(findProduct.getTrade())
                     .initial_price(findProduct.getInitial_price())
                     .details(findProduct.getDetails())
-                    .image_url(findProduct.getImage_url())
+                    .imageUrls(findProduct.getImageUrls())
                     .build();
 
             return responseDto;
@@ -72,45 +101,46 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductResponseDto updateProductById(ProductDto productDto, Long product_id) {
-        Optional<Product> product = productRepository.findById(product_id);
-        if (product.isPresent()) {
-            Product findProduct = product.get();
+    @Transactional
+    public ProductResponseDto updateProductById(ProductDto productDto, Long product_id, List<MultipartFile> images) {
+        Product product = productRepository.findById(product_id)
+                .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
-            Product updateProduct = Product.builder()
-                    .product_id(findProduct.getProduct_id())
-                    .seller(productDto.getSeller())
-                    .title(productDto.getTitle())
-                    .product_type(productDto.getProduct_type())
-                    .trade(productDto.getTrade())
-                    .initial_price(productDto.getInitial_price())
-                    .details(productDto.getDetails())
-                    .image_url(productDto.getImage_url())
-                    .build();
-
-            productRepository.save(updateProduct);
-
-            ProductResponseDto productResponseDto = ProductResponseDto.builder()
-                    .product_id(updateProduct.getProduct_id())
-                    .seller(updateProduct.getSeller())
-                    .title(updateProduct.getTitle())
-                    .product_type(updateProduct.getProduct_type())
-                    .trade(updateProduct.getTrade())
-                    .initial_price(updateProduct.getInitial_price())
-                    .details(updateProduct.getDetails())
-                    .image_url(updateProduct.getImage_url())
-                    .build();
-
-            return productResponseDto;
-        } else {
-            return null;
+        if (product.getImageUrls() != null){
+            for (Image image : product.getImageList()){
+                imageService.deleteImage(image.getStoredName());
+            }
+            product.getImageList().clear();
         }
+
+        List<Image> imageList = imageService.saveImages(images);
+        product.getImageList().addAll(imageList);
+
+        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getDetails());
+
+        ProductResponseDto productResponseDto = ProductResponseDto.builder()
+                .product_id(product_id)
+                .seller(product.getSeller())
+                .title(product.getTitle())
+                .product_type(product.getProduct_type())
+                .trade(product.getTrade())
+                .initial_price(product.getInitial_price())
+                .details(product.getDetails())
+                .imageUrls(product.getImageUrls())
+                .build();
+
+        return productResponseDto;
     }
 
     @Override
     public boolean deleteProductById(Long product_id) {
         boolean isFound = productRepository.existsById(product_id);
+        Product product = productRepository.findById(product_id)
+                .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
         if (isFound) {
+            for (Image image : product.getImageList()){
+                imageService.deleteImage(image.getStoredName());
+            }
             productRepository.deleteById(product_id);
         }
         return isFound;

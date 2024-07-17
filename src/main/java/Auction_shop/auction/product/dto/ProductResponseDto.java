@@ -3,6 +3,7 @@ package Auction_shop.auction.product.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,7 +18,7 @@ public class ProductResponseDto {
     private int initial_price;       // 시작 가격
 
     private String details;         // 설명
-    private String image_url;       // 제품 이미지
+    private List<String> imageUrls;
 
     private LocalDateTime start_at; // 시작 날짜
     private LocalDateTime end_at;   // 종료 날짜

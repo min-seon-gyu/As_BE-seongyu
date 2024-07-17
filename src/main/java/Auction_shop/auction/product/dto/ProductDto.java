@@ -13,7 +13,6 @@ public class ProductDto {
         private int initial_price;       // 시작 가격
 
         private String details;         // 설명
-        private String image_url;       // 제품 이미지
 
         private LocalDateTime start_at; // 시작 날짜
         private LocalDateTime end_at;   // 종료 날짜
@@ -26,8 +25,6 @@ public class ProductDto {
                 this.product_type = product_type;
                 this.trade = trade;
                 this.initial_price = initial_price;
-                this.details = details;
-                this.image_url = image_url;
                 this.start_at = start_at;
                 this.end_at = end_at;
         }
