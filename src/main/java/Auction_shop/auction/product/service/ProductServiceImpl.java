@@ -8,6 +8,7 @@ import Auction_shop.auction.product.dto.ProductResponseDto;
 import Auction_shop.auction.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -80,37 +81,35 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductResponseDto updateProductById(ProductDto productDto, Long product_id) {
-        Optional<Product> product = productRepository.findById(product_id);
-        if (product.isPresent()) {
-            Product findProduct = product.get();
+    @Transactional
+    public ProductResponseDto updateProductById(ProductDto productDto, Long product_id, List<MultipartFile> images) {
+        Product product = productRepository.findById(product_id)
+                .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
-            Product updateProduct = Product.builder()
-                    .product_id(findProduct.getProduct_id())
-                    .seller(productDto.getSeller())
-                    .title(productDto.getTitle())
-                    .product_type(productDto.getProduct_type())
-                    .trade(productDto.getTrade())
-                    .initial_price(productDto.getInitial_price())
-                    .details(productDto.getDetails())
-                    .build();
-
-            productRepository.save(updateProduct);
-
-            ProductResponseDto productResponseDto = ProductResponseDto.builder()
-                    .product_id(updateProduct.getProduct_id())
-                    .seller(updateProduct.getSeller())
-                    .title(updateProduct.getTitle())
-                    .product_type(updateProduct.getProduct_type())
-                    .trade(updateProduct.getTrade())
-                    .initial_price(updateProduct.getInitial_price())
-                    .details(updateProduct.getDetails())
-                    .build();
-
-            return productResponseDto;
-        } else {
-            return null;
+        if (product.getImageUrls() != null){
+            for (Image image : product.getImageList()){
+                imageService.deleteImage(image.getStoredName());
+            }
+            product.getImageList().clear();
         }
+
+        List<Image> imageList = imageService.saveImages(images);
+        product.getImageList().addAll(imageList);
+
+        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getDetails());
+
+        ProductResponseDto productResponseDto = ProductResponseDto.builder()
+                .product_id(product_id)
+                .seller(product.getSeller())
+                .title(product.getTitle())
+                .product_type(product.getProduct_type())
+                .trade(product.getTrade())
+                .initial_price(product.getInitial_price())
+                .details(product.getDetails())
+                .imageUrls(product.getImageUrls())
+                .build();
+
+        return productResponseDto;
     }
 
     @Override

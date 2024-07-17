@@ -69,7 +69,9 @@ public class ProductController {
      * 상품 수정
      */
     @PutMapping("/update/{product_id}")
-    public ResponseEntity<Object> updateProductById(@RequestBody ProductDto productDto, @PathVariable Long product_id, BindingResult bindingResult) {
+    public ResponseEntity<Object> updateProductById(
+            @PathVariable Long product_id, @RequestPart(value = "product") ProductDto productDto,
+            @RequestPart(value = "images", required = false) final List<MultipartFile> images, BindingResult bindingResult) {
         productValidator.validate(productDto, bindingResult);
         log.info("bindingResult={}", bindingResult);
 
@@ -78,7 +80,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
         }
         try {
-            ProductResponseDto productResponseDto = productService.updateProductById(productDto, product_id);
+            ProductResponseDto productResponseDto = productService.updateProductById(productDto, product_id, images);
             if (productResponseDto == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("product_id doesn't exist in Database");
             } else {
