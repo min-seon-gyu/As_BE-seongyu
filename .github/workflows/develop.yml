@@ -11,7 +11,7 @@ on:
   pull_request:
     branches:
     - develop
-    types: [created]
+    types: [created, synchronize, reopened]
 
 jobs:
   build:
