@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Inquiry extends BaseEntity {
