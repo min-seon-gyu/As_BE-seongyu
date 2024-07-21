@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member extends BaseEntity {
@@ -40,6 +39,7 @@ public class Member extends BaseEntity {
     private Image profileImage;
 
     @Column
+    @Builder.Default
     private boolean available = false;
 
     @Embedded

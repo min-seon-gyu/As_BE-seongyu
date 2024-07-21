@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Inquiry extends BaseEntity {
@@ -34,6 +33,7 @@ public class Inquiry extends BaseEntity {
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "inquiry_id")
+    @Builder.Default
     private List<Image> imageList = new ArrayList<>();
 
 //    @ManyToOne
