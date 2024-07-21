@@ -34,6 +34,10 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
+    # gradlew 파일을 실행할 권한 부여
+    - name : Grant Execution Permission
+      run : chmod +x ./gradlew
+
     - name: Build with Gradle
       run: ./gradlew build
 
