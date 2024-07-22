@@ -50,6 +50,7 @@ public class Member extends BaseEntity {
         this.name = name;
         this.phone = phone;
         this.address = new Address(address, detailAddress);
+        this.available = true;
     }
 
     public void setProfileImage(Image profileImage){
