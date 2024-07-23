@@ -13,4 +13,5 @@ public interface ProductService {
     ProductResponseDto findProductById(Long product_id);
     ProductResponseDto updateProductById(ProductDto productDto, Long product_id, List<MultipartFile> images);
     boolean deleteProductById(Long product_id);
+    void updateProductPrices();
 }
