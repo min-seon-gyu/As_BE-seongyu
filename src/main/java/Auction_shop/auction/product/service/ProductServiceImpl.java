@@ -9,10 +9,12 @@ import Auction_shop.auction.product.dto.ProductResponseDto;
 import Auction_shop.auction.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +40,11 @@ public class ProductServiceImpl implements ProductService{
                 .trade(productDto.getTrade())
                 .initial_price(productDto.getInitial_price())
                 .details(productDto.getDetails())
+                .endTime(productDto.getEndTime())
+                .startTime(productDto.getStartTime())
+                .updateTime(productDto.getStartTime())
+                .isSold(false)
+                .minimum_price(productDto.getMinimum_price())
                 .build();
 
         List<Image> imageList = imageService.saveImages(images);
@@ -144,5 +151,24 @@ public class ProductServiceImpl implements ProductService{
             productRepository.deleteById(product_id);
         }
         return isFound;
+    }
+
+    @Override
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void updateProductPrices(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        List<Product> items = productRepository.findActiveProduct(currentTime);
+        for (Product product : items){
+            if (product.getUpdateTime().plusHours(1).isBefore(currentTime)) {
+                int newPrice = product.getCurrent_price() - 1000;
+                if (newPrice < product.getMinimum_price()) {
+                    newPrice = product.getMinimum_price();
+                }
+                product.updateCurrentPrice(newPrice);
+                product.updateTime(currentTime);
+            }
+        }
+        productRepository.saveAll(items);
     }
 }
