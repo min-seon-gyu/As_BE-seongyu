@@ -39,12 +39,12 @@ public class ProductServiceImpl implements ProductService{
                 .product_type(productDto.getProduct_type())
                 .trade(productDto.getTrade())
                 .initial_price(productDto.getInitial_price())
-                .details(productDto.getDetails())
-                .endTime(productDto.getEndTime())
                 .startTime(productDto.getStartTime())
+                .endTime(productDto.getEndTime())
                 .updateTime(productDto.getStartTime())
                 .isSold(false)
                 .minimum_price(productDto.getMinimum_price())
+                .details(productDto.getDetails())
                 .build();
 
         List<Image> imageList = imageService.saveImages(images);
@@ -61,6 +61,9 @@ public class ProductServiceImpl implements ProductService{
                 .product_type(savedProduct.getProduct_type())
                 .trade(savedProduct.getTrade())
                 .initial_price(savedProduct.getInitial_price())
+                .minimum_price(savedProduct.getMinimum_price())
+                .startTime(savedProduct.getStartTime())
+                .endTime(savedProduct.getEndTime())
                 .details(savedProduct.getDetails())
                 .imageUrls(savedProduct.getImageUrls())
                 .build();
@@ -161,7 +164,7 @@ public class ProductServiceImpl implements ProductService{
         List<Product> items = productRepository.findActiveProduct(currentTime);
         for (Product product : items){
             if (product.getUpdateTime().plusHours(1).isBefore(currentTime)) {
-                int newPrice = product.getCurrent_price() - 1000;
+                int newPrice = product.getCurrent_price() - (product.getInitial_price() / (int) product.getTotalHours());
                 if (newPrice < product.getMinimum_price()) {
                     newPrice = product.getMinimum_price();
                 }
