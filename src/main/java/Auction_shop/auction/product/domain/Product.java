@@ -1,11 +1,10 @@
 package Auction_shop.auction.product.domain;
 
-import Auction_shop.auction.domain.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,5 +88,9 @@ public class Product{
 
     public void updateTime(LocalDateTime updateTime){
         this.updateTime = updateTime;
+    }
+
+    public long getTotalHours(){
+        return Duration.between(this.startTime, this.endTime).toHours();
     }
 }
