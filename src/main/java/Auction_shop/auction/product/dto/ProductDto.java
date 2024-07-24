@@ -12,8 +12,6 @@ public class ProductDto {
         private String trade;           // 거래 방식
         private int initial_price;       // 시작 가격
 
-        private int current_price;      // 현재 가격
-
         private int minimum_price;      // 최저 가격
 
         private LocalDateTime startTime; // 경매 시작 시간
@@ -29,7 +27,6 @@ public class ProductDto {
                 this.product_type = product_type;
                 this.trade = trade;
                 this.initial_price = initial_price;
-                this.current_price = initial_price;
                 this.minimum_price = minimum_price;
                 this.startTime = startTime;
                 this.endTime = endTime;
