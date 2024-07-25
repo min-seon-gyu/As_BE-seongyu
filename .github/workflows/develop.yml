@@ -21,42 +21,39 @@ jobs:
       packages: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+          settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
-    # gradlew 파일을 실행할 권한 부여
-    - name : Grant Execution Permission
-      run : chmod +x ./gradlew
+      # gradlew 파일을 실행할 권한 부여
+      - name : Grant Execution Permission
+        run : chmod +x ./gradlew
 
-    - name: Build with Gradle
-      run: ./gradlew build -i --stacktrace
+      - name: Build with Gradle
+        run: ./gradlew build -i --stacktrace
+        env:
+          USERNAME: ${{ github.actor }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          cloud.aws.credentials.access-key: ${{secrets.AWS_ACCESS_KEY}}
+          cloud.aws.credentials.secret-key: ${{secrets.AWS_SECRET_KEY}}
+          spring.jwt.secret: ${{secrets.JWT_SECRET}}
+          spring.data.mongodb.host: ${{secrets.MONGODB_HOST}}
+          spring.data.mongodb.port: ${{secrets.MONGODB_PORT}}
+          spring.data.redis.host: ${{secrets.REDIS_HOST}}
+          spring.data.redis.port: ${{secrets.REDIS_PORT}}
+          spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
+          spring.datasource.url: ${{secrets.MYSQL_URL}}
+          spring.datasource.username: ${{secrets.MYSQL_USERNAME}}
+          spring.datasource.password: ${{secrets.MYSQL_PASSWORD}}
 
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
-    - name: Publish to GitHub Packages
-      run: ./gradlew publish
-      env:
-        USERNAME: ${{ github.actor }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        cloud.aws.credentials.access-key: ${{secrets.AWS_ACCESS_KEY}}
-        cloud.aws.credentials.secret-key: ${{secrets.AWS_SECRET_KEY}}
-        spring.jwt.secret: ${{secrets.JWT_SECRET}}
-        spring.data.mongodb.host: ${{secrets.MONGODB_HOST}}
-        spring.data.mongodb.port: ${{secrets.MONGODB_PORT}}
-        spring.data.redis.host: ${{secrets.REDIS_HOST}}
-        spring.data.redis.port: ${{secrets.REDIS_PORT}}
-        spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
-        spring.datasource.url: ${{secrets.MYSQL_URL}}
-        spring.datasource.username: ${{secrets.MYSQL_USERNAME}}
-        spring.datasource.password: ${{secrets.MYSQL_PASSWORD}}
-
+      - name: Publish to GitHub Packages
+        run: ./gradlew publish
 
