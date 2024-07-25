@@ -54,6 +54,7 @@ jobs:
         spring.data.mongodb.port: ${{secrets.MONGODB_PORT}}
         spring.data.redis.host: ${{secrets.REDIS_HOST}}
         spring.data.redis.port: ${{secrets.REDIS_PORT}}
+        spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
         spring.datasource.url: ${{secrets.MYSQL_URL}}
         spring.datasource.username: ${{secrets.MYSQL_USERNAME}}
         spring.datasource.password: ${{secrets.MYSQL_PASSWORD}}
