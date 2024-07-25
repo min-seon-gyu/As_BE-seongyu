@@ -2,11 +2,15 @@ package Auction_shop.auction.domain.member;
 
 import Auction_shop.auction.domain.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
+import Auction_shop.auction.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,6 +43,9 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "image_id")
     private Image profileImage;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
+
     @Column
     @Builder.Default
     private boolean available = false;
@@ -55,5 +62,16 @@ public class Member extends BaseEntity {
 
     public void setProfileImage(Image profileImage){
         this.profileImage = profileImage;
+    }
+
+    //연관 관계 편의 메서드
+    public void addProduct(Product product){
+        this.products.add(product);
+        product.setMember(this);
+    }
+
+    public void removeProduct(Product product){
+        this.products.remove(product);
+        product.setMember(null);
     }
 }
