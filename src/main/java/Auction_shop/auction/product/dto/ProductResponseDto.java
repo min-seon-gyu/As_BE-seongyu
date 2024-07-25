@@ -11,12 +11,12 @@ import java.util.List;
 @Builder
 public class ProductResponseDto {
     private Long product_id;         // 제품ID
-    private Long seller;            // 판매자ID
     private String title;           // 판매글 제목
     private String product_type;    // 제품 분류
     private String trade;           // 거래 방식
     private int initial_price;       // 시작 가격
     private int minimum_price;      // 최저 가격
+    private boolean isSold;         // 판매 여부
 
     private LocalDateTime startTime; // 경매 시작 시간
     private LocalDateTime endTime;   // 경매 종료 시간
