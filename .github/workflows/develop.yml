@@ -42,17 +42,18 @@ jobs:
         env:
           USERNAME: ${{ github.actor }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          cloud.aws.credentials.access-key: ${{secrets.AWS_ACCESS_KEY}}
-          cloud.aws.credentials.secret-key: ${{secrets.AWS_SECRET_KEY}}
-          spring.jwt.secret: ${{secrets.JWT_SECRET}}
-          spring.data.mongodb.host: ${{secrets.MONGODB_HOST}}
-          spring.data.mongodb.port: ${{secrets.MONGODB_PORT}}
-          spring.data.redis.host: ${{secrets.REDIS_HOST}}
-          spring.data.redis.port: ${{secrets.REDIS_PORT}}
-          spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
-          spring.datasource.url: ${{secrets.MYSQL_URL}}
-          spring.datasource.username: ${{secrets.MYSQL_USERNAME}}
-          spring.datasource.password: ${{secrets.MYSQL_PASSWORD}}
+          CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${{secrets.AWS_ACCESS_KEY}}
+          CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${{secrets.AWS_SECRET_KEY}}
+          SPRING_JWT_SECRET: ${{secrets.JWT_SECRET}}
+          SPRING_DATA_MONGODB_HOST: ${{secrets.MONGODB_HOST}}
+          SPRING_DATA_MONGODB_PORT: ${{secrets.MONGODB_PORT}}
+          SPRING_DATA_REDIS_HOST: ${{secrets.REDIS_HOST}}
+          SPRING_DATA_REDIS_PORT: ${{secrets.REDIS_PORT}}
+          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+          SPRING_DATASOURCE_URL: ${{secrets.MYSQL_URL}}
+          SPRING_DATASOURCE_USERNAME: ${{secrets.MYSQL_USERNAME}}
+          SPRING_DATASOURCE_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
 
       - name: Publish to GitHub Packages
         run: ./gradlew publish
