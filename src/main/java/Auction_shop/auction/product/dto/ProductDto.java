@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductDto {
-        private Long seller;            // 판매자ID
         private String title;           // 판매글 제목
         private String product_type;    // 제품 분류
         private String trade;           // 거래 방식
@@ -20,9 +19,8 @@ public class ProductDto {
         private String details;         // 설명
 
         @Builder
-        public ProductDto(Long seller, String title, String product_type, String trade, int initial_price,
+        public ProductDto(String title, String product_type, String trade, int initial_price,
                           String details, int minimum_price, LocalDateTime startTime, LocalDateTime endTime) {
-                this.seller = seller;
                 this.title = title;
                 this.product_type = product_type;
                 this.trade = trade;
