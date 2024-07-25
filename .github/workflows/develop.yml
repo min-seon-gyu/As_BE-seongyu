@@ -47,5 +47,15 @@ jobs:
       env:
         USERNAME: ${{ github.actor }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        cloud.aws.credentials.access-key: ${{secret.AWS_ACCESS_KEY}}
+        cloud.aws.credentials.secret-key: ${{secret.AWS_SECRET_KEY}}
+        spring.jwt.secret: ${{secret.JWT_SECRET}}
+        spring.data.mongodb.host: ${{secret.MONGODB_HOST}}
+        spring.data.mongodb.port: ${{secret.MONGODB_PORT}}
+        spring.data.redis.host: ${{secret.REDIS_HOST}}
+        spring.data.redis.port: ${{secret.REDIS_PORT}}
+        spring.datasource.url: ${{secret.MYSQL_URL}}
+        spring.datasource.username: ${{secret.MYSQL_USERNAME}}
+        spring.datasource.password: ${{secret.MYSQL_PASSWORD}}
 
 
