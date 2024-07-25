@@ -9,10 +9,12 @@ import Auction_shop.auction.product.dto.ProductResponseDto;
 import Auction_shop.auction.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +39,11 @@ public class ProductServiceImpl implements ProductService{
                 .product_type(productDto.getProduct_type())
                 .trade(productDto.getTrade())
                 .initial_price(productDto.getInitial_price())
+                .startTime(productDto.getStartTime())
+                .endTime(productDto.getEndTime())
+                .updateTime(productDto.getStartTime())
+                .isSold(false)
+                .minimum_price(productDto.getMinimum_price())
                 .details(productDto.getDetails())
                 .build();
 
@@ -54,6 +61,9 @@ public class ProductServiceImpl implements ProductService{
                 .product_type(savedProduct.getProduct_type())
                 .trade(savedProduct.getTrade())
                 .initial_price(savedProduct.getInitial_price())
+                .minimum_price(savedProduct.getMinimum_price())
+                .startTime(savedProduct.getStartTime())
+                .endTime(savedProduct.getEndTime())
                 .details(savedProduct.getDetails())
                 .imageUrls(savedProduct.getImageUrls())
                 .build();
@@ -144,5 +154,24 @@ public class ProductServiceImpl implements ProductService{
             productRepository.deleteById(product_id);
         }
         return isFound;
+    }
+
+    @Override
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void updateProductPrices(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        List<Product> items = productRepository.findActiveProduct(currentTime);
+        for (Product product : items){
+            if (product.getUpdateTime().plusHours(1).isBefore(currentTime)) {
+                int newPrice = product.getCurrent_price() - (product.getInitial_price() / (int) product.getTotalHours());
+                if (newPrice < product.getMinimum_price()) {
+                    newPrice = product.getMinimum_price();
+                }
+                product.updateCurrentPrice(newPrice);
+                product.updateTime(currentTime);
+            }
+        }
+        productRepository.saveAll(items);
     }
 }

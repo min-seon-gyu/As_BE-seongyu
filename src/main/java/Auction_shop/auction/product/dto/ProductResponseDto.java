@@ -16,10 +16,13 @@ public class ProductResponseDto {
     private String product_type;    // 제품 분류
     private String trade;           // 거래 방식
     private int initial_price;       // 시작 가격
+    private int minimum_price;      // 최저 가격
+
+    private LocalDateTime startTime; // 경매 시작 시간
+    private LocalDateTime endTime;   // 경매 종료 시간
 
     private String details;         // 설명
-    private List<String> imageUrls;
+    private List<String> imageUrls;     //이미지 url
 
-    private LocalDateTime start_at; // 시작 날짜
-    private LocalDateTime end_at;   // 종료 날짜
+
 }
