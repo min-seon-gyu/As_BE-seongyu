@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("SELECT a FROM Product a WHERE a.startTime <= :currentTime AND a.endTime > :currentTime AND a.isSold = false")
     List<Product> findActiveProduct(LocalDateTime currentTime);
 
+    List<Product> findAllByMemberId(Long memberId);
+
 }
