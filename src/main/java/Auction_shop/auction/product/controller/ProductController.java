@@ -32,7 +32,7 @@ public class ProductController {
      * 상품 등록
      */
     @PostMapping("/registration")
-    public ResponseEntity<Object> createProduct(
+    public ResponseEntity<Object> createProduct(@RequestParam Long memberId,
             @RequestPart(value = "product") ProductDto productDto,
             @RequestPart(value = "images", required = false) final List<MultipartFile> images,
             BindingResult bindingResult) {
@@ -44,7 +44,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
         }
         try {
-            ProductResponseDto productResponseDto = productService.save(productDto, images);
+            ProductResponseDto productResponseDto = productService.save(productDto, memberId, images);
             return ResponseEntity.status(HttpStatus.OK).body(productResponseDto);
         } catch (Exception e) {
             // 서버 에러 500
