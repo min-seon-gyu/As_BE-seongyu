@@ -1,4 +1,4 @@
-package Auction_shop.auction.web.dto;
+package Auction_shop.auction.web.dto.inquiry;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InquiryCreateDto {
-    private Long userId;
     private String title;
     private String content;
 }
