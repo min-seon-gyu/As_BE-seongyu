@@ -15,4 +15,5 @@ public class ProductListResponseDto {
     private String title;
     private boolean isSold;
     private int initial_price;
+    private String imageUrl;
 }
