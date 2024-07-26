@@ -1,6 +1,7 @@
 package Auction_shop.auction.web.dto.inquiry;
 
 import Auction_shop.auction.domain.inquriy.Inquiry;
+import Auction_shop.auction.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -38,4 +39,14 @@ public class InquiryMapperImpl implements InquiryMapper{
         return responseDto;
     }
 
+    @Override
+    public Inquiry toEntity(InquiryCreateDto inquiryDto, Member member) {
+        Inquiry inquiry = Inquiry.builder()
+                .member(member)
+                .title(inquiryDto.getTitle())
+                .content(inquiryDto.getContent())
+                .status(false)
+                .build();
+        return inquiry;
+    }
 }
