@@ -31,7 +31,7 @@ public class InquiryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(collect);
     }
 
-    //전체 조회
+    //전체 조회(어드민)
     @GetMapping()
     public ResponseEntity<List<InquiryListResponseDto>> getAllInquiry(){
         List<Inquiry> inquiries = inquiryService.getAllInquiry();
@@ -46,6 +46,19 @@ public class InquiryController {
         return ResponseEntity.ok(collect);
     }
 
+    //멤버 문의 조회
+    @GetMapping("/member")
+    public ResponseEntity<List<InquiryListResponseDto>> getAllByMemberId(@RequestParam Long memberId){
+        List<Inquiry> inquiries = inquiryService.getAllByMemberId(memberId);
+        if (inquiries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<InquiryListResponseDto> collect = inquiries.stream()
+                .map(inquiryMapper::toListResponseDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(collect);
+    }
+
     //개별 조회
     @GetMapping("/{inquiryId}")
     public ResponseEntity<InquiryResponseDto> getByInquiryId(@PathVariable Long inquiryId){
@@ -54,17 +67,6 @@ public class InquiryController {
 
         return ResponseEntity.ok(collect);
     }
-
-    //멤버 문의 조회
-    //멤버 엔티티 구현 되면 수정 예정
-//    @GetMapping(/"memberId")
-//    public ResponseEntity<List<InquiryResponseDto>> getAllByMemberId(){
-//        List<Inquiry> inquiries = inquiryService.getAllByMemberId();
-//        List<InquiryResponseDto> collect = inquiries.stream()
-//                .map(inquiry -> new InquiryResponseDto())
-//                .collect(toList());
-//        return ResponseEntity.ok(collect);
-//    }
 
     //수정
     @PutMapping("/{inquiryId}")
