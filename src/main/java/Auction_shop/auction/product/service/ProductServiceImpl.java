@@ -28,6 +28,7 @@ public class ProductServiceImpl implements ProductService{
     private final MemberService memberService;
 
     @Override
+    @Transactional
     public ProductResponseDto save(ProductDto productDto, Long memberId, List<MultipartFile> images) {
         Member member = memberService.getById(memberId);
 
@@ -169,6 +170,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional
     public boolean deleteProductById(Long product_id) {
         boolean isFound = productRepository.existsById(product_id);
         Product product = productRepository.findById(product_id)
