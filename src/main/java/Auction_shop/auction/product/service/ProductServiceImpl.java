@@ -98,11 +98,16 @@ public class ProductServiceImpl implements ProductService{
         List<Product> products = productRepository.findAllByMemberId(memberId);
         List<ProductListResponseDto> collect = products.stream()
                 .map(product -> {
+                    String imageUrl = null;
+                    if(!product.getImageList().isEmpty()){
+                        imageUrl = product.getImageList().get(0).getAccessUrl();
+                    }
                     ProductListResponseDto dto = ProductListResponseDto.builder()
                             .product_id(product.getProduct_id())
                             .title(product.getTitle())
                             .initial_price(product.getInitial_price())
                             .isSold(product.isSold())
+                            .imageUrl(imageUrl)
                             .build();
                     return dto;
                 })
