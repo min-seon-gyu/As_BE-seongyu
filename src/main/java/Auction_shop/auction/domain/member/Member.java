@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.member;
 
 import Auction_shop.auction.domain.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
+import Auction_shop.auction.domain.inquriy.Inquiry;
 import Auction_shop.auction.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Inquiry> inquiries = new ArrayList<>();
+
     @Column
     @Builder.Default
     private boolean available = false;
@@ -65,6 +69,16 @@ public class Member extends BaseEntity {
     }
 
     //연관 관계 편의 메서드
+    public void addInquiry(Inquiry inquiry){
+        this.inquiries.add(inquiry);
+        inquiry.setMember(this);
+    }
+
+    public void removeInquiry(Inquiry inquiry){
+        this.inquiries.remove(inquiry);
+        inquiry.setMember(null);
+    }
+
     public void addProduct(Product product){
         this.products.add(product);
         product.setMember(this);
