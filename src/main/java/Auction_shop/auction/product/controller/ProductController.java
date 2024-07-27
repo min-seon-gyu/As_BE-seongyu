@@ -108,6 +108,14 @@ public class ProductController {
     }
 
     /**
+     * 상품 구매
+     */
+    @PostMapping("/{product_id}/purchase")
+    public ProductResponseDto purchaseProductItem(@PathVariable Long product_id){
+        return productService.purchaseProductItem(product_id);
+    }
+
+    /**
      * 상품 삭제
      */
     @DeleteMapping("/delete/{product_id}")

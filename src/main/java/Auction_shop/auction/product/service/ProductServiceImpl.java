@@ -170,6 +170,31 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public ProductResponseDto purchaseProductItem(Long product_id){
+        Product product = productRepository.findById(product_id)
+                .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
+
+        if (product.isSold()){
+            throw new RuntimeException("이미 판매된 물품입니다.");
+        }
+
+        product.setIsSold(true);
+        ProductResponseDto productResponseDto = ProductResponseDto.builder()
+                .product_id(product_id)
+                .title(product.getTitle())
+                .product_type(product.getProduct_type())
+                .trade(product.getTrade())
+                .initial_price(product.getInitial_price())
+                .details(product.getDetails())
+                .imageUrls(product.getImageUrls())
+                .isSold(product.isSold())
+                .build();
+
+        productRepository.save(product);
+        return productResponseDto;
+    }
+
+    @Override
     @Transactional
     public boolean deleteProductById(Long product_id) {
         boolean isFound = productRepository.existsById(product_id);

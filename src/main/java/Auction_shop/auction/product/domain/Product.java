@@ -75,6 +75,10 @@ public class Product{
         this.member = member;
     }
 
+    public void setIsSold(boolean isSold){
+        this.isSold = isSold;
+    }
+
     public List<String> getImageUrls(){
         return imageList.stream()
                 .map(Image::getAccessUrl)

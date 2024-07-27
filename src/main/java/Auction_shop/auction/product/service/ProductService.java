@@ -13,6 +13,7 @@ public interface ProductService {
     List<ProductListResponseDto> findAllByMemberId(Long MemberId);
     ProductResponseDto findProductById(Long product_id);
     ProductResponseDto updateProductById(ProductDto productDto, Long product_id, List<MultipartFile> images);
+    ProductResponseDto purchaseProductItem(Long product_id);
     boolean deleteProductById(Long product_id);
     void updateProductPrices();
 }
