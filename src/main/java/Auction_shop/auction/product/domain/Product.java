@@ -1,6 +1,7 @@
 package Auction_shop.auction.product.domain;
 
 import Auction_shop.auction.domain.image.Image;
+import Auction_shop.auction.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,9 +19,9 @@ public class Product{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long product_id;         // 제품ID
 
-    //Todo 이후에 Member 엔티티 생성 시 seller 변경
-    @Column(nullable = false)
-    private Long seller;            // 판매자ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
     @Column(nullable = false)
     private String title;           // 판매글 제목
     @Column(nullable = false)
@@ -48,10 +49,10 @@ public class Product{
     private List<Image> imageList = new ArrayList<>();
 
     @Builder
-    public Product(Long product_id, Long seller, String title, String product_type, String trade, int initial_price, int minimum_price,
+    public Product(Long product_id, Member member, String title, String product_type, String trade, int initial_price, int minimum_price,
                    List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime,boolean isSold) {
         this.product_id = product_id;
-        this.seller = seller;
+        this.member = member;
         this.title = title;
         this.product_type = product_type;
         this.trade = trade;
@@ -68,6 +69,14 @@ public class Product{
 
     public void setImageList(List<Image> imageList){
         this.imageList = imageList;
+    }
+
+    public void setMember(Member member){
+        this.member = member;
+    }
+
+    public void setIsSold(boolean isSold){
+        this.isSold = isSold;
     }
 
     public List<String> getImageUrls(){

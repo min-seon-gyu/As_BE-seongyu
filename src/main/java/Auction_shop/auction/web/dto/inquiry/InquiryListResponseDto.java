@@ -1,4 +1,4 @@
-package Auction_shop.auction.web.dto;
+package Auction_shop.auction.web.dto.inquiry;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class InquiryListResponseDto {
 
     private Long id;
-    private String member;
     private String title;
+    private String content;
+    private String imageUrl;
+    private boolean status;
 }

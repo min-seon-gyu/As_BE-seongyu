@@ -21,9 +21,6 @@ public class ProductValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         ProductDto productDto = (ProductDto) target;
-        if (productDto.getSeller() == null) {
-            errors.rejectValue("seller","seller.null","seller is null!");
-        }
         if (productDto.getTitle() == null) {
             errors.rejectValue("title","title.null","title is null!");
         }
@@ -35,6 +32,9 @@ public class ProductValidator implements Validator {
         }
         if (productDto.getInitial_price() <= 0) {
             errors.rejectValue("initial_price","initial_price.null","initial_price is null!");
+        }
+        if (productDto.getMinimum_price() <= 0) {
+            errors.rejectValue("minimum_price","minimum_price","minimum_price is null!");
         }
     }
 }
