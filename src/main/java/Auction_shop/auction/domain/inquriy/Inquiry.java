@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.inquriy;
 
 import Auction_shop.auction.domain.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
+import Auction_shop.auction.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,10 @@ public class Inquiry extends BaseEntity {
     @Column(name = "inquiry_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Column(nullable = false, length = 100)
     private String title;
 
@@ -37,12 +42,12 @@ public class Inquiry extends BaseEntity {
     @Builder.Default
     private List<Image> imageList = new ArrayList<>();
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
-
     public void setImageList(List<Image> imageList){
         this.imageList = imageList;
+    }
+
+    public void setMember(Member member){
+        this.member = member;
     }
 
     //비즈니스 로직

@@ -1,4 +1,4 @@
-package Auction_shop.auction.web.dto;
+package Auction_shop.auction.web.dto.inquiry;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class InquiryResponseDto {
 
-    private Long id;
-    private String member;
+    private Long id;;
     private String title;
     private String content;
     private boolean status;

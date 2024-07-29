@@ -13,6 +13,7 @@ public class ProductListResponseDto {
 
     private Long product_id;
     private String title;
-    private String details;
+    private boolean isSold;
     private int initial_price;
+    private String imageUrl;
 }
