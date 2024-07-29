@@ -38,7 +38,7 @@ jobs:
         run : chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build -i --debug
+        run: ./gradlew build -i
         env:
           USERNAME: ${{ github.actor }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
