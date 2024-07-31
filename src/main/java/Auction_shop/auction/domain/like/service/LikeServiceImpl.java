@@ -26,6 +26,10 @@ public class LikeServiceImpl implements LikeService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException(productId+"에 해당하는 물품이 없습니다."));
 
+        if (likeRepository.findByMemberAndProduct(member, product) != null){
+            throw new RuntimeException("이미 좋아요 되어있습니다.");
+        }
+
         Like like = Like.builder()
                 .member(member)
                 .product(product)
