@@ -1,14 +1,14 @@
-package Auction_shop.auction.product.service;
+package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
-import Auction_shop.auction.product.domain.Product;
-import Auction_shop.auction.product.dto.ProductDto;
-import Auction_shop.auction.product.dto.ProductListResponseDto;
-import Auction_shop.auction.product.dto.ProductResponseDto;
-import Auction_shop.auction.product.repository.ProductRepository;
+import Auction_shop.auction.domain.product.repository.ProductRepository;
+import Auction_shop.auction.domain.product.Product;
+import Auction_shop.auction.web.dto.product.ProductDto;
+import Auction_shop.auction.web.dto.product.ProductListResponseDto;
+import Auction_shop.auction.web.dto.product.ProductResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,10 @@
-package Auction_shop.auction.product.controller;
+package Auction_shop.auction.domain.product.controller;
 
-import Auction_shop.auction.product.dto.ProductDto;
-import Auction_shop.auction.product.dto.ProductListResponseDto;
-import Auction_shop.auction.product.dto.ProductResponseDto;
-import Auction_shop.auction.product.service.ProductService;
-import Auction_shop.auction.product.validation.ProductValidator;
+import Auction_shop.auction.web.dto.product.ProductDto;
+import Auction_shop.auction.web.dto.product.ProductListResponseDto;
+import Auction_shop.auction.web.dto.product.ProductResponseDto;
+import Auction_shop.auction.domain.product.service.ProductService;
+import Auction_shop.auction.domain.product.validation.ProductValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

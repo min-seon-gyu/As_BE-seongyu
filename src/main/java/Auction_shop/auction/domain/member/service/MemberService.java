@@ -4,7 +4,7 @@ import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
-import Auction_shop.auction.web.dto.MemberUpdateDto;
+import Auction_shop.auction.web.dto.member.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

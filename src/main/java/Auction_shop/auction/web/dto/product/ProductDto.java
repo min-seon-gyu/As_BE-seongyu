@@ -1,4 +1,4 @@
-package Auction_shop.auction.product.dto;
+package Auction_shop.auction.web.dto.product;
 
 import lombok.*;
 import java.time.LocalDateTime;

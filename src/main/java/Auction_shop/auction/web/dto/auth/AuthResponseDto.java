@@ -1,4 +1,4 @@
-package Auction_shop.auction.web.dto;
+package Auction_shop.auction.web.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
