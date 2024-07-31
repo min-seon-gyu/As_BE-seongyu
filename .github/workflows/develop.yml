@@ -61,6 +61,8 @@ jobs:
           CLOUD_AWS_REGION_STATIC: ap-southeast-2
           CLOUD_AWS_S3_BUCKET: auction-shop-image
           SPRING_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SPRING_JWT_ACCESSTOKEN_EXPIRATION_TIME: 60000
+          SPRING_JWT_REFRESHTOKEN_EXPIRATION_TIME: 86400000
           SPRING_DATA_MONGODB_HOST: ${{ secrets.MONGODB_HOST }}
           SPRING_DATA_MONGODB_PORT: ${{ secrets.MONGODB_PORT }}
           SPRING_DATA_REDIS_HOST: ${{ secrets.REDIS_HOST }}
