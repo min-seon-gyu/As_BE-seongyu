@@ -28,6 +28,8 @@ public class Product{
     private String product_type;    // 제품 분류
     @Column(nullable = false)
     private String trade;           // 거래 방식
+    @Column(nullable = true)
+    private String tradeLocation;   // 직거래 희망 거래 장소
     @Column(nullable = false)
     private int initial_price;       // 시작 가격
 
@@ -49,13 +51,14 @@ public class Product{
     private List<Image> imageList = new ArrayList<>();
 
     @Builder
-    public Product(Long product_id, Member member, String title, String product_type, String trade, int initial_price, int minimum_price,
+    public Product(Long product_id, Member member, String title, String product_type, String trade, String tradeLocation, int initial_price, int minimum_price,
                    List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime,boolean isSold) {
         this.product_id = product_id;
         this.member = member;
         this.title = title;
         this.product_type = product_type;
         this.trade = trade;
+        this.tradeLocation = tradeLocation;
         this.initial_price = initial_price;
         this.imageList = imageList;
         this.current_price = initial_price;
@@ -85,10 +88,11 @@ public class Product{
                 .collect(Collectors.toList());
     }
 
-    public void updateProduct(String title, String product_type, String details){
+    public void updateProduct(String title, String product_type, String details, String tradeLocation){
         this.title = title;
         this.product_type = product_type;
         this.details = details;
+        this.tradeLocation = tradeLocation;
     }
 
     public void updateCurrentPrice(int current_price){
