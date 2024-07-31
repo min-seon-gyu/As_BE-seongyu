@@ -38,6 +38,7 @@ public class ProductServiceImpl implements ProductService{
                 .member(member)
                 .product_type(productDto.getProduct_type())
                 .trade(productDto.getTrade())
+                .tradeLocation(productDto.getTradeLocation())
                 .initial_price(productDto.getInitial_price())
                 .startTime(productDto.getStartTime())
                 .endTime(productDto.getEndTime())
@@ -61,6 +62,7 @@ public class ProductServiceImpl implements ProductService{
                 .title(savedProduct.getTitle())
                 .product_type(savedProduct.getProduct_type())
                 .trade(savedProduct.getTrade())
+                .tradeLocation(productDto.getTradeLocation())
                 .initial_price(savedProduct.getInitial_price())
                 .minimum_price(savedProduct.getMinimum_price())
                 .startTime(savedProduct.getStartTime())
@@ -85,6 +87,7 @@ public class ProductServiceImpl implements ProductService{
                             .product_id(product.getProduct_id())
                             .title(product.getTitle())
                             .initial_price(product.getInitial_price())
+                            .tradeLocation(product.getTradeLocation())
                             .isSold(product.isSold())
                             .imageUrl(imageUrl)
                             .build();
@@ -107,6 +110,7 @@ public class ProductServiceImpl implements ProductService{
                             .product_id(product.getProduct_id())
                             .title(product.getTitle())
                             .initial_price(product.getInitial_price())
+                            .tradeLocation(product.getTradeLocation())
                             .isSold(product.isSold())
                             .imageUrl(imageUrl)
                             .build();
@@ -126,6 +130,7 @@ public class ProductServiceImpl implements ProductService{
                     .title(findProduct.getTitle())
                     .product_type(findProduct.getProduct_type())
                     .trade(findProduct.getTrade())
+                    .tradeLocation(findProduct.getTradeLocation())
                     .initial_price(findProduct.getInitial_price())
                     .details(findProduct.getDetails())
                     .isSold(findProduct.isSold())
@@ -154,13 +159,14 @@ public class ProductServiceImpl implements ProductService{
         List<Image> imageList = imageService.saveImages(images);
         product.getImageList().addAll(imageList);
 
-        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getDetails());
+        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getDetails(), productDto.getTradeLocation());
 
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .product_id(product_id)
                 .title(product.getTitle())
                 .product_type(product.getProduct_type())
                 .trade(product.getTrade())
+                .tradeLocation(product.getTradeLocation())
                 .initial_price(product.getInitial_price())
                 .details(product.getDetails())
                 .imageUrls(product.getImageUrls())
@@ -184,6 +190,7 @@ public class ProductServiceImpl implements ProductService{
                 .title(product.getTitle())
                 .product_type(product.getProduct_type())
                 .trade(product.getTrade())
+                .tradeLocation(product.getTradeLocation())
                 .initial_price(product.getInitial_price())
                 .details(product.getDetails())
                 .imageUrls(product.getImageUrls())
@@ -210,13 +217,13 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 30000)
     @Transactional
     public void updateProductPrices(){
         LocalDateTime currentTime = LocalDateTime.now();
         List<Product> items = productRepository.findActiveProduct(currentTime);
         for (Product product : items){
-            if (product.getUpdateTime().plusHours(1).isBefore(currentTime)) {
+            if (product.getUpdateTime().plusSeconds(10).isBefore(currentTime)) {
                 int newPrice = product.getCurrent_price() - (product.getInitial_price() / (int) product.getTotalHours());
                 if (newPrice < product.getMinimum_price()) {
                     newPrice = product.getMinimum_price();

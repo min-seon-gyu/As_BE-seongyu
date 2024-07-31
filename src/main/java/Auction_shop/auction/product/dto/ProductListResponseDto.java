@@ -14,6 +14,7 @@ public class ProductListResponseDto {
     private Long product_id;
     private String title;
     private boolean isSold;
+    private String tradeLocation;
     private int initial_price;
     private String imageUrl;
 }
