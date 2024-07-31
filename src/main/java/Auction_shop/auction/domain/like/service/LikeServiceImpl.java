@@ -6,7 +6,6 @@ import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.repository.ProductRepository;
-import Auction_shop.auction.web.dto.like.LikeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +58,12 @@ public class LikeServiceImpl implements LikeService {
             product.removeLike(like);
             likeRepository.delete(like);
         }
+    }
+
+    public int getProductLikeCount(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException(productId+"에 해당하는 물품이 없습니다."));
+
+        return product.getLikeCount();
     }
 }

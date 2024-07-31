@@ -120,4 +120,8 @@ public class Product{
         likes.remove(like);
         like.setProduct(null);
     }
+
+    public int getLikeCount(){
+        return likes.size();
+    }
 }

@@ -45,4 +45,10 @@ public class LikeController {
     public void removeProductFromLike(@PathVariable Long memberId, @PathVariable Long productId){
         likeService.removeProductFromLike(memberId, productId);
     }
+
+    //물건 별 좋아요 갯수 확인 api
+    @GetMapping("/product/{productId}/likeCount")
+    public int getProductLikeCount(@PathVariable Long productId){
+        return likeService.getProductLikeCount(productId);
+    }
 }
