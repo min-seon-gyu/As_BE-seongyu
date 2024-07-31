@@ -3,7 +3,7 @@ package Auction_shop.auction.domain.member;
 import Auction_shop.auction.domain.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.inquriy.Inquiry;
-import Auction_shop.auction.product.domain.Product;
+import Auction_shop.auction.domain.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

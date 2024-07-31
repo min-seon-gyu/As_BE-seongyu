@@ -1,8 +1,8 @@
-package Auction_shop.auction.product.controller;
+package Auction_shop.auction.domain.product.controller;
 
 import Auction_shop.auction.domain.member.service.MemberService;
-import Auction_shop.auction.product.dto.ProductListResponseDto;
-import Auction_shop.auction.product.service.ProductService;
+import Auction_shop.auction.web.dto.product.ProductListResponseDto;
+import Auction_shop.auction.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package Auction_shop.auction.product.domain;
+package Auction_shop.auction.domain.product;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.member.Member;

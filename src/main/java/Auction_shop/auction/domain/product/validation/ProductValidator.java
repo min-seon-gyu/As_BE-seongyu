@@ -1,6 +1,6 @@
-package Auction_shop.auction.product.validation;
+package Auction_shop.auction.domain.product.validation;
 
-import Auction_shop.auction.product.dto.ProductDto;
+import Auction_shop.auction.web.dto.product.ProductDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

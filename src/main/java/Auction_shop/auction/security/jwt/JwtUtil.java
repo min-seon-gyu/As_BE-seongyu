@@ -1,7 +1,7 @@
 package Auction_shop.auction.security.jwt;
 
 import Auction_shop.auction.domain.member.Address;
-import Auction_shop.auction.web.dto.MemberResponseDto;
+import Auction_shop.auction.web.dto.member.MemberResponseDto;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
