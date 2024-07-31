@@ -17,4 +17,5 @@ public class ProductListResponseDto {
     private String tradeLocation;
     private int initial_price;
     private String imageUrl;
+    private int likeCount;
 }

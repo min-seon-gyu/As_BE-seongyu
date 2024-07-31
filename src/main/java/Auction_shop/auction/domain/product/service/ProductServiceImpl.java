@@ -66,6 +66,7 @@ public class ProductServiceImpl implements ProductService{
                 .initial_price(savedProduct.getInitial_price())
                 .minimum_price(savedProduct.getMinimum_price())
                 .startTime(savedProduct.getStartTime())
+                .likeCount(savedProduct.getLikeCount())
                 .endTime(savedProduct.getEndTime())
                 .details(savedProduct.getDetails())
                 .imageUrls(savedProduct.getImageUrls())
@@ -88,6 +89,7 @@ public class ProductServiceImpl implements ProductService{
                             .title(product.getTitle())
                             .initial_price(product.getInitial_price())
                             .tradeLocation(product.getTradeLocation())
+                            .likeCount(product.getLikeCount())
                             .isSold(product.isSold())
                             .imageUrl(imageUrl)
                             .build();
@@ -111,6 +113,7 @@ public class ProductServiceImpl implements ProductService{
                             .title(product.getTitle())
                             .initial_price(product.getInitial_price())
                             .tradeLocation(product.getTradeLocation())
+                            .likeCount(product.getLikeCount())
                             .isSold(product.isSold())
                             .imageUrl(imageUrl)
                             .build();
@@ -133,6 +136,7 @@ public class ProductServiceImpl implements ProductService{
                     .tradeLocation(findProduct.getTradeLocation())
                     .initial_price(findProduct.getInitial_price())
                     .details(findProduct.getDetails())
+                    .likeCount(findProduct.getLikeCount())
                     .isSold(findProduct.isSold())
                     .imageUrls(findProduct.getImageUrls())
                     .build();
@@ -168,6 +172,7 @@ public class ProductServiceImpl implements ProductService{
                 .trade(product.getTrade())
                 .tradeLocation(product.getTradeLocation())
                 .initial_price(product.getInitial_price())
+                .likeCount(product.getLikeCount())
                 .details(product.getDetails())
                 .imageUrls(product.getImageUrls())
                 .build();
@@ -193,6 +198,7 @@ public class ProductServiceImpl implements ProductService{
                 .tradeLocation(product.getTradeLocation())
                 .initial_price(product.getInitial_price())
                 .details(product.getDetails())
+                .likeCount(product.getLikeCount())
                 .imageUrls(product.getImageUrls())
                 .isSold(product.isSold())
                 .build();

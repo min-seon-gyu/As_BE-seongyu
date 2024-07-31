@@ -15,6 +15,7 @@ public class ProductResponseDto {
     private String product_type;    // 제품 분류
     private String trade;           // 거래 방식
     private String tradeLocation;   // 직거래 희망 장소
+    private int likeCount;          // 좋아요 갯수
     private int initial_price;       // 시작 가격
     private int minimum_price;      // 최저 가격
     private boolean isSold;         // 판매 여부
