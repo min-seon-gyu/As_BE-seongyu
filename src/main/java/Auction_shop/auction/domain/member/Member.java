@@ -45,9 +45,11 @@ public class Member extends BaseEntity {
     private Image profileImage;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Product> products = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Inquiry> inquiries = new ArrayList<>();
 
     @Column
