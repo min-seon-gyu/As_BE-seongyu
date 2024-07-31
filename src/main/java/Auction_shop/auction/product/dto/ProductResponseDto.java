@@ -14,6 +14,7 @@ public class ProductResponseDto {
     private String title;           // 판매글 제목
     private String product_type;    // 제품 분류
     private String trade;           // 거래 방식
+    private String tradeLocation;   // 직거래 희망 장소
     private int initial_price;       // 시작 가격
     private int minimum_price;      // 최저 가격
     private boolean isSold;         // 판매 여부
