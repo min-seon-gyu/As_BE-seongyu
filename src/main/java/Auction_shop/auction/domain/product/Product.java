@@ -1,6 +1,7 @@
 package Auction_shop.auction.domain.product;
 
 import Auction_shop.auction.domain.image.Image;
+import Auction_shop.auction.domain.like.Like;
 import Auction_shop.auction.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,6 +50,9 @@ public class Product{
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private List<Image> imageList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
 
     @Builder
     public Product(Long product_id, Member member, String title, String product_type, String trade, String tradeLocation, int initial_price, int minimum_price,
@@ -105,5 +109,15 @@ public class Product{
 
     public long getTotalHours(){
         return Duration.between(this.startTime, this.endTime).toHours();
+    }
+
+    public void addLike(Like like) {
+        likes.add(like);
+        like.setProduct(this);
+    }
+
+    public void removeLike(Like like) {
+        likes.remove(like);
+        like.setProduct(null);
     }
 }
