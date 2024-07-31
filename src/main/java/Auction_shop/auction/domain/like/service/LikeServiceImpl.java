@@ -34,12 +34,13 @@ public class LikeServiceImpl implements LikeService {
         member.addLike(like);
         product.addLike(like);
 
-        return like;
+        return likeRepository.save(like);
     }
 
     @Override
     public List<Like> getLikeList(Long memberId) {
-        return null;
+        Member member = memberService.getById(memberId);
+        return likeRepository.findByMember(member);
     }
 
     @Override

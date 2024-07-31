@@ -2,14 +2,15 @@ package Auction_shop.auction.domain.like.controller;
 
 import Auction_shop.auction.domain.like.Like;
 import Auction_shop.auction.domain.like.service.LikeService;
+import Auction_shop.auction.web.dto.like.LikeListResponseDto;
 import Auction_shop.auction.web.dto.like.LikeMapper;
 import Auction_shop.auction.web.dto.like.LikeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +24,20 @@ public class LikeController {
     public ResponseEntity<LikeResponseDto> addProductToLike(@PathVariable Long memberId, @PathVariable Long productId){
         Like like = likeService.addProductToLike(memberId, productId);
         LikeResponseDto collect = likeMapper.toResponseDto(like);
+        return ResponseEntity.ok(collect);
+    }
+
+    @GetMapping("/{memberId}")
+    public ResponseEntity<List<LikeListResponseDto>> getLikeList(@PathVariable Long memberId){
+        List<Like> likes = likeService.getLikeList(memberId);
+
+        if (likes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        List<LikeListResponseDto> collect = likes.stream()
+                .map(likeMapper::toListResponseDto)
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(collect);
     }
 }

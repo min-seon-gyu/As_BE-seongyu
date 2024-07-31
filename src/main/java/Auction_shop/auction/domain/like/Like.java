@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "likes")
 public class Like extends BaseEntity {
 
     @Id
