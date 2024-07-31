@@ -1,16 +1,8 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
-
 name: Integration and Deployment
 
 on:
   pull_request_target: # develop 브랜치로 pull request 이벤트 발생 시 실행
-    branches:
-      - develop
+    branches: [develop]
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -22,7 +14,29 @@ jobs:
 
     # 작업 실행 단계
     steps:
-      - uses: actions/checkout@v4
+      # PR 작성자가 repo에 대한 write 권한이 있는지 확인
+      - name: Get User Permission
+        id: checkAccess
+        uses: actions-cool/check-user-permission@v2
+        with:
+          require: write
+          username: ${{ github.triggering_actor }}
+        env:
+          GITHUB_TOKEN: ${{ github.triggering_actor }}
+
+      # PR 작성자가 권한이 없는 경우 워크플로우 종료
+      - name: Check User Permission
+        if: steps.checkAccess.outputs.require-result == 'false'
+        run: |
+          echo "${{ github.triggering_actor }} does not have permissions on this repo."
+          echo "Current permission level is ${{ steps.checkAccess.outputs.user-permission }}"
+          echo "Job originally triggered by ${{ github.actor }}"
+          exit 1
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -38,10 +52,10 @@ jobs:
         run : chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -i
         env:
-          USERNAME: ${{ github.actor }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          USERNAME: ${{ github.actor }}
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
           SPRING_JWT_SECRET: ${{ secrets.JWT_SECRET }}
