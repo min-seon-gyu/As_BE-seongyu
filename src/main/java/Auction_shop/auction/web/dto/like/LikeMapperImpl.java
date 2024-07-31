@@ -1,7 +1,9 @@
 package Auction_shop.auction.web.dto.like;
 
 import Auction_shop.auction.domain.like.Like;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LikeMapperImpl implements LikeMapper{
 
     @Override
