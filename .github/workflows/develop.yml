@@ -58,6 +58,7 @@ jobs:
 #          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          CLOUD_AWS_REGION_STATIC: ap-southeast-2
           SPRING_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           SPRING_DATA_MONGODB_HOST: ${{ secrets.MONGODB_HOST }}
           SPRING_DATA_MONGODB_PORT: ${{ secrets.MONGODB_PORT }}
