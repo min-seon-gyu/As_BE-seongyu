@@ -44,7 +44,16 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public LikeResponseDto removeProductFromLike(Long memberId, Long productId) {
-        return null;
+    public void removeProductFromLike(Long memberId, Long productId) {
+        Member member = memberService.getById(memberId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException(productId+"에 해당하는 물품이 없습니다."));
+
+        Like like = likeRepository.findByMemberAndProduct(member, product);
+        if(like != null){
+            member.removeLike(like);
+            product.removeLike(like);
+            likeRepository.delete(like);
+        }
     }
 }

@@ -40,4 +40,9 @@ public class LikeController {
 
         return ResponseEntity.ok(collect);
     }
+
+    @DeleteMapping("/{memberId}/{productId}")
+    public void removeProductFromLike(@PathVariable Long memberId, @PathVariable Long productId){
+        likeService.removeProductFromLike(memberId, productId);
+    }
 }

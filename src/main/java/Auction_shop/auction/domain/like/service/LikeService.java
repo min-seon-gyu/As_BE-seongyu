@@ -8,5 +8,5 @@ import java.util.List;
 public interface LikeService {
     Like addProductToLike(Long memberId, Long productId);
     List<Like> getLikeList(Long memberId);
-    LikeResponseDto removeProductFromLike(Long memberId, Long productId);
+    void removeProductFromLike(Long memberId, Long productId);
 }
