@@ -52,7 +52,7 @@ jobs:
         run : chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build -i
+        run: ./gradlew build
         env:
 #          USERNAME: ${{ github.actor }}
 #          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,5 +75,5 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Publish to GitHub Packages
-        run: ./gradlew publish
+        run: ./gradlew publish -i
 
