@@ -1,8 +1,8 @@
-package Auction_shop.auction.product.service;
+package Auction_shop.auction.domain.product.service;
 
-import Auction_shop.auction.product.dto.ProductDto;
-import Auction_shop.auction.product.dto.ProductListResponseDto;
-import Auction_shop.auction.product.dto.ProductResponseDto;
+import Auction_shop.auction.web.dto.product.ProductDto;
+import Auction_shop.auction.web.dto.product.ProductListResponseDto;
+import Auction_shop.auction.web.dto.product.ProductResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

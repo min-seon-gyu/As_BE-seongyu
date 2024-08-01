@@ -2,8 +2,8 @@ package Auction_shop.auction.domain.member.controller;
 
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
-import Auction_shop.auction.web.dto.MemberResponseDto;
-import Auction_shop.auction.web.dto.MemberUpdateDto;
+import Auction_shop.auction.web.dto.member.MemberResponseDto;
+import Auction_shop.auction.web.dto.member.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

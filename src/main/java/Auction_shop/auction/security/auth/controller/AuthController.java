@@ -1,8 +1,8 @@
 package Auction_shop.auction.security.auth.controller;
 
 import Auction_shop.auction.security.auth.service.AuthService;
-import Auction_shop.auction.web.dto.AuthRequestDto;
-import Auction_shop.auction.web.dto.AuthResponseDto;
+import Auction_shop.auction.web.dto.auth.AuthRequestDto;
+import Auction_shop.auction.web.dto.auth.AuthResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

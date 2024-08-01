@@ -1,6 +1,6 @@
-package Auction_shop.auction.product.repository;
+package Auction_shop.auction.domain.product.repository;
 
-import Auction_shop.auction.product.domain.Product;
+import Auction_shop.auction.domain.product.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

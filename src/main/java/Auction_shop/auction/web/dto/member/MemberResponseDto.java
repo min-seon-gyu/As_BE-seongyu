@@ -1,4 +1,4 @@
-package Auction_shop.auction.web.dto;
+package Auction_shop.auction.web.dto.member;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.member.Address;

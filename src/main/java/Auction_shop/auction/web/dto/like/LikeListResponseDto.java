@@ -1,4 +1,4 @@
-package Auction_shop.auction.product.dto;
+package Auction_shop.auction.web.dto.like;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductListResponseDto {
+public class LikeListResponseDto {
 
     private Long product_id;
     private String title;
