@@ -69,7 +69,7 @@ jobs:
         run : chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -i
 
       # .zip으로 압축
       # 현재 디렉토리의 파일과 하위 디렉토리를 압축
