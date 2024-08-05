@@ -1,19 +1,36 @@
-name: Integration and Deployment
+name: CI and CD
 
 on:
   pull_request_target: # develop 브랜치로 pull request 이벤트 발생 시 실행
     branches: [develop]
     types: [opened, synchronize, reopened]
 
+env:
+  CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  CLOUD_AWS_REGION_STATIC: ap-southeast-2
+  CLOUD_AWS_S3_BUCKET: auction-shop-image
+  SPRING_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  SPRING_JWT_ACCESSTOKEN_EXPIRATION_TIME: 60000
+  SPRING_JWT_REFRESHTOKEN_EXPIRATION_TIME: 86400000
+  SPRING_DATA_MONGODB_HOST: ${{ secrets.MONGODB_HOST }}
+  SPRING_DATA_MONGODB_PORT: ${{ secrets.MONGODB_PORT }}
+  SPRING_DATA_REDIS_HOST: ${{ secrets.REDIS_HOST }}
+  SPRING_DATA_REDIS_PORT: ${{ secrets.REDIS_PORT }}
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+  SPRING_JPA_HIBERNATE_DDL_AUTO: create
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+  SPRING_DATASOURCE_URL: ${{ secrets.MYSQL_URL }}
+  SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+  SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+  PROJECT_NAME: project_deploy
+
 jobs:
   build:
     runs-on: ubuntu-latest  # 실행 환경
-#    permissions:
-#      contents: read
-#      packages: write
 
-    # 작업 실행 단계
-    steps:
+    steps:  # 작업 실행 단계
+
       # PR 작성자가 repo에 대한 write 권한이 있는지 확인
       - name: Get User Permission
         id: checkAccess
@@ -53,27 +70,30 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build -i
-        env:
-#          USERNAME: ${{ github.actor }}
-#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          CLOUD_AWS_REGION_STATIC: ap-southeast-2
-          CLOUD_AWS_S3_BUCKET: auction-shop-image
-          SPRING_JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          SPRING_JWT_ACCESSTOKEN_EXPIRATION_TIME: 60000
-          SPRING_JWT_REFRESHTOKEN_EXPIRATION_TIME: 86400000
-          SPRING_DATA_MONGODB_HOST: ${{ secrets.MONGODB_HOST }}
-          SPRING_DATA_MONGODB_PORT: ${{ secrets.MONGODB_PORT }}
-          SPRING_DATA_REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          SPRING_DATA_REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
-          SPRING_JPA_HIBERNATE_DDL_AUTO: create
-          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-          SPRING_DATASOURCE_URL: ${{ secrets.MYSQL_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
 
-      - name: Publish to GitHub Packages
-        run: ./gradlew publish -i
+      # .zip으로 압축
+      # 현재 디렉토리의 파일과 하위 디렉토리를 압축
+      - name: Make Zip File
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+        shell: bash
 
+      # aws 인증
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: $CLOUD_AWS_CREDENTIALS_ACCESS_KEY
+          aws-secret-access-key: $CLOUD_AWS_CREDENTIALS_SECRET_KEY
+          aws-region: $CLOUD_AWS_REGION_STATIC
+
+      # Upload to S3 storage
+      - name: Upload to S3
+        run: aws s3 cp --region ap-southeast-2 ./$GITHUB_SHA.zip s3://$CLOUD_AWS_S3_BUCKET/$PROJECT_NAME/$GITHUB_SHA.zip
+
+      # AWS CodeDeploy 실행
+      - name: Code Deploy
+        run: |
+          aws deploy create-deployment \ 
+            --application-name ApplicationCodeDeploy \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ApplicationCodeDeployGroup \
+            --s3-location bucket=$CLOUD_AWS_S3_BUCKET,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
