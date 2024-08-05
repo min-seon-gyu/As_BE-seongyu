@@ -5,3 +5,10 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/applications
+
+# 현재 경로의 deploy.sh 파일 실행
+hooks:
+  AfterInstall:
+    - location: deploy.sh
+      timeout: 60
+      runas: root
