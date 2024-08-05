@@ -69,7 +69,7 @@ jobs:
         run : chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build -i
+        run: ./gradlew build
 
       # .zip으로 압축
       # 현재 디렉토리의 파일과 하위 디렉토리를 압축
@@ -83,7 +83,7 @@ jobs:
         with:
           aws-access-key-id: $CLOUD_AWS_CREDENTIALS_ACCESS_KEY
           aws-secret-access-key: $CLOUD_AWS_CREDENTIALS_SECRET_KEY
-          aws-region: $CLOUD_AWS_REGION_STATIC
+          aws-region: ap-southeast-2
 
       # Upload to S3 storage
       - name: Upload to S3
