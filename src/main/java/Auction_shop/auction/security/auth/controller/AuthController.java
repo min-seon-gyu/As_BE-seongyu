@@ -1,6 +1,7 @@
 package Auction_shop.auction.security.auth.controller;
 
 import Auction_shop.auction.security.auth.service.AuthService;
+import Auction_shop.auction.web.dto.ReissueDto;
 import Auction_shop.auction.web.dto.auth.AuthRequestDto;
 import Auction_shop.auction.web.dto.auth.AuthResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,8 +24,9 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<AuthResponseDto> refresh(HttpServletRequest request, HttpServletResponse response) {
-        AuthResponseDto collect = authService.refresh(request, response);
+    public ResponseEntity<AuthResponseDto> refresh(HttpServletResponse response,
+                                                   @RequestBody ReissueDto reissueDto) {
+        AuthResponseDto collect = authService.refresh(reissueDto, response);
         return ResponseEntity.ok(collect);
     }
 }

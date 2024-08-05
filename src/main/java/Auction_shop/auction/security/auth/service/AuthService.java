@@ -5,6 +5,7 @@ import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.refreshToken.RefreshToken;
 import Auction_shop.auction.domain.refreshToken.repository.RefreshTokenRepository;
 import Auction_shop.auction.security.jwt.JwtUtil;
+import Auction_shop.auction.web.dto.ReissueDto;
 import Auction_shop.auction.web.dto.auth.AuthRequestDto;
 import Auction_shop.auction.web.dto.auth.AuthResponseDto;
 import Auction_shop.auction.web.dto.member.MemberResponseDto;
@@ -63,21 +64,8 @@ public class AuthService {
                 .build();
     }
 
-    public AuthResponseDto refresh(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = null;
-        Cookie[] cookies = request.getCookies();
-
-        if(cookies == null){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-
-        for(Cookie cookie : cookies){
-            if(cookie.getName().equals("refresh")){
-                refreshToken = cookie.getValue();
-                break;
-            }
-        }
-
+    public AuthResponseDto refresh(ReissueDto reissueDto, HttpServletResponse response) {
+        String refreshToken = reissueDto.getRefreshToken();
         if(refreshToken == null){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
