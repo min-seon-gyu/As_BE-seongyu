@@ -1,0 +1,7 @@
+version: 0.0
+os: linux
+
+# 해당 경로로 S3에서 Zip파일을 받아옵니다.
+files:
+  - source: /
+    destination: /home/ec2-user/applications
