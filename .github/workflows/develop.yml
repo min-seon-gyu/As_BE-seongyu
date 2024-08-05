@@ -106,4 +106,5 @@ jobs:
             --application-name ApplicationCodeDeploy \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --deployment-group-name ApplicationCodeDeployGroup \
-            --s3-location bucket=$CLOUD_AWS_S3_BUCKET,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+            --s3-location bucket=$CLOUD_AWS_S3_BUCKET,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip \
+            --ignore-application-stop-failures
