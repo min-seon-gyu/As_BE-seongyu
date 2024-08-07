@@ -23,7 +23,7 @@ public class AuthController {
         return ResponseEntity.ok(collect);
     }
 
-    @GetMapping("/refresh")
+    @PostMapping("/refresh")
     public ResponseEntity<AuthResponseDto> refresh(HttpServletResponse response,
                                                    @RequestBody ReissueDto reissueDto) {
         AuthResponseDto collect = authService.refresh(reissueDto, response);
