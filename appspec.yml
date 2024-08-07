@@ -5,7 +5,7 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/applications
-
+file_exists_behavior: OVERWRITE
 # 현재 경로의 deploy.sh 파일 실행
 hooks:
   AfterInstall:
