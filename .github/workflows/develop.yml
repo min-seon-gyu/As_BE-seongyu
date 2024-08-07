@@ -78,6 +78,54 @@ jobs:
       - name : Grant Execution Permission
         run : chmod +x ./gradlew
 
+      - name: Create application.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "spring:" > src/main/resources/application.yml
+          echo "  datasource:" >> src/main/resources/application.yml
+          echo "    url: ${SPRING_DATASOURCE_URL}" >> src/main/resources/application.yml
+          echo "    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}" >> src/main/resources/application.yml
+          echo "    username: ${SPRING_DATASOURCE_USERNAME}" >> src/main/resources/application.yml
+          echo "    password: ${SPRING_DATASOURCE_PASSWORD}" >> src/main/resources/application.yml
+          echo "  jpa:" >> src/main/resources/application.yml
+          echo "    hibernate:" >> src/main/resources/application.yml
+          echo "      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}" >> src/main/resources/application.yml
+          echo "    properties:" >> src/main/resources/application.yml
+          echo "      hibernate:" >> src/main/resources/application.yml
+          echo "        format_sql: true" >> src/main/resources/application.yml
+          echo "        default_batch_fetch_size: 10" >> src/main/resources/application.yml
+          echo "        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}" >> src/main/resources/application.yml
+          echo "  data:" >> src/main/resources/application.yml
+          echo "    redis:" >> src/main/resources/application.yml
+          echo "      host: ${SPRING_DATA_REDIS_HOST}" >> src/main/resources/application.yml
+          echo "      port: ${SPRING_DATA_REDIS_PORT}" >> src/main/resources/application.yml
+          echo "    mongodb:" >> src/main/resources/application.yml
+          echo "      database: auction" >> src/main/resources/application.yml
+          echo "      host: ${SPRING_DATA_MONGODB_HOST}" >> src/main/resources/application.yml
+          echo "      port: ${SPRING_DATA_MONGODB_PORT}" >> src/main/resources/application.yml
+          echo "  thymeleaf:" >> src/main/resources/application.yml
+          echo "    prefix: classpath:/templates/" >> src/main/resources/application.yml
+          echo "    suffix: .html" >> src/main/resources/application.yml
+          echo "  jwt:" >> src/main/resources/application.yml
+          echo "    secret: ${SPRING_JWT_SECRET}" >> src/main/resources/application.yml
+          echo "    accessToken_expiration_time: ${SPRING_JWT_ACCESSTOKEN_EXPIRATION_TIME}" >> src/main/resources/application.yml
+          echo "    refreshToken_expiration_time: ${SPRING_JWT_REFRESHTOKEN_EXPIRATION_TIME}" >> src/main/resources/application.yml
+          echo "logging:" >> src/main/resources/application.yml
+          echo "  level:" >> src/main/resources/application.yml
+          echo "    org.hibernate.SQL: debug" >> src/main/resources/application.yml
+          echo "    org.hibernate.orm.jdbc.bind: trace" >> src/main/resources/application.yml
+          echo "cloud:" >> src/main/resources/application.yml
+          echo "  aws:" >> src/main/resources/application.yml
+          echo "    s3:" >> src/main/resources/application.yml
+          echo "      bucket: ${CLOUD_AWS_S3_BUCKET}" >> src/main/resources/application.yml
+          echo "    credentials:" >> src/main/resources/application.yml
+          echo "      access-key: ${CLOUD_AWS_CREDENTIALS_ACCESS_KEY}" >> src/main/resources/application.yml
+          echo "      secret-key: ${CLOUD_AWS_CREDENTIALS_SECRET_KEY}" >> src/main/resources/application.yml
+          echo "    region:" >> src/main/resources/application.yml
+          echo "      static: ${CLOUD_AWS_REGION_STATIC}" >> src/main/resources/application.yml
+          echo "  stack:" >> src/main/resources/application.yml
+          echo " auto: false" >> src/main/resources/application.yml     
+
       - name: Build with Gradle
         run: ./gradlew build
 
