@@ -29,6 +29,8 @@ public class Product{
     private String title;           // 판매글 제목
     @Column(nullable = false)
     private String product_type;    // 제품 분류
+    @Column(nullable = false)
+    private String conditions;
 
     @ElementCollection
     @Column(nullable = false)
@@ -59,11 +61,12 @@ public class Product{
     private List<Like> likes = new ArrayList<>();
 
     @Builder
-    public Product(Long product_id, Member member, String title, String product_type, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
+    public Product(Long product_id, Member member, String title, String conditions, String product_type, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
                    List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime,boolean isSold) {
         this.product_id = product_id;
         this.member = member;
         this.title = title;
+        this.conditions = conditions;
         this.product_type = product_type;
         this.tradeTypes = tradeTypes;
         this.tradeLocation = tradeLocation;
