@@ -20,6 +20,7 @@ public class ProductListResponseDto {
     private Set<String> tradeTypes;
     private String tradeLocation;
     private int initial_price;
+    private int current_price;
     private String imageUrl;
     private int likeCount;
 }
