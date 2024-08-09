@@ -89,10 +89,10 @@ public class ProductController {
         productValidator.validate(productDto, bindingResult);
         log.info("bindingResult={}", bindingResult);
 
-        if (bindingResult.hasErrors()) {
-            // 클라이언트 에러 400
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
-        }
+//        if (bindingResult.hasErrors()) {
+//            // 클라이언트 에러 400
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
+//        }
         try {
             ProductResponseDto productResponseDto = productService.updateProductById(productDto, product_id, images);
             if (productResponseDto == null) {
