@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -13,7 +14,7 @@ public class ProductResponseDto {
     private Long product_id;         // 제품ID
     private String title;           // 판매글 제목
     private String product_type;    // 제품 분류
-    private String trade;           // 거래 방식
+    private Set<String> tradeTypes;           // 거래 방식
     private String tradeLocation;   // 직거래 희망 장소
     private int likeCount;          // 좋아요 갯수
     private int initial_price;       // 시작 가격

@@ -9,7 +9,9 @@ import lombok.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -27,8 +29,10 @@ public class Product{
     private String title;           // 판매글 제목
     @Column(nullable = false)
     private String product_type;    // 제품 분류
+
+    @ElementCollection
     @Column(nullable = false)
-    private String trade;           // 거래 방식
+    private Set<String> tradeTypes = new HashSet<>();           // 거래 방식
     @Column(nullable = true)
     private String tradeLocation;   // 직거래 희망 거래 장소
     @Column(nullable = false)
@@ -55,13 +59,13 @@ public class Product{
     private List<Like> likes = new ArrayList<>();
 
     @Builder
-    public Product(Long product_id, Member member, String title, String product_type, String trade, String tradeLocation, int initial_price, int minimum_price,
+    public Product(Long product_id, Member member, String title, String product_type, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
                    List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime,boolean isSold) {
         this.product_id = product_id;
         this.member = member;
         this.title = title;
         this.product_type = product_type;
-        this.trade = trade;
+        this.tradeTypes = tradeTypes;
         this.tradeLocation = tradeLocation;
         this.initial_price = initial_price;
         this.imageList = imageList;
@@ -92,9 +96,10 @@ public class Product{
                 .collect(Collectors.toList());
     }
 
-    public void updateProduct(String title, String product_type, String details, String tradeLocation){
+    public void updateProduct(String title, String product_type, Set<String> tradeTypes,String details, String tradeLocation){
         this.title = title;
         this.product_type = product_type;
+        this.tradeTypes = tradeTypes;
         this.details = details;
         this.tradeLocation = tradeLocation;
     }
