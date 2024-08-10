@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,15 @@ public class LikeServiceImpl implements LikeService {
     public List<Like> getLikeList(Long memberId) {
         Member member = memberService.getById(memberId);
         return likeRepository.findByMember(member);
+    }
+
+    @Override
+    public List<Long> getLikeItems(Long memberId){
+        Member member = memberService.getById(memberId);
+        List<Like> likes = likeRepository.findByMember(member);
+        return likes.stream()
+                .map(like -> like.getProduct().getProduct_id()) // 제품 ID 추출
+                .collect(Collectors.toList());
     }
 
     @Override

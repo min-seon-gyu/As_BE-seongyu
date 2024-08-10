@@ -8,6 +8,7 @@ import java.util.List;
 public interface LikeService {
     Like addProductToLike(Long memberId, Long productId);
     List<Like> getLikeList(Long memberId);
+    List<Long> getLikeItems(Long memberId);
     void removeProductFromLike(Long memberId, Long productId);
     int getProductLikeCount(Long productId);
 }
