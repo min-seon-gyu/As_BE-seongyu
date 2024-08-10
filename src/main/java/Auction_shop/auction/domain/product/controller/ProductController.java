@@ -57,8 +57,8 @@ public class ProductController {
      * 상품 조회
      */
     @GetMapping()
-    public ResponseEntity<Object> getAllProduct(){
-        List<ProductListResponseDto> collect = productService.findAllProduct();
+    public ResponseEntity<Object> getAllProduct(@RequestParam Long memberId){
+        List<ProductListResponseDto> collect = productService.findAllProduct(memberId);
         if (collect == null){
             return ResponseEntity.noContent().build();
         }

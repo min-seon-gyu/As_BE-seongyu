@@ -23,4 +23,5 @@ public class ProductListResponseDto {
     private int current_price;
     private String imageUrl;
     private int likeCount;
+    private boolean isLiked;
 }

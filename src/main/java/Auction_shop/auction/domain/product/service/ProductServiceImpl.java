@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
+import Auction_shop.auction.domain.like.service.LikeService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.product.repository.ProductRepository;
@@ -26,6 +27,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final ImageService imageService;
     private final MemberService memberService;
+    private final LikeService likeService;
 
     @Override
     @Transactional
@@ -79,8 +81,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductListResponseDto> findAllProduct(){
+    public List<ProductListResponseDto> findAllProduct(Long memberId){
         List<Product> products = productRepository.findAll();
+
+        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
+
         List<ProductListResponseDto> collect = products.stream()
                 .map(product -> {
                     String imageUrl = null;
@@ -98,6 +103,7 @@ public class ProductServiceImpl implements ProductService{
                             .likeCount(product.getLikeCount())
                             .isSold(product.isSold())
                             .imageUrl(imageUrl)
+                            .isLiked(likedProductsIds.contains(product.getProduct_id()))
                             .build();
                     return dto;
                 })
