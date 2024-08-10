@@ -3,6 +3,7 @@ package Auction_shop.auction.domain.product;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.like.Like;
 import Auction_shop.auction.domain.member.Member;
+import Auction_shop.auction.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Product{
+public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long product_id;         // 제품ID

@@ -1,6 +1,6 @@
 package Auction_shop.auction.domain.like;
 
-import Auction_shop.auction.domain.BaseEntity;
+import Auction_shop.auction.util.BaseEntity;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.product.Product;
 import jakarta.persistence.*;
