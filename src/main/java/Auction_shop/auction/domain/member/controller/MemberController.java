@@ -24,11 +24,10 @@ public class MemberController {
         return ResponseEntity.ok(MemberResponseDto.create(member));
     }
 
-    @PatchMapping()
-    public ResponseEntity<MemberResponseDto> updateMember(@RequestHeader("Authorization") String authorization,
+    @PatchMapping("/{memberId}")
+    public ResponseEntity<MemberResponseDto> updateMember(@PathVariable("memberId") Long memberId,
                                                           @RequestPart(value = "member") MemberUpdateDto memberUpdateDto,
                                                           @RequestPart(value = "image", required = false) MultipartFile image){
-        Long memberId = jwtUtil.extractMemberId(authorization);
         Member member = memberService.updateMember(memberId, memberUpdateDto, image);
         return ResponseEntity.ok(MemberResponseDto.create(member));
     }
