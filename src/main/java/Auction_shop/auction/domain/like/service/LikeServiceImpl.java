@@ -70,6 +70,18 @@ public class LikeServiceImpl implements LikeService {
         }
     }
 
+    @Override
+    public boolean isLiked(Long memberId, Long productId) {
+        Member member = memberService.getById(memberId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException(productId+"에 해당하는 물품이 없습니다."));
+        Like like = likeRepository.findByMemberAndProduct(member, product);
+        if(like != null){
+            return true;
+        }
+        return false;
+    }
+
     public int getProductLikeCount(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException(productId+"에 해당하는 물품이 없습니다."));
