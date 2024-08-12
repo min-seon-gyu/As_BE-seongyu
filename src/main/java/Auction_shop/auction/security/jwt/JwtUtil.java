@@ -81,4 +81,20 @@ public class JwtUtil {
                 .signWith(secretKey)
                 .compact();
     }
+
+    public Long extractMemberId(String authorization) {
+        try {
+            String token = extractToken(authorization);
+            return getId(token);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("유효하지 않은 토큰: " + e.getMessage());
+        }
+    }
+
+    private String extractToken(String authorization) {
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            return authorization.replace("Bearer ", "").trim(); // 공백 제거
+        }
+        throw new IllegalArgumentException("헤더가 유효하지 않습니다.");
+    }
 }
