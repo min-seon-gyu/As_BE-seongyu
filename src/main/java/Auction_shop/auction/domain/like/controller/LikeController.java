@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.like.controller;
 
 import Auction_shop.auction.domain.like.Like;
 import Auction_shop.auction.domain.like.service.LikeService;
+import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.like.LikeListResponseDto;
 import Auction_shop.auction.web.dto.like.LikeMapper;
 import Auction_shop.auction.web.dto.like.LikeResponseDto;
@@ -19,16 +20,19 @@ public class LikeController {
 
     private final LikeService likeService;
     private final LikeMapper likeMapper;
+    private final JwtUtil jwtUtil;
 
-    @PostMapping("/{memberId}/{productId}")
-    public ResponseEntity<LikeResponseDto> addProductToLike(@PathVariable Long memberId, @PathVariable Long productId){
+    @PostMapping("/{productId}")
+    public ResponseEntity<LikeResponseDto> addProductToLike(@RequestHeader("Authorization") String authorization, @PathVariable Long productId){
+        Long memberId = jwtUtil.extractMemberId(authorization);
         Like like = likeService.addProductToLike(memberId, productId);
         LikeResponseDto collect = likeMapper.toResponseDto(like);
         return ResponseEntity.ok(collect);
     }
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity<List<LikeListResponseDto>> getLikeList(@PathVariable Long memberId){
+    @GetMapping()
+    public ResponseEntity<List<LikeListResponseDto>> getLikeList(@RequestHeader("Authorization") String authorization){
+        Long memberId = jwtUtil.extractMemberId(authorization);
         List<Like> likes = likeService.getLikeList(memberId);
 
         if (likes.isEmpty()){
@@ -41,8 +45,9 @@ public class LikeController {
         return ResponseEntity.ok(collect);
     }
 
-    @DeleteMapping("/{memberId}/{productId}")
-    public void removeProductFromLike(@PathVariable Long memberId, @PathVariable Long productId){
+    @DeleteMapping("/{productId}")
+    public void removeProductFromLike(@RequestHeader("Authorization") String authorization, @PathVariable Long productId){
+        Long memberId = jwtUtil.extractMemberId(authorization);
         likeService.removeProductFromLike(memberId, productId);
     }
 
