@@ -1,6 +1,6 @@
 package Auction_shop.auction.domain.member;
 
-import Auction_shop.auction.domain.BaseEntity;
+import Auction_shop.auction.util.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.inquriy.Inquiry;
 import Auction_shop.auction.domain.like.Like;

@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
+import Auction_shop.auction.domain.like.service.LikeService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.product.repository.ProductRepository;
@@ -26,6 +27,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final ImageService imageService;
     private final MemberService memberService;
+    private final LikeService likeService;
 
     @Override
     @Transactional
@@ -37,7 +39,9 @@ public class ProductServiceImpl implements ProductService{
                 .title(productDto.getTitle())
                 .member(member)
                 .product_type(productDto.getProduct_type())
-                .trade(productDto.getTrade())
+                .conditions(productDto.getConditions())
+                .categories(productDto.getCategories())
+                .tradeTypes(productDto.getTradeTypes())
                 .tradeLocation(productDto.getTradeLocation())
                 .initial_price(productDto.getInitial_price())
                 .startTime(productDto.getStartTime())
@@ -60,10 +64,13 @@ public class ProductServiceImpl implements ProductService{
         ProductResponseDto responseDto = ProductResponseDto.builder()
                 .product_id(savedProduct.getProduct_id())
                 .title(savedProduct.getTitle())
+                .conditions(savedProduct.getConditions())
                 .product_type(savedProduct.getProduct_type())
-                .trade(savedProduct.getTrade())
+                .categories(savedProduct.getCategories())
+                .tradeTypes(savedProduct.getTradeTypes())
                 .tradeLocation(productDto.getTradeLocation())
                 .initial_price(savedProduct.getInitial_price())
+                .current_price(savedProduct.getCurrent_price())
                 .minimum_price(savedProduct.getMinimum_price())
                 .startTime(savedProduct.getStartTime())
                 .likeCount(savedProduct.getLikeCount())
@@ -76,8 +83,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductListResponseDto> findAllProduct(){
+    public List<ProductListResponseDto> findAllProduct(Long memberId){
         List<Product> products = productRepository.findAll();
+
+        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
+
         List<ProductListResponseDto> collect = products.stream()
                 .map(product -> {
                     String imageUrl = null;
@@ -87,11 +97,16 @@ public class ProductServiceImpl implements ProductService{
                     ProductListResponseDto dto = ProductListResponseDto.builder()
                             .product_id(product.getProduct_id())
                             .title(product.getTitle())
+                            .conditions(product.getConditions())
                             .initial_price(product.getInitial_price())
+                            .categories(product.getCategories())
+                            .tradeTypes(product.getTradeTypes())
+                            .current_price(product.getCurrent_price())
                             .tradeLocation(product.getTradeLocation())
                             .likeCount(product.getLikeCount())
                             .isSold(product.isSold())
                             .imageUrl(imageUrl)
+                            .isLiked(likedProductsIds.contains(product.getProduct_id()))
                             .build();
                     return dto;
                 })
@@ -111,7 +126,11 @@ public class ProductServiceImpl implements ProductService{
                     ProductListResponseDto dto = ProductListResponseDto.builder()
                             .product_id(product.getProduct_id())
                             .title(product.getTitle())
+                            .conditions(product.getConditions())
+                            .categories(product.getCategories())
+                            .tradeTypes(product.getTradeTypes())
                             .initial_price(product.getInitial_price())
+                            .current_price(product.getCurrent_price())
                             .tradeLocation(product.getTradeLocation())
                             .likeCount(product.getLikeCount())
                             .isSold(product.isSold())
@@ -124,20 +143,28 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductResponseDto findProductById(Long product_id) {
+    public ProductResponseDto findProductById(Long memberId, Long product_id) {
         Optional<Product> product = productRepository.findById(product_id);
+        boolean isLiked = likeService.isLiked(memberId, product_id);
         if (product.isPresent()) {
             Product findProduct = product.get();
             ProductResponseDto responseDto = ProductResponseDto.builder()
                     .product_id(findProduct.getProduct_id())
                     .title(findProduct.getTitle())
                     .product_type(findProduct.getProduct_type())
-                    .trade(findProduct.getTrade())
+                    .conditions(findProduct.getConditions())
+                    .categories(findProduct.getCategories())
+                    .tradeTypes(findProduct.getTradeTypes())
                     .tradeLocation(findProduct.getTradeLocation())
                     .initial_price(findProduct.getInitial_price())
+                    .current_price(findProduct.getCurrent_price())
+                    .startTime(findProduct.getStartTime())
+                    .endTime(findProduct.getEndTime())
+                    .minimum_price(findProduct.getMinimum_price())
                     .details(findProduct.getDetails())
                     .likeCount(findProduct.getLikeCount())
                     .isSold(findProduct.isSold())
+                    .isLiked(isLiked)
                     .imageUrls(findProduct.getImageUrls())
                     .build();
 
@@ -163,13 +190,15 @@ public class ProductServiceImpl implements ProductService{
         List<Image> imageList = imageService.saveImages(images);
         product.getImageList().addAll(imageList);
 
-        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getDetails(), productDto.getTradeLocation());
+        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getCategories(), productDto.getTradeTypes(), productDto.getDetails(), productDto.getTradeLocation());
 
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .product_id(product_id)
                 .title(product.getTitle())
+                .conditions(product.getConditions())
                 .product_type(product.getProduct_type())
-                .trade(product.getTrade())
+                .categories(product.getCategories())
+                .tradeTypes(product.getTradeTypes())
                 .tradeLocation(product.getTradeLocation())
                 .initial_price(product.getInitial_price())
                 .likeCount(product.getLikeCount())
@@ -194,7 +223,8 @@ public class ProductServiceImpl implements ProductService{
                 .product_id(product_id)
                 .title(product.getTitle())
                 .product_type(product.getProduct_type())
-                .trade(product.getTrade())
+                .conditions(product.getConditions())
+                .tradeTypes(product.getTradeTypes())
                 .tradeLocation(product.getTradeLocation())
                 .initial_price(product.getInitial_price())
                 .details(product.getDetails())

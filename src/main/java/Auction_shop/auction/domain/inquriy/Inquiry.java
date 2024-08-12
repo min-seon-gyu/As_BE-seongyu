@@ -1,6 +1,6 @@
 package Auction_shop.auction.domain.inquriy;
 
-import Auction_shop.auction.domain.BaseEntity;
+import Auction_shop.auction.util.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.member.Member;
 import jakarta.persistence.*;

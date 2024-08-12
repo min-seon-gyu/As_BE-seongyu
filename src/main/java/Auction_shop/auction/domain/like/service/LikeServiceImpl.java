@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +48,15 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    public List<Long> getLikeItems(Long memberId){
+        Member member = memberService.getById(memberId);
+        List<Like> likes = likeRepository.findByMember(member);
+        return likes.stream()
+                .map(like -> like.getProduct().getProduct_id()) // 제품 ID 추출
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void removeProductFromLike(Long memberId, Long productId) {
         Member member = memberService.getById(memberId);
         Product product = productRepository.findById(productId)
@@ -58,6 +68,18 @@ public class LikeServiceImpl implements LikeService {
             product.removeLike(like);
             likeRepository.delete(like);
         }
+    }
+
+    @Override
+    public boolean isLiked(Long memberId, Long productId) {
+        Member member = memberService.getById(memberId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException(productId+"에 해당하는 물품이 없습니다."));
+        Like like = likeRepository.findByMemberAndProduct(member, product);
+        if(like != null){
+            return true;
+        }
+        return false;
     }
 
     public int getProductLikeCount(Long productId) {

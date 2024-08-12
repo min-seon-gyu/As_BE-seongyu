@@ -27,7 +27,7 @@ public class ProductValidator implements Validator {
         if (productDto.getProduct_type() == null) {
             errors.rejectValue("product_type","product_type.null","product_type is null!");
         }
-        if (productDto.getTrade() == null) {
+        if (productDto.getTradeTypes() == null) {
             errors.rejectValue("trade","trade.null","trade is null!");
         }
         if (productDto.getInitial_price() <= 0) {

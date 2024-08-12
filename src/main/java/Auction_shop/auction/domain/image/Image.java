@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.image;
 
+import Auction_shop.auction.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Image {
+public class Image extends BaseEntity {
 
     @Id
     @JoinColumn(name = "image_id")

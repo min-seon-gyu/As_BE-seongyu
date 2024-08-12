@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.product.controller;
 
+import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.product.ProductDto;
 import Auction_shop.auction.web.dto.product.ProductListResponseDto;
 import Auction_shop.auction.web.dto.product.ProductResponseDto;
@@ -21,18 +22,20 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
     private final ProductValidator productValidator;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public ProductController(ProductService productService, ProductValidator productValidator) {
+    public ProductController(ProductService productService, ProductValidator productValidator, JwtUtil jwtUtil) {
         this.productService = productService;
         this.productValidator = productValidator;
+        this.jwtUtil = jwtUtil;
     }
 
     /**
      * 상품 등록
      */
     @PostMapping("/registration")
-    public ResponseEntity<Object> createProduct(@RequestParam Long memberId,
+    public ResponseEntity<Object> createProduct(@RequestHeader("Authorization") String authorization,
             @RequestPart(value = "product") ProductDto productDto,
             @RequestPart(value = "images", required = false) final List<MultipartFile> images,
             BindingResult bindingResult) {
@@ -43,6 +46,7 @@ public class ProductController {
             // 클라이언트 에러 400
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
         }
+        Long memberId = jwtUtil.extractMemberId(authorization);
         try {
             ProductResponseDto productResponseDto = productService.save(productDto, memberId, images);
             return ResponseEntity.status(HttpStatus.OK).body(productResponseDto);
@@ -57,8 +61,9 @@ public class ProductController {
      * 상품 조회
      */
     @GetMapping()
-    public ResponseEntity<Object> getAllProduct(){
-        List<ProductListResponseDto> collect = productService.findAllProduct();
+    public ResponseEntity<Object> getAllProduct(@RequestHeader("Authorization") String authorization){
+        Long memberId = jwtUtil.extractMemberId(authorization);
+        List<ProductListResponseDto> collect = productService.findAllProduct(memberId);
         if (collect == null){
             return ResponseEntity.noContent().build();
         }
@@ -70,8 +75,9 @@ public class ProductController {
      * 상품 상세 조회
      */
     @GetMapping("/search/{product_id}")
-    public ResponseEntity<Object> getProductById(@PathVariable Long product_id) {
-        ProductResponseDto productResponseDto = productService.findProductById(product_id);
+    public ResponseEntity<Object> getProductById(@RequestHeader("Authorization") String authorization, @PathVariable Long product_id) {
+        Long memberId = jwtUtil.extractMemberId(authorization);
+        ProductResponseDto productResponseDto = productService.findProductById(memberId, product_id);
         if (productResponseDto == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error - Product not found, product_id doesn't exist in Database :(");
         } else {
@@ -89,10 +95,10 @@ public class ProductController {
         productValidator.validate(productDto, bindingResult);
         log.info("bindingResult={}", bindingResult);
 
-        if (bindingResult.hasErrors()) {
-            // 클라이언트 에러 400
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
-        }
+//        if (bindingResult.hasErrors()) {
+//            // 클라이언트 에러 400
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
+//        }
         try {
             ProductResponseDto productResponseDto = productService.updateProductById(productDto, product_id, images);
             if (productResponseDto == null) {
