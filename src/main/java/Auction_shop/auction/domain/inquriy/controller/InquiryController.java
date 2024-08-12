@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.inquriy.controller;
 
 import Auction_shop.auction.domain.inquriy.Inquiry;
 import Auction_shop.auction.domain.inquriy.service.InquiryService;
+import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.inquiry.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,15 @@ public class InquiryController {
 
     private final InquiryService inquiryService;
     private final InquiryMapper inquiryMapper;
+    private final JwtUtil jwtUtil;
 
     //등록
     @PostMapping
     public ResponseEntity<InquiryResponseDto> createInquiry(
-            @RequestParam Long memberId,
+            @RequestHeader("Authorization") String authorization,
             @RequestPart("inquiry") final InquiryCreateDto inquiryDto,
             @RequestPart(value = "images", required = false) final List<MultipartFile> images){
+        Long memberId = jwtUtil.extractMemberId(authorization);
         Inquiry inquiry = inquiryService.createInquiry(inquiryDto, memberId, images);
         InquiryResponseDto collect = inquiryMapper.toResponseDto(inquiry);
         return ResponseEntity.status(HttpStatus.CREATED).body(collect);
@@ -48,7 +51,8 @@ public class InquiryController {
 
     //멤버 문의 조회
     @GetMapping("/member")
-    public ResponseEntity<List<InquiryListResponseDto>> getAllByMemberId(@RequestParam Long memberId){
+    public ResponseEntity<List<InquiryListResponseDto>> getAllByMemberId(@RequestHeader("Authorization") String authorization){
+        Long memberId = jwtUtil.extractMemberId(authorization);
         List<Inquiry> inquiries = inquiryService.getAllByMemberId(memberId);
         if (inquiries.isEmpty()) {
             return ResponseEntity.noContent().build();
