@@ -15,6 +15,7 @@ public class ProductResponseDto {
     private String title;           // 판매글 제목
     private String product_type;    // 제품 분류
     private String conditions;       // 제품 상태
+    private Set<String> categories;         // 카테고리
     private Set<String> tradeTypes;           // 거래 방식
     private String tradeLocation;   // 직거래 희망 장소
     private int likeCount;          // 좋아요 갯수

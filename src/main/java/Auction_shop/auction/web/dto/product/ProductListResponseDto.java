@@ -17,6 +17,7 @@ public class ProductListResponseDto {
     private String title;
     private boolean isSold;
     private String conditions;
+    private Set<String> categories;
     private Set<String> tradeTypes;
     private String tradeLocation;
     private int initial_price;

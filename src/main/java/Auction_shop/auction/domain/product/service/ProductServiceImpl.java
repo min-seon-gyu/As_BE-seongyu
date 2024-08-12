@@ -40,6 +40,7 @@ public class ProductServiceImpl implements ProductService{
                 .member(member)
                 .product_type(productDto.getProduct_type())
                 .conditions(productDto.getConditions())
+                .categories(productDto.getCategories())
                 .tradeTypes(productDto.getTradeTypes())
                 .tradeLocation(productDto.getTradeLocation())
                 .initial_price(productDto.getInitial_price())
@@ -65,6 +66,7 @@ public class ProductServiceImpl implements ProductService{
                 .title(savedProduct.getTitle())
                 .conditions(savedProduct.getConditions())
                 .product_type(savedProduct.getProduct_type())
+                .categories(savedProduct.getCategories())
                 .tradeTypes(savedProduct.getTradeTypes())
                 .tradeLocation(productDto.getTradeLocation())
                 .initial_price(savedProduct.getInitial_price())
@@ -97,6 +99,7 @@ public class ProductServiceImpl implements ProductService{
                             .title(product.getTitle())
                             .conditions(product.getConditions())
                             .initial_price(product.getInitial_price())
+                            .categories(product.getCategories())
                             .tradeTypes(product.getTradeTypes())
                             .current_price(product.getCurrent_price())
                             .tradeLocation(product.getTradeLocation())
@@ -124,6 +127,7 @@ public class ProductServiceImpl implements ProductService{
                             .product_id(product.getProduct_id())
                             .title(product.getTitle())
                             .conditions(product.getConditions())
+                            .categories(product.getCategories())
                             .tradeTypes(product.getTradeTypes())
                             .initial_price(product.getInitial_price())
                             .current_price(product.getCurrent_price())
@@ -149,6 +153,7 @@ public class ProductServiceImpl implements ProductService{
                     .title(findProduct.getTitle())
                     .product_type(findProduct.getProduct_type())
                     .conditions(findProduct.getConditions())
+                    .categories(findProduct.getCategories())
                     .tradeTypes(findProduct.getTradeTypes())
                     .tradeLocation(findProduct.getTradeLocation())
                     .initial_price(findProduct.getInitial_price())
@@ -185,13 +190,14 @@ public class ProductServiceImpl implements ProductService{
         List<Image> imageList = imageService.saveImages(images);
         product.getImageList().addAll(imageList);
 
-        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getTradeTypes(), productDto.getDetails(), productDto.getTradeLocation());
+        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getCategories(), productDto.getTradeTypes(), productDto.getDetails(), productDto.getTradeLocation());
 
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .product_id(product_id)
                 .title(product.getTitle())
                 .conditions(product.getConditions())
                 .product_type(product.getProduct_type())
+                .categories(product.getCategories())
                 .tradeTypes(product.getTradeTypes())
                 .tradeLocation(product.getTradeLocation())
                 .initial_price(product.getInitial_price())

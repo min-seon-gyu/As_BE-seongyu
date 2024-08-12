@@ -10,6 +10,7 @@ public class ProductDto {
         private String title;           // 판매글 제목
         private String product_type;    // 제품 분류
         private String conditions;
+        private Set<String> categories;
         private Set<String> tradeTypes;           // 거래 방식
         private String tradeLocation;   // 직거래 희망 장소
         private int initial_price;       // 시작 가격
