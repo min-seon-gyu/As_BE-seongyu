@@ -35,6 +35,8 @@ public class Inquiry extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String content;
 
+    private String answer;
+
     private boolean status;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
@@ -60,5 +62,10 @@ public class Inquiry extends BaseEntity {
     public void updateInquiry(String title, String content){
         this.title = title;
         this.content = content;
+    }
+
+    public void addAnswer(String answer){
+        this.answer = answer;
+        this.status = true;
     }
 }

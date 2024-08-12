@@ -15,5 +15,6 @@ public class InquiryListResponseDto {
     private String title;
     private String content;
     private String imageUrl;
+    private String answer;
     private boolean status;
 }
