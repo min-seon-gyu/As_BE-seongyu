@@ -139,8 +139,9 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductResponseDto findProductById(Long product_id) {
+    public ProductResponseDto findProductById(Long memberId, Long product_id) {
         Optional<Product> product = productRepository.findById(product_id);
+        boolean isLiked = likeService.isLiked(memberId, product_id);
         if (product.isPresent()) {
             Product findProduct = product.get();
             ProductResponseDto responseDto = ProductResponseDto.builder()
@@ -158,6 +159,7 @@ public class ProductServiceImpl implements ProductService{
                     .details(findProduct.getDetails())
                     .likeCount(findProduct.getLikeCount())
                     .isSold(findProduct.isSold())
+                    .isLiked(isLiked)
                     .imageUrls(findProduct.getImageUrls())
                     .build();
 

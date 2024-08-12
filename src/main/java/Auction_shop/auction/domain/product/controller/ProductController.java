@@ -70,8 +70,8 @@ public class ProductController {
      * 상품 상세 조회
      */
     @GetMapping("/search/{product_id}")
-    public ResponseEntity<Object> getProductById(@PathVariable Long product_id) {
-        ProductResponseDto productResponseDto = productService.findProductById(product_id);
+    public ResponseEntity<Object> getProductById(@RequestParam Long memberId, @PathVariable Long product_id) {
+        ProductResponseDto productResponseDto = productService.findProductById(memberId, product_id);
         if (productResponseDto == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error - Product not found, product_id doesn't exist in Database :(");
         } else {

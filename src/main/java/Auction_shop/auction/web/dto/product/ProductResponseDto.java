@@ -22,6 +22,7 @@ public class ProductResponseDto {
     private int minimum_price;      // 최저 가격
     private int current_price;      // 현재 가격
     private boolean isSold;         // 판매 여부
+    private boolean isLiked;        // 좋아요 여부
 
     private LocalDateTime startTime; // 경매 시작 시간
     private LocalDateTime endTime;   // 경매 종료 시간
