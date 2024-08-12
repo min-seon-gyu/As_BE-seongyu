@@ -23,7 +23,7 @@ public class HistoryController {
     private final ProductService productService;
 
     //판매 내역 조회
-    @GetMapping("/sell/{memberId}")
+    @GetMapping("/sell")
     public ResponseEntity<List<ProductListResponseDto>> getSellList(@RequestHeader("Authorization") String authorization
     ){
         Long memberId = jwtUtil.extractMemberId(authorization);
