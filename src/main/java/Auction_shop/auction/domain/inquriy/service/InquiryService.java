@@ -27,7 +27,6 @@ public class InquiryService {
     private final InquiryMapper inquiryMapper;
 
     //문의 등록
-    //User 관련 주석처리
     @Transactional
     public Inquiry createInquiry(InquiryCreateDto inquiryDto, Long memberId, List<MultipartFile> images){
         Member member = memberService.getById(memberId);
@@ -38,6 +37,14 @@ public class InquiryService {
         List<Image> imageList = imageService.saveImages(images);
         inquiry.setImageList(imageList);
 
+        return inquiryRepository.save(inquiry);
+    }
+
+    //어드민 전용 답변 등록
+    @Transactional
+    public Inquiry addAnswer(Long inquiryId, String answer){
+        Inquiry inquiry = getById(inquiryId);
+        inquiry.addAnswer(answer);
         return inquiryRepository.save(inquiry);
     }
 
