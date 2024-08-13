@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -14,7 +16,7 @@ public class InquiryListResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String imageUrl;
+    private List<String> imageUrl;
     private String answer;
     private boolean status;
 }

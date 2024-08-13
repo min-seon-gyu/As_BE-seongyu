@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,6 +91,7 @@ public class ProductServiceImpl implements ProductService{
         List<Long> likedProductsIds = likeService.getLikeItems(memberId);
 
         List<ProductListResponseDto> collect = products.stream()
+                .sorted(Comparator.comparing(Product::getProduct_id).reversed())
                 .map(product -> {
                     String imageUrl = null;
                     if(!product.getImageList().isEmpty()){
