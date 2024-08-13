@@ -5,6 +5,8 @@ import Auction_shop.auction.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class InquiryMapperImpl implements InquiryMapper{
@@ -24,10 +26,7 @@ public class InquiryMapperImpl implements InquiryMapper{
     @Override
     public InquiryListResponseDto toListResponseDto(Inquiry inquiry){
 
-        String imageUrl = null;
-        if(!inquiry.getImageList().isEmpty()){
-            imageUrl = inquiry.getImageUrls().get(0);
-        }
+        List<String> imageUrl = inquiry.getImageUrls();
 
         InquiryListResponseDto responseDto = InquiryListResponseDto.builder()
                 .id(inquiry.getId())
