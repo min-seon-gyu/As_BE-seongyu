@@ -9,6 +9,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.LinkedHashMap;
+
 @Component
 public class JwtUtil {
 
@@ -31,7 +33,11 @@ public class JwtUtil {
     }
 
     public Address getAddress(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("address", Address.class);
+        Object addressClaim = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("address");
+        if (addressClaim instanceof LinkedHashMap) {
+            return convertMapToAddress((LinkedHashMap<String, Object>) addressClaim);
+        }
+        return null;
     }
 
     public String getPhone(String token) {
@@ -89,6 +95,16 @@ public class JwtUtil {
         } catch (Exception e) {
             throw new IllegalArgumentException("유효하지 않은 토큰: " + e.getMessage());
         }
+    }
+
+    private Address convertMapToAddress(LinkedHashMap<String, Object> map) {
+        String address = (String) map.get("address");
+        String detailAddress = (String) map.get("detailAddress");
+
+        return Address.builder()
+                .address(address)
+                .detailAddress(detailAddress)
+                .build();
     }
 
     private String extractToken(String authorization) {
