@@ -23,6 +23,7 @@ public class ProductListResponseDto {
     private int initial_price;
     private int current_price;
     private String imageUrl;
+    private String createdBy;
     private int likeCount;
     private boolean isLiked;
 }
