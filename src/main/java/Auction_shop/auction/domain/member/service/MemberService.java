@@ -4,6 +4,8 @@ import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
+import Auction_shop.auction.domain.refreshToken.repository.RefreshTokenRepository;
+import Auction_shop.auction.web.dto.member.MemberResponseDto;
 import Auction_shop.auction.web.dto.member.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final ImageService imageService;
 
     @Transactional
@@ -63,6 +66,31 @@ public class MemberService {
 
         member.update(memberUpdateDto.getName(), memberUpdateDto.getPhone(), memberUpdateDto.getAddress(), memberUpdateDto.getDetailAddress());
         return member;
+    }
+
+    public MemberResponseDto getMemberByRefreshToken(String refreshToken){
+
+        String uuid = refreshTokenRepository.getUsernameByRefreshToken(refreshToken);
+        if (uuid == null) {
+            return null;
+        }
+        Optional<Member> findMember = memberRepository.findByUuid(uuid);
+        if (findMember.isEmpty()) {
+            return null;
+        }
+        Member member = findMember.get();
+
+        MemberResponseDto memberResponseDto = MemberResponseDto.builder()
+                .id(member.getId())
+                .username(member.getUuid())
+                .name(member.getName())
+                .address(member.getAddress())
+                .phone(member.getPhone())
+                .point(member.getPoint())
+                .role(member.getRole())
+                .build();
+
+        return memberResponseDto;
     }
 
     @Transactional

@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberSecurity {
     private String username;
+    private String name;
     private String role;
 }

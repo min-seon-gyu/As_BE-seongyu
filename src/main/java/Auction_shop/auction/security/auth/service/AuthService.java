@@ -86,9 +86,13 @@ public class AuthService {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        refreshTokenRepository.delete(refreshToken);
+        MemberResponseDto memberResponseDto = memberService.getMemberByRefreshToken(refreshToken);
+        if (memberResponseDto == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        }
 
-        MemberResponseDto memberResponseDto = jwtUtil.getMemberResponseDto(refreshToken);
+        refreshTokenRepository.delete(refreshToken);
 
         String accessToken = jwtUtil.createJwt("access", memberResponseDto, accessTokenExpiredMs);
         refreshToken = jwtUtil.createJwt("refresh", memberResponseDto, refreshTokenExpiredMs);

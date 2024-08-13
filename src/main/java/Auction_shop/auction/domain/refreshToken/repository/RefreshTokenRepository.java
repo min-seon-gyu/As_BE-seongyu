@@ -28,4 +28,9 @@ public class RefreshTokenRepository {
     public boolean exist(String refreshToken){
         return redisTemplate.hasKey(refreshToken);
     }
+
+    public String getUsernameByRefreshToken(String refreshToken) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        return valueOperations.get(refreshToken);
+    }
 }
