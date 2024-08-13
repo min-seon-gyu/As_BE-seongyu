@@ -19,6 +19,7 @@ public class InquiryMapperImpl implements InquiryMapper{
                 .content(inquiry.getContent())
                 .status(inquiry.isStatus())
                 .imageUrls(inquiry.getImageUrls())
+                .answer(inquiry.isStatus() ? inquiry.getAnswer() : null)
                 .build();
         return responseDto;
     }
@@ -34,6 +35,7 @@ public class InquiryMapperImpl implements InquiryMapper{
                 .content(inquiry.getContent())
                 .imageUrl(imageUrl)
                 .status(inquiry.isStatus())
+                .answer(inquiry.isStatus() ? inquiry.getAnswer() : null)
                 .build();
         return responseDto;
     }

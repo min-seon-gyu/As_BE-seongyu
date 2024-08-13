@@ -34,6 +34,14 @@ public class InquiryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(collect);
     }
 
+    //답변 등록
+    @PostMapping("/admin/{inquiryId}")
+    public ResponseEntity<InquiryResponseDto> addAnswer(@PathVariable Long inquiryId, String answer){
+        Inquiry inquiry = inquiryService.addAnswer(inquiryId, answer);
+        InquiryResponseDto collect = inquiryMapper.toResponseDto(inquiry);
+        return ResponseEntity.status(HttpStatus.CREATED).body(collect);
+    }
+
     //전체 조회(어드민)
     @GetMapping()
     public ResponseEntity<List<InquiryListResponseDto>> getAllInquiry(){
