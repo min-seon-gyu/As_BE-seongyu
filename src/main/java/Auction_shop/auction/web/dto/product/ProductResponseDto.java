@@ -25,12 +25,17 @@ public class ProductResponseDto {
     private boolean isSold;         // 판매 여부
     private boolean isLiked;        // 좋아요 여부
     private String createdBy;       // 등록자 닉네임
+    private boolean isOwner;
 
     private LocalDateTime startTime; // 경매 시작 시간
     private LocalDateTime endTime;   // 경매 종료 시간
 
     private String details;         // 설명
     private List<String> imageUrls;     //이미지 url
+
+    public void setIsOwner(boolean isOwner){
+        this.isOwner = isOwner;
+    }
 
 
 }

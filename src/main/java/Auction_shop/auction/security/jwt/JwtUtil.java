@@ -88,6 +88,15 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String extractMemberName(String authorization) {
+        try {
+            String token = extractToken(authorization);
+            return getName(token);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("유효하지 않은 토큰: " + e.getMessage());
+        }
+    }
+
     public Long extractMemberId(String authorization) {
         try {
             String token = extractToken(authorization);

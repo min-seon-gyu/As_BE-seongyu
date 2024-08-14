@@ -81,6 +81,9 @@ public class ProductController {
         if (productResponseDto == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error - Product not found, product_id doesn't exist in Database :(");
         } else {
+            String name = jwtUtil.extractMemberName(authorization);
+            boolean isOwner = productResponseDto.getCreatedBy().equals(name);
+            productResponseDto.setIsOwner(isOwner);
             return ResponseEntity.status(HttpStatus.OK).body(productResponseDto);
         }
     }
