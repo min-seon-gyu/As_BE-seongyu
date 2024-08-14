@@ -50,6 +50,11 @@ public class MemberService {
 
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateDto memberUpdateDto, MultipartFile image){
+
+        if (memberRepository.existsByName(memberUpdateDto.getName())) {
+            throw new RuntimeException("방금 누군가가 해당 닉네임으로 닉네임 변경을 했습니다.");
+        }
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 회원이 없습니다."));
         System.out.println("member.getProfileImage() = " + member.getProfileImage());
@@ -93,8 +98,13 @@ public class MemberService {
         return memberResponseDto;
     }
 
+    public boolean nameCheck(String name){
+        return memberRepository.existsByName(name);
+    }
+
     @Transactional
     public void deleteMember(Long memberId) {
         memberRepository.deleteById(memberId);
     }
+
 }

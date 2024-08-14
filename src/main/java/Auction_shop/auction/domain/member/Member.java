@@ -29,7 +29,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String uuid;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 10, unique = true)
     private String name;
 
     @Column(nullable = false)
@@ -63,6 +63,9 @@ public class Member extends BaseEntity {
 
     @Embedded
     private Address address;
+
+    @Version
+    private Long version;
 
     public void update(String name, String phone, String address, String detailAddress) {
         this.name = name;
