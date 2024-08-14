@@ -41,9 +41,11 @@ public class MemberController {
 
     @GetMapping("/name")
     public ResponseEntity<Boolean> nameCheck(@RequestParam String name){
+
         if (name == null || name.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(false);
         }
+
         boolean isDuplicate = memberService.nameCheck(name);
         return ResponseEntity.ok(!isDuplicate);
     }
