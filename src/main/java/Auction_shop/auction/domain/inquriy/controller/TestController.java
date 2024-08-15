@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
 
+    
     @GetMapping
     public String test(){
         return "<h1>testPage<h1>";
