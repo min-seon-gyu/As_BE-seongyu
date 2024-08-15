@@ -36,7 +36,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
-                        configuration.setAllowedOrigins(List.of("*"));
+                        configuration.setAllowedOrigins(List.of("https://heybid.shop"));
                         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                         configuration.setAllowedHeaders(List.of("*"));
                         configuration.setAllowCredentials(true);
