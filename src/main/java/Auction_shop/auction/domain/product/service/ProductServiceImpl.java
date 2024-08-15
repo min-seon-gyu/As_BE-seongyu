@@ -121,6 +121,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public List<ProductListResponseDto> findAllByMemberId(Long memberId){
         List<Product> products = productRepository.findAllByMemberId(memberId);
+        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
         List<ProductListResponseDto> collect = products.stream()
                 .map(product -> {
                     String imageUrl = null;
@@ -140,6 +141,7 @@ public class ProductServiceImpl implements ProductService{
                             .likeCount(product.getLikeCount())
                             .isSold(product.isSold())
                             .imageUrl(imageUrl)
+                            .isLiked(likedProductsIds.contains(product.getProduct_id()))
                             .build();
                     return dto;
                 })
