@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
     
-    @GetMapping("/")
+    @GetMapping("/test")
     public String test(){
-        return "<h1>testPage</h1>";
+        return "index";
     }
 }
