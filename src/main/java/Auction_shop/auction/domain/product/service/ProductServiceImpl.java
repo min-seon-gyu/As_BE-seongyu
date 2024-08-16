@@ -11,15 +11,16 @@ import Auction_shop.auction.web.dto.product.ProductDto;
 import Auction_shop.auction.web.dto.product.ProductListResponseDto;
 import Auction_shop.auction.web.dto.product.ProductResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +30,30 @@ public class ProductServiceImpl implements ProductService{
     private final ImageService imageService;
     private final MemberService memberService;
     private final LikeService likeService;
+
+    private final Random random = new Random();
+
+    @Transactional
+    public void createDummyProducts(int count) {
+        for (int i = 0; i < count; i++) {
+            Product product = Product.builder()
+                    .title("Product " + (i + 1))
+                    .conditions("New")
+                    .categories(createRandomCategories())
+                    .tradeTypes(createRandomTradeTypes())
+                    .tradeLocation("Location " + random.nextInt(100))
+                    .initial_price(random.nextInt(1000) + 100) // 최소 100
+                    .minimum_price(random.nextInt(500) + 50) // 최소 50
+                    .startTime(LocalDateTime.now().minusDays(random.nextInt(10)))
+                    .endTime(LocalDateTime.now().plusDays(random.nextInt(10)))
+                    .updateTime(LocalDateTime.now())
+                    .isSold(false)
+                    .details("This is a description for product " + (i + 1))
+                    .build();
+
+            productRepository.save(product);
+        }
+    }
 
     @Override
     @Transactional
@@ -259,23 +284,44 @@ public class ProductServiceImpl implements ProductService{
         return isFound;
     }
 
+    //더미 10,000개로 확인 결과 성능에 영향은 없지만 추후 redis
     @Override
-    @Scheduled(fixedRate = 30000)
-    @Transactional
-    public void updateProductPrices(){
+    @Scheduled(fixedRate = 60000)
+    public void updateProductPrices() {
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Product> items = productRepository.findActiveProduct(currentTime);
-        for (Product product : items){
-            if (product.getUpdateTime().plusSeconds(10).isBefore(currentTime)) {
-                int newPrice = product.getCurrent_price() - (product.getInitial_price() / (int) product.getTotalHours());
-                if (newPrice < product.getMinimum_price()) {
-                    newPrice = product.getMinimum_price();
+        int pageSize = 2000;
+        int pageNumber = 0;
+
+        Page<Product> page;
+        do {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            page = productRepository.findActiveProduct(currentTime, pageable);
+
+            List<Product> updatedProducts = new ArrayList<>();
+            for (Product product : page.getContent()) {
+                if (currentTime.isAfter(product.getUpdateTime().plusHours(1))) {
+                    int newPrice = product.getCurrent_price() - (product.getInitial_price() / (int) product.getTotalHours());
+                    if (newPrice < product.getMinimum_price()) {
+                        newPrice = product.getMinimum_price();
+                    }
+                    product.updateCurrentPrice(newPrice);
+                    product.updateTime(currentTime);
+                    updatedProducts.add(product);
                 }
-                product.updateCurrentPrice(newPrice);
-                product.updateTime(currentTime);
             }
+            saveUpdatedProducts(updatedProducts);
+            pageNumber++;
+        } while (page.hasNext());
+        System.out.println("수행 완료");
+    }
+
+    //성능 최적화를 위해 트랜잭션을 db 수정이 있을 때만 적용
+    //범위가 너무 넓으면 락이 오래 유지되어 성능 저하
+    @Transactional
+    public void saveUpdatedProducts(List<Product> updatedProducts) {
+        if (!updatedProducts.isEmpty()) {
+            productRepository.saveAll(updatedProducts);
         }
-        productRepository.saveAll(items);
     }
 
     private void deleteExistingImages(Product product, List<String> urlsToDelete) {
@@ -292,5 +338,22 @@ public class ProductServiceImpl implements ProductService{
                 }
             }
         }
+    }
+
+    private Set<String> createRandomCategories() {
+        Set<String> categories = new HashSet<>();
+        categories.add("Electronics");
+        categories.add("Fashion");
+        categories.add("Home");
+        categories.add("Toys");
+        categories.add("Books");
+        return categories;
+    }
+
+    private Set<String> createRandomTradeTypes() {
+        Set<String> tradeTypes = new HashSet<>();
+        tradeTypes.add("Sell");
+        tradeTypes.add("Trade");
+        return tradeTypes;
     }
 }
