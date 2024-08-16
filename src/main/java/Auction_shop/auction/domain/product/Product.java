@@ -29,8 +29,6 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String title;           // 판매글 제목
     @Column(nullable = false)
-    private String product_type;    // 제품 분류
-    @Column(nullable = false)
     private String conditions;
 
     @ElementCollection
@@ -66,13 +64,12 @@ public class Product extends BaseEntity {
     private List<Like> likes = new ArrayList<>();
 
     @Builder
-    public Product(Long product_id, Member member, String title, String conditions, String product_type, Set<String> categories, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
+    public Product(Long product_id, Member member, String title, String conditions, Set<String> categories, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
                    List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime,boolean isSold) {
         this.product_id = product_id;
         this.member = member;
         this.title = title;
         this.conditions = conditions;
-        this.product_type = product_type;
         this.categories = categories;
         this.tradeTypes = tradeTypes;
         this.tradeLocation = tradeLocation;
@@ -105,9 +102,8 @@ public class Product extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    public void updateProduct(String title, String product_type, Set<String> categories,Set<String> tradeTypes,String details, String tradeLocation){
+    public void updateProduct(String title, Set<String> categories,Set<String> tradeTypes,String details, String tradeLocation){
         this.title = title;
-        this.product_type = product_type;
         this.categories = categories;
         this.tradeTypes = tradeTypes;
         this.details = details;

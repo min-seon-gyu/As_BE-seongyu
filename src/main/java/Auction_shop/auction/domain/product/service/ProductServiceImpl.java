@@ -39,7 +39,6 @@ public class ProductServiceImpl implements ProductService{
         Product product = Product.builder()
                 .title(productDto.getTitle())
                 .member(member)
-                .product_type(productDto.getProduct_type())
                 .conditions(productDto.getConditions())
                 .categories(productDto.getCategories())
                 .tradeTypes(productDto.getTradeTypes())
@@ -66,7 +65,6 @@ public class ProductServiceImpl implements ProductService{
                 .product_id(savedProduct.getProduct_id())
                 .title(savedProduct.getTitle())
                 .conditions(savedProduct.getConditions())
-                .product_type(savedProduct.getProduct_type())
                 .categories(savedProduct.getCategories())
                 .tradeTypes(savedProduct.getTradeTypes())
                 .tradeLocation(productDto.getTradeLocation())
@@ -158,7 +156,6 @@ public class ProductServiceImpl implements ProductService{
             ProductResponseDto responseDto = ProductResponseDto.builder()
                     .product_id(findProduct.getProduct_id())
                     .title(findProduct.getTitle())
-                    .product_type(findProduct.getProduct_type())
                     .conditions(findProduct.getConditions())
                     .categories(findProduct.getCategories())
                     .tradeTypes(findProduct.getTradeTypes())
@@ -188,23 +185,25 @@ public class ProductServiceImpl implements ProductService{
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
-        if (product.getImageUrls() != null){
-            for (Image image : product.getImageList()){
-                imageService.deleteImage(image.getStoredName());
-            }
-            product.getImageList().clear();
-        }
+        List<String> existingImageUrls = product.getImageUrls();
+
+        List<String> urlsToRetain = productDto.getImageUrlsToKeep();
+
+        List<String> urlsToDelete = existingImageUrls.stream()
+                .filter(url -> !urlsToRetain.contains(url))
+                .collect(Collectors.toList());
+
+        deleteExistingImages(product, urlsToDelete);
 
         List<Image> imageList = imageService.saveImages(images);
         product.getImageList().addAll(imageList);
 
-        product.updateProduct(productDto.getTitle(), productDto.getProduct_type(), productDto.getCategories(), productDto.getTradeTypes(), productDto.getDetails(), productDto.getTradeLocation());
+        product.updateProduct(productDto.getTitle(), productDto.getCategories(), productDto.getTradeTypes(), productDto.getDetails(), productDto.getTradeLocation());
 
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .product_id(product_id)
                 .title(product.getTitle())
                 .conditions(product.getConditions())
-                .product_type(product.getProduct_type())
                 .categories(product.getCategories())
                 .tradeTypes(product.getTradeTypes())
                 .tradeLocation(product.getTradeLocation())
@@ -231,7 +230,6 @@ public class ProductServiceImpl implements ProductService{
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .product_id(product_id)
                 .title(product.getTitle())
-                .product_type(product.getProduct_type())
                 .conditions(product.getConditions())
                 .tradeTypes(product.getTradeTypes())
                 .tradeLocation(product.getTradeLocation())
@@ -278,5 +276,21 @@ public class ProductServiceImpl implements ProductService{
             }
         }
         productRepository.saveAll(items);
+    }
+
+    private void deleteExistingImages(Product product, List<String> urlsToDelete) {
+        if (product.getImageUrls() != null) {
+            for (String url : urlsToDelete) {
+                Image imageToDelete = product.getImageList().stream()
+                        .filter(image -> image.getAccessUrl().equals(url))
+                        .findFirst()
+                        .orElse(null);
+
+                if (imageToDelete != null) {
+                    imageService.deleteImage(imageToDelete.getStoredName());
+                    product.getImageList().remove(imageToDelete);
+                }
+            }
+        }
     }
 }
