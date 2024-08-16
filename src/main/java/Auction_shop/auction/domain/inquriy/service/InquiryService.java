@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -70,7 +71,16 @@ public class InquiryService {
     @Transactional
     public Inquiry updateInquiry(Long inquiryId, InquiryUpdateDto inquiryDto, List<MultipartFile> images){
         Inquiry inquiry = getById(inquiryId);
-        deleteExistingImages(inquiry);
+
+        List<String> existingImageUrls = inquiry.getImageUrls();
+
+        List<String> urlsToRetain = inquiryDto.getImageUrlsToKeep();
+
+        List<String> urlsToDelete = existingImageUrls.stream()
+                        .filter(url -> !urlsToRetain.contains(url))
+                        .collect(Collectors.toList());
+
+        deleteExistingImages(inquiry, urlsToDelete);
 
         List<Image> imageList = imageService.saveImages(images);
         inquiry.getImageList().addAll(imageList);
@@ -82,18 +92,23 @@ public class InquiryService {
     //문의 게시글 삭제
     @Transactional
     public void deleteInquiry(Long inquiryId){
-        Inquiry inquiry = getById(inquiryId);
-        deleteExistingImages(inquiry);
         inquiryRepository.deleteById(inquiryId);
     }
 
     //사진 삭제 메서드
-    private void deleteExistingImages(Inquiry inquiry){
-        if (inquiry.getImageUrls() != null){
-            for (Image image : inquiry.getImageList()){
-                imageService.deleteImage(image.getStoredName());
+    private void deleteExistingImages(Inquiry inquiry, List<String> urlsToDelete){
+        if (inquiry.getImageUrls() != null) {
+            for (String url : urlsToDelete) {
+                Image imageToDelete = inquiry.getImageList().stream()
+                        .filter(image -> image.getAccessUrl().equals(url))
+                        .findFirst()
+                        .orElse(null);
+
+                if (imageToDelete != null) {
+                    imageService.deleteImage(imageToDelete.getStoredName());
+                    inquiry.getImageList().remove(imageToDelete);
+                }
             }
-            inquiry.getImageList().clear();
         }
     }
 

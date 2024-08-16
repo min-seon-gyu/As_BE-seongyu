@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Image extends BaseEntity {
+public class Image {
 
     @Id
     @JoinColumn(name = "image_id")
