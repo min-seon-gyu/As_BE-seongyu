@@ -29,10 +29,17 @@ public class LikeMapperImpl implements LikeMapper{
         LikeListResponseDto responseDto = LikeListResponseDto.builder()
                 .product_id(product.getProduct_id())
                 .title(product.getTitle())
+                .conditions(product.getConditions())
+                .categories(product.getCategories())
+                .tradeTypes(product.getTradeTypes())
                 .initial_price(product.getInitial_price())
+                .current_price(product.getCurrent_price())
+                .tradeLocation(product.getTradeLocation())
+                .createdBy(product.getCreatedBy())
+                .likeCount(product.getLikeCount())
                 .imageUrl(imageUrl)
                 .isSold(product.isSold())
-                .tradeLocation(product.getTradeLocation())
+                .isLiked(true)
                 .build();
 
         return responseDto;
