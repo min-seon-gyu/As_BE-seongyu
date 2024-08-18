@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.member;
 
+import Auction_shop.auction.domain.payments.Payments;
 import Auction_shop.auction.util.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.inquriy.Inquiry;
@@ -56,6 +57,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Payments> payments = new ArrayList<>();
 
     @Column
     @Builder.Default
