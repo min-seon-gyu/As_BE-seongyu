@@ -15,6 +15,8 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("SELECT p FROM Product p WHERE p.startTime <= :currentTime AND p.endTime > :currentTime AND p.isSold = false")
     Page<Product> findActiveProduct(LocalDateTime currentTime, Pageable pageable);
 
-    List<Product> findAllByMemberId(Long memberId);
+    @Query("SELECT p.current_price FROM Product p WHERE p.product_id = :productId")
+    int findCurrentPriceById(Long productId);
 
+    List<Product> findAllByMemberId(Long memberId);
 }
