@@ -51,7 +51,7 @@ public class MemberService {
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateDto memberUpdateDto, MultipartFile image){
 
-        if (memberRepository.existsByName(memberUpdateDto.getName())) {
+        if (memberRepository.existsByName(memberUpdateDto.getNickname())) {
             throw new RuntimeException("방금 누군가가 해당 닉네임으로 닉네임 변경을 했습니다.");
         }
 
@@ -69,7 +69,7 @@ public class MemberService {
             member.setProfileImage(null);
         }
 
-        member.update(memberUpdateDto.getName(), memberUpdateDto.getPhone(), memberUpdateDto.getAddress(), memberUpdateDto.getDetailAddress());
+        member.update(memberUpdateDto.getName() ,memberUpdateDto.getNickname(), memberUpdateDto.getEmail(), memberUpdateDto.getPhone(), memberUpdateDto.getAddress(), memberUpdateDto.getDetailAddress(), memberUpdateDto.getZipcode());
         return member;
     }
 
