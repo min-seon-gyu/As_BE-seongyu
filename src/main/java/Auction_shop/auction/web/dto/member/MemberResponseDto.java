@@ -18,6 +18,7 @@ public class MemberResponseDto {
     private Long id;
     private String username;
     private String name;
+    private String nickname;
     private Address address;
     private String phone;
     private Long point;
@@ -30,6 +31,7 @@ public class MemberResponseDto {
                 .id(member.getId())
                 .username(member.getUuid())
                 .name(member.getName())
+                .nickname(member.getNickname())
                 .address(member.getAddress())
                 .phone(member.getPhone())
                 .point(member.getPoint())

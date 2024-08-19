@@ -32,6 +32,10 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("name", String.class);
     }
 
+    public String getNickname(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
+    }
+
     public Address getAddress(String token) {
         Object addressClaim = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("address");
         if (addressClaim instanceof LinkedHashMap) {
@@ -65,6 +69,7 @@ public class JwtUtil {
                 .id(getId(token))
                 .username(getUsername(token))
                 .name(getName(token))
+                .nickname(getNickname(token))
                 .address(getAddress(token))
                 .phone(getPhone(token))
                 .point(getPoint(token))
@@ -77,6 +82,7 @@ public class JwtUtil {
                 .claim("id", memberResponseDto.getId())
                 .claim("username", memberResponseDto.getUsername())
                 .claim("name", memberResponseDto.getName())
+                .claim("nickname", memberResponseDto.getNickname())
                 .claim("address", memberResponseDto.getAddress())
                 .claim("phone", memberResponseDto.getPhone())
                 .claim("point", memberResponseDto.getPoint())
@@ -88,10 +94,10 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractMemberName(String authorization) {
+    public String extractNickname(String authorization) {
         try {
             String token = extractToken(authorization);
-            return getName(token);
+            return getNickname(token);
         } catch (Exception e) {
             throw new IllegalArgumentException("유효하지 않은 토큰: " + e.getMessage());
         }

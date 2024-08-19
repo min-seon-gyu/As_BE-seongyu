@@ -34,9 +34,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public String getName() {
-
-
-        return memberSecurity.getName();
+        return memberSecurity.getNickname();
     }
 
     @Override

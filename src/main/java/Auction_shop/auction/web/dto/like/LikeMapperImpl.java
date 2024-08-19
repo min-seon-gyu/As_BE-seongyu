@@ -10,7 +10,7 @@ public class LikeMapperImpl implements LikeMapper{
     @Override
     public LikeResponseDto toResponseDto(Like like) {
         LikeResponseDto likeResponseDto = LikeResponseDto.builder()
-                .memberName(like.getMember().getName())
+                .nickname(like.getMember().getNickname())
                 .productTitle(like.getProduct().getTitle())
                 .build();
         return likeResponseDto;

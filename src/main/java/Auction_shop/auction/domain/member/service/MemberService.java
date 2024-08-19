@@ -29,6 +29,8 @@ public class MemberService {
                 .role("USER")
                 .name("TEST")
                 .phone("TEST")
+                .email("TEST")
+                .nickname("TEST")
                 .point(0l)
                 .build();
         memberRepository.save(member);
@@ -51,7 +53,7 @@ public class MemberService {
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateDto memberUpdateDto, MultipartFile image){
 
-        if (memberRepository.existsByName(memberUpdateDto.getNickname())) {
+        if (memberRepository.existsByNickname(memberUpdateDto.getNickname())) {
             throw new RuntimeException("방금 누군가가 해당 닉네임으로 닉네임 변경을 했습니다.");
         }
 
@@ -98,8 +100,8 @@ public class MemberService {
         return memberResponseDto;
     }
 
-    public boolean nameCheck(String name){
-        return memberRepository.existsByName(name);
+    public boolean nameCheck(String nickname){
+        return memberRepository.existsByNickname(nickname);
     }
 
     @Transactional
