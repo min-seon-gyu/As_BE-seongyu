@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +29,14 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String uuid;
 
-    @Column(nullable = false, length = 10, unique = true)
+    @Column(nullable = false, length = 10)
     private String name;
+
+    @Column(nullable = false, length = 10, unique = true)
+    private String nickname;
+
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
     private String role;
@@ -72,10 +77,12 @@ public class Member extends BaseEntity {
     @Version
     private Long version;
 
-    public void update(String name, String phone, String address, String detailAddress) {
+    public void update(String name, String nickname, String email, String phone, String address, String detailAddress, String zipcode) {
         this.name = name;
+        this.nickname = nickname;
+        this.email = email;
         this.phone = phone;
-        this.address = new Address(address, detailAddress);
+        this.address = new Address(address, detailAddress, zipcode);
         this.available = true;
     }
 
