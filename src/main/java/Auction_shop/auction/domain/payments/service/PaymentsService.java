@@ -10,6 +10,7 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class PaymentsService {
     @Value("${iamport.secret}")
     private String secretKey;
 
+    @PostConstruct
     public void PaymentsService(){
         this.iamportClient = new IamportClient(apiKey, secretKey);
     }
