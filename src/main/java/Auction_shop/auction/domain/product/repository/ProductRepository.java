@@ -1,6 +1,8 @@
 package Auction_shop.auction.domain.product.repository;
 
 import Auction_shop.auction.domain.product.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,9 +12,11 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
     //종료 시간이 지나지 않은 물건 중 경매가 종료되지 않은 물건만 서치
-    @Query("SELECT a FROM Product a WHERE a.startTime <= :currentTime AND a.endTime > :currentTime AND a.isSold = false")
-    List<Product> findActiveProduct(LocalDateTime currentTime);
+    @Query("SELECT p FROM Product p WHERE p.startTime <= :currentTime AND p.endTime > :currentTime AND p.isSold = false")
+    Page<Product> findActiveProduct(LocalDateTime currentTime, Pageable pageable);
+
+    @Query("SELECT p.current_price FROM Product p WHERE p.product_id = :productId")
+    int findCurrentPriceById(Long productId);
 
     List<Product> findAllByMemberId(Long memberId);
-
 }

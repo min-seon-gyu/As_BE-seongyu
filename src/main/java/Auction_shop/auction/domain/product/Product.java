@@ -60,6 +60,9 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "product_id")
     private List<Image> imageList = new ArrayList<>();
 
+    @Version
+    private Long version;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 

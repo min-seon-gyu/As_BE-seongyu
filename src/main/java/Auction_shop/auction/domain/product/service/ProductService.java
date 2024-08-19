@@ -16,4 +16,5 @@ public interface ProductService {
     ProductResponseDto purchaseProductItem(Long product_id);
     boolean deleteProductById(Long product_id);
     void updateProductPrices();
+    void createDummyProducts(int count);
 }
