@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LikeResponseDto {
-    public String memberName;
+    public String nickname;
     public String productTitle;
 }

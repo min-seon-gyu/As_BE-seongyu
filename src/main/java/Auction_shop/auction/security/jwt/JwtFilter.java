@@ -51,12 +51,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String username = jwtUtil.getUsername(token); //uuid
-        String name = jwtUtil.getName(token);
+        String nickname = jwtUtil.getNickname(token);
         String role = jwtUtil.getRole(token);
 
         MemberSecurity memberSecurity = MemberSecurity.builder()
                         .username(username)
-                        .name(name)
+                        .nickname(nickname)
                         .role(role)
                         .build();
 

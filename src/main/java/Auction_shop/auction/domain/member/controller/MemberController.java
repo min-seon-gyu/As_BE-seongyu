@@ -40,13 +40,13 @@ public class MemberController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<Boolean> nameCheck(@RequestParam String name){
+    public ResponseEntity<Boolean> nameCheck(@RequestParam String nickname){
 
-        if (name == null || name.trim().isEmpty()) {
+        if (nickname == null || nickname.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(false);
         }
 
-        boolean isDuplicate = memberService.nameCheck(name);
+        boolean isDuplicate = memberService.nameCheck(nickname);
         return ResponseEntity.ok(!isDuplicate);
     }
 }
