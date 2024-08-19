@@ -18,8 +18,9 @@ public class BlockController {
     private final BlockMapper blockMapper;
     private final JwtUtil jwtUtil;
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity<BlockListResponseDto> getList(@PathVariable Long memberId){
+    @GetMapping
+    public ResponseEntity<BlockListResponseDto> getList(@RequestHeader("Authorization") String authorization){
+        Long memberId = jwtUtil.extractMemberId(authorization);
         List<Block> blocks = blockService.getList(memberId);
         BlockListResponseDto collect = blockMapper.toListResponseDto(blocks);
         return ResponseEntity.ok(collect);
