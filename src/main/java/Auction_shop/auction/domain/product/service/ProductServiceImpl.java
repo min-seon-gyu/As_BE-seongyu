@@ -243,7 +243,8 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductResponseDto purchaseProductItem(Long product_id){
+    @Transactional
+    public void purchaseProductItem(Long product_id){
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
@@ -252,21 +253,8 @@ public class ProductServiceImpl implements ProductService{
         }
 
         product.setIsSold(true);
-        ProductResponseDto productResponseDto = ProductResponseDto.builder()
-                .product_id(product_id)
-                .title(product.getTitle())
-                .conditions(product.getConditions())
-                .tradeTypes(product.getTradeTypes())
-                .tradeLocation(product.getTradeLocation())
-                .initial_price(product.getInitial_price())
-                .details(product.getDetails())
-                .likeCount(product.getLikeCount())
-                .imageUrls(product.getImageUrls())
-                .isSold(product.isSold())
-                .build();
 
         productRepository.save(product);
-        return productResponseDto;
     }
 
     @Override
@@ -282,6 +270,12 @@ public class ProductServiceImpl implements ProductService{
             productRepository.deleteById(product_id);
         }
         return isFound;
+    }
+
+    @Override
+    public int findCurrentPriceById(Long productId){
+        int price = productRepository.findCurrentPriceById(productId);
+        return price;
     }
 
     //더미 10,000개로 확인 결과 성능에 영향은 없지만 추후 redis

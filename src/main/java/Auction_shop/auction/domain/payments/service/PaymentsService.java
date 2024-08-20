@@ -5,6 +5,7 @@ import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.payments.Payments;
 import Auction_shop.auction.domain.payments.repository.PaymentsRepository;
 import Auction_shop.auction.domain.product.repository.ProductRepository;
+import Auction_shop.auction.domain.product.service.ProductService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
@@ -14,6 +15,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -24,8 +26,8 @@ public class PaymentsService {
     private IamportClient iamportClient;
 
     private final PaymentsRepository paymentsRepository;
-    private final ProductRepository productRepository;
     private final MemberService memberService;
+    private final ProductService productService;
 
     @Value("${iamport.key}")
     private String apiKey;
@@ -38,6 +40,7 @@ public class PaymentsService {
         this.iamportClient = new IamportClient(apiKey, secretKey);
     }
 
+    @Transactional
     public String PaymentsVerify(String impUid, Long productId, Long memberId) throws IamportResponseException, IOException {
 
         IamportResponse<Payment> iamportResponse;
@@ -50,7 +53,7 @@ public class PaymentsService {
         String merchantUid = iamportResponse.getResponse().getMerchantUid();
 
         int paidAmount = iamportResponse.getResponse().getAmount().intValue();
-        int productPrice = productRepository.findCurrentPriceById(productId);
+        int productPrice = productService.findCurrentPriceById(productId);
 
         if (paidAmount != productPrice) {
             cancelAllPayment(impUid);
@@ -67,6 +70,8 @@ public class PaymentsService {
                 .build();
 
         paymentsRepository.save(payments);
+
+        productService.purchaseProductItem(productId);
 
         return "결제가 완료되었습니다.";
     }
