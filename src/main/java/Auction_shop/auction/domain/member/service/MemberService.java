@@ -28,9 +28,9 @@ public class MemberService {
                 .uuid(uuid)
                 .role("USER")
                 .name("TEST")
+                .nickname(uuid)
+                .email(uuid)
                 .phone("TEST")
-                .email("TEST")
-                .nickname("TEST")
                 .point(0l)
                 .build();
         memberRepository.save(member);
@@ -91,6 +91,7 @@ public class MemberService {
                 .id(member.getId())
                 .username(member.getUuid())
                 .name(member.getName())
+                .nickname(member.getNickname())
                 .address(member.getAddress())
                 .phone(member.getPhone())
                 .point(member.getPoint())
