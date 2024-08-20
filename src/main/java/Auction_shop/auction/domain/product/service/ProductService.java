@@ -13,7 +13,8 @@ public interface ProductService {
     List<ProductListResponseDto> findAllByMemberId(Long MemberId);
     ProductResponseDto findProductById(Long memberId, Long product_id);
     ProductResponseDto updateProductById(ProductDto productDto, Long product_id, List<MultipartFile> images);
-    ProductResponseDto purchaseProductItem(Long product_id);
+    int findCurrentPriceById(Long productId);
+    void purchaseProductItem(Long product_id);
     boolean deleteProductById(Long product_id);
     void updateProductPrices();
     void createDummyProducts(int count);
