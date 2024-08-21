@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.member;
 
+import Auction_shop.auction.domain.address.Address;
 import Auction_shop.auction.domain.payments.Payments;
 import Auction_shop.auction.util.BaseEntity;
 import Auction_shop.auction.domain.image.Image;
@@ -71,18 +72,19 @@ public class Member extends BaseEntity {
     @Builder.Default
     private boolean available = false;
 
-    @Embedded
-    private Address address;
+    @OneToMany
+    @Builder.Default
+    private List<Address> addresses = new ArrayList<>();
 
     @Version
     private Long version;
 
-    public void update(String name, String nickname, String email, String phone, String address, String detailAddress, String zipcode) {
+    public void update(String name, String nickname, String email, String phone, Address address) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.phone = phone;
-        this.address = new Address(address, detailAddress, zipcode);
+        this.addresses.add(address);
         this.available = true;
     }
 
@@ -119,5 +121,13 @@ public class Member extends BaseEntity {
     public void removeLike(Like like) {
         likes.remove(like);
         like.setMember(null);
+    }
+
+    public void addAddress(Address address){
+        this.addresses.add(address);
+    }
+
+    public void removeAddress(Address address){
+        this.addresses.remove(address);
     }
 }
