@@ -16,7 +16,7 @@ public class BlockMapperImpl implements BlockMapper {
                 .BlockedMemberId(block.getBlocked().getId())
                 .BlockedMemberName(block.getBlocked().getName())
                 .BlockedMemberPhone(block.getBlocked().getPhone())
-                .BlockedMemberAddress(block.getBlocked().getAddress()).
+                .BlockedMemberAddresses(block.getBlocked().getAddresses()).
                 build();
         return responseDto;
     }
