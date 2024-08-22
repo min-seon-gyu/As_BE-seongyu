@@ -84,7 +84,9 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
         this.email = email;
         this.phone = phone;
-        this.addresses.add(address);
+        if (address != null) {
+            this.addresses.add(address);
+        }
         this.available = true;
     }
 

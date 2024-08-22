@@ -73,17 +73,19 @@ public class MemberService {
         }else{
             member.setProfileImage(null);
         }
+        Address address = null;
+        if (memberUpdateDto.getAddress() != null) {
+            address = Address.builder()
+                    .address(memberUpdateDto.getAddress())
+                    .detailAddress(memberUpdateDto.getDetailAddress())
+                    .zipcode(memberUpdateDto.getZipcode())
+                    .phoneNumber(memberUpdateDto.getPhone())
+                    .name(memberUpdateDto.getName())
+                    .defaultAddress(true)
+                    .build();
 
-        Address address = Address.builder()
-                .address(memberUpdateDto.getAddress())
-                .detailAddress(memberUpdateDto.getDetailAddress())
-                .zipcode(memberUpdateDto.getZipcode())
-                .phoneNumber(memberUpdateDto.getPhone())
-                .name(memberUpdateDto.getName())
-                .defaultAddress(true)
-                .build();
-
-        addressRepository.save(address);
+            addressRepository.save(address);
+        }
 
         member.update(memberUpdateDto.getName() ,memberUpdateDto.getNickname(), memberUpdateDto.getEmail(), memberUpdateDto.getPhone(), address);
         return member;
