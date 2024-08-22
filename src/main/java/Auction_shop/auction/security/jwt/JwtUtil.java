@@ -1,6 +1,6 @@
 package Auction_shop.auction.security.jwt;
 
-import Auction_shop.auction.domain.member.Address;
+import Auction_shop.auction.domain.address.Address;
 import Auction_shop.auction.web.dto.member.MemberResponseDto;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -36,12 +39,14 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
     }
 
-    public Address getAddress(String token) {
-        Object addressClaim = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("address");
-        if (addressClaim instanceof LinkedHashMap) {
-            return convertMapToAddress((LinkedHashMap<String, Object>) addressClaim);
+    public List<Address> getAddresses(String token) {
+        Object addressesClaim = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("addresses");
+        if (addressesClaim instanceof List<?>) {
+            return ((List<LinkedHashMap<String, Object>>) addressesClaim).stream()
+                    .map(this::convertMapToAddress)
+                    .collect(Collectors.toList());
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public String getPhone(String token) {
@@ -70,7 +75,7 @@ public class JwtUtil {
                 .username(getUsername(token))
                 .name(getName(token))
                 .nickname(getNickname(token))
-                .address(getAddress(token))
+                .address(getAddresses(token))
                 .phone(getPhone(token))
                 .point(getPoint(token))
                 .role(getRole(token))

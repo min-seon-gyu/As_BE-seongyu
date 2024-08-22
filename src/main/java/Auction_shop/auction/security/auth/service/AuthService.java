@@ -39,7 +39,6 @@ public class AuthService {
                 .username(member.getUuid())
                 .name(member.getName())
                 .nickname(member.getNickname())
-                .address(member.getAddress())
                 .phone(member.getPhone())
                 .point(member.getPoint())
                 .role(member.getRole())

@@ -2,7 +2,9 @@ package Auction_shop.auction.domain.member.service;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
+import Auction_shop.auction.domain.address.Address;
 import Auction_shop.auction.domain.member.Member;
+import Auction_shop.auction.domain.address.repository.AddressRepository;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
 import Auction_shop.auction.domain.refreshToken.repository.RefreshTokenRepository;
 import Auction_shop.auction.web.dto.member.MemberResponseDto;
@@ -19,6 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final AddressRepository addressRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ImageService imageService;
 
@@ -70,8 +73,21 @@ public class MemberService {
         }else{
             member.setProfileImage(null);
         }
+        Address address = null;
+        if (memberUpdateDto.getAddress() != null) {
+            address = Address.builder()
+                    .address(memberUpdateDto.getAddress())
+                    .detailAddress(memberUpdateDto.getDetailAddress())
+                    .zipcode(memberUpdateDto.getZipcode())
+                    .phoneNumber(memberUpdateDto.getPhone())
+                    .name(memberUpdateDto.getName())
+                    .defaultAddress(true)
+                    .build();
 
-        member.update(memberUpdateDto.getName() ,memberUpdateDto.getNickname(), memberUpdateDto.getEmail(), memberUpdateDto.getPhone(), memberUpdateDto.getAddress(), memberUpdateDto.getDetailAddress(), memberUpdateDto.getZipcode());
+            addressRepository.save(address);
+        }
+
+        member.update(memberUpdateDto.getName() ,memberUpdateDto.getNickname(), memberUpdateDto.getEmail(), memberUpdateDto.getPhone(), address);
         return member;
     }
 
@@ -92,7 +108,6 @@ public class MemberService {
                 .username(member.getUuid())
                 .name(member.getName())
                 .nickname(member.getNickname())
-                .address(member.getAddress())
                 .phone(member.getPhone())
                 .point(member.getPoint())
                 .role(member.getRole())

@@ -1,13 +1,14 @@
 package Auction_shop.auction.web.dto.member;
 
 import Auction_shop.auction.domain.image.Image;
-import Auction_shop.auction.domain.member.Address;
+import Auction_shop.auction.domain.address.Address;
 import Auction_shop.auction.domain.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @Getter
@@ -20,7 +21,7 @@ public class MemberResponseDto {
     private String name;
     private String nickname;
     private String email;
-    private Address address;
+    private List<Address> address;
     private String phone;
     private Long point;
     private boolean available;
@@ -34,7 +35,7 @@ public class MemberResponseDto {
                 .name(member.getName())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
-                .address(member.getAddress())
+                .address(member.getAddresses())
                 .phone(member.getPhone())
                 .point(member.getPoint())
                 .profileImageUrl(Optional.ofNullable(member.getProfileImage())
