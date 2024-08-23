@@ -18,7 +18,6 @@ public class PaymentsController {
                                                    @PathVariable Long productId,
                                                    @PathVariable String impUid){
         Long memberId = jwtUtil.extractMemberId(authorization);
-        System.out.println("====================진입 성공=========================");
 
         try {
             String result = paymentsService.PaymentsVerify(impUid, productId, memberId);

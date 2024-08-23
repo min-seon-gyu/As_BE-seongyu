@@ -43,24 +43,17 @@ public class PaymentsService {
     @Transactional
     public String PaymentsVerify(String impUid, Long productId, Long memberId) throws IamportResponseException, IOException {
 
-        System.out.println("impUid = " + impUid);
-        System.out.println("productId = " + productId);
-        System.out.println("memberId = " + memberId);
-
         IamportResponse<Payment> iamportResponse;
         try {
             iamportResponse = iamportClient.paymentByImpUid(impUid);
         } catch (Exception e) {
-            System.out.println("결제 정보 조회 실패");
             throw new RuntimeException("결제 정보를 조회하는 데 실패: " + e.getMessage());
         }
 
         String merchantUid = iamportResponse.getResponse().getMerchantUid();
 
         int paidAmount = iamportResponse.getResponse().getAmount().intValue();
-        System.out.println("paidAmount = " + paidAmount);
         int productPrice = productService.findCurrentPriceById(productId);
-        System.out.println("productPrice = " + productPrice);
 
         if (paidAmount != productPrice) {
             cancelAllPayment(impUid);
