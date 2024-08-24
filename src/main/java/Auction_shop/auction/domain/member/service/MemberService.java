@@ -122,7 +122,9 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long memberId) {
+        System.out.println("memberId = " + memberId);
         memberRepository.deleteById(memberId);
+        System.out.println("삭제 완료");
     }
 
 }

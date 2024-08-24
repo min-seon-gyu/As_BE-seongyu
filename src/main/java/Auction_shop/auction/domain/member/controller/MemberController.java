@@ -34,6 +34,7 @@ public class MemberController {
 
     @DeleteMapping()
     public ResponseEntity<Void> deleteMember(@RequestHeader("Authorization") String authorization){
+        System.out.println("진입");
         Long memberId = jwtUtil.extractMemberId(authorization);
         memberService.deleteMember(memberId);
         return ResponseEntity.noContent().build();
