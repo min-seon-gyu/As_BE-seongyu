@@ -21,7 +21,7 @@ public class AddressService {
 
     //주소 추가
     @Transactional
-    public void addAddress(Long memberId, AddressRequestDto addressRequestDto){
+    public Address addAddress(Long memberId, AddressRequestDto addressRequestDto){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 회원이 없습니다."));
 
@@ -37,6 +37,8 @@ public class AddressService {
         addressRepository.save(address);
 
         member.addAddress(address);
+
+        return address;
     }
 
     //주소 삭제
@@ -62,7 +64,7 @@ public class AddressService {
 
     //주소 수정
     @Transactional
-    public void updateAddress(Long memberId, Long addressId,AddressRequestDto addressRequestDto){
+    public Address updateAddress(Long memberId, Long addressId,AddressRequestDto addressRequestDto){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 회원이 없습니다."));
 
@@ -70,14 +72,15 @@ public class AddressService {
                 .filter(address -> address.getId().equals(addressId))
                 .findFirst();
 
-        addressToUpdate.ifPresent(address ->{
+        return addressToUpdate.map(address -> {
             address.updateAddress(
                     addressRequestDto.getPhoneNumber(),
                     addressRequestDto.getName(),
                     addressRequestDto.getAddress(),
                     addressRequestDto.getDetailAddress(),
                     addressRequestDto.getZipcode());
-        });
+            return address;
+        }).orElseThrow(() -> new IllegalArgumentException("해당 주소가 없습니다."));
     }
 
     //기본 주소지 설정
