@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.address.controller;
 
+import Auction_shop.auction.domain.address.Address;
 import Auction_shop.auction.domain.address.service.AddressService;
 import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.address.AddressRequestDto;
@@ -18,11 +19,11 @@ public class AddressController {
 
     // 주소 추가
     @PostMapping()
-    public ResponseEntity<Void> addAddress(@RequestHeader("Authorization") String authorization,
-                                           @RequestBody AddressRequestDto addressRequestDto) {
+    public ResponseEntity<Address> addAddress(@RequestHeader("Authorization") String authorization,
+                                              @RequestBody AddressRequestDto addressRequestDto) {
         Long memberId = jwtUtil.extractMemberId(authorization);
-        addressService.addAddress(memberId, addressRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Address address = addressService.addAddress(memberId, addressRequestDto);
+        return ResponseEntity.ok(address);
     }
 
     // 주소 삭제 dafaultAddress인 경우 삭제 못하게 변경
@@ -36,12 +37,12 @@ public class AddressController {
 
     // 주소 수정
     @PutMapping("/{addressId}")
-    public ResponseEntity<Void> updateAddress(@RequestHeader("Authorization") String authorization,
+    public ResponseEntity<Address> updateAddress(@RequestHeader("Authorization") String authorization,
                                               @PathVariable Long addressId,
                                               @RequestBody AddressRequestDto addressRequestDto) {
         Long memberId = jwtUtil.extractMemberId(authorization);
-        addressService.updateAddress(memberId, addressId, addressRequestDto);
-        return ResponseEntity.ok().build();
+        Address address = addressService.updateAddress(memberId, addressId, addressRequestDto);
+        return ResponseEntity.ok(address);
     }
 
     // 기본 주소지 설정
