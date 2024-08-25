@@ -11,6 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class ProductResponseDto {
+    private Long memberId;      //멤버 ID
     private Long product_id;         // 제품ID
     private String title;           // 판매글 제목
     private String product_type;    // 제품 분류
@@ -25,7 +26,7 @@ public class ProductResponseDto {
     private boolean isSold;         // 판매 여부
     private boolean isLiked;        // 좋아요 여부
     private String createdBy;       // 등록자 닉네임
-    private boolean isOwner;
+    private boolean isOwner;        // 생성자 여부
 
     private LocalDateTime startTime; // 경매 시작 시간
     private LocalDateTime endTime;   // 경매 종료 시간

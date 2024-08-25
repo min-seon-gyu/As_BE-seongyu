@@ -87,6 +87,7 @@ public class ProductServiceImpl implements ProductService{
 
         // 엔티티를 응답DTO로 변환 후 리턴
         ProductResponseDto responseDto = ProductResponseDto.builder()
+                .memberId(savedProduct.getMember().getId())
                 .product_id(savedProduct.getProduct_id())
                 .title(savedProduct.getTitle())
                 .conditions(savedProduct.getConditions())
@@ -179,6 +180,7 @@ public class ProductServiceImpl implements ProductService{
         if (product.isPresent()) {
             Product findProduct = product.get();
             ProductResponseDto responseDto = ProductResponseDto.builder()
+                    .memberId(findProduct.getMember().getId())
                     .product_id(findProduct.getProduct_id())
                     .title(findProduct.getTitle())
                     .conditions(findProduct.getConditions())
