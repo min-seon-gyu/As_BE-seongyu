@@ -56,13 +56,14 @@ public class MemberService {
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateDto memberUpdateDto, MultipartFile image){
 
-        if (memberRepository.existsByNickname(memberUpdateDto.getNickname())) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 회원이 없습니다."));
+
+        if (!member.getNickname().equals(memberUpdateDto.getNickname()) &&
+                memberRepository.existsByNickname(memberUpdateDto.getNickname())) {
             throw new RuntimeException("방금 누군가가 해당 닉네임으로 닉네임 변경을 했습니다.");
         }
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 회원이 없습니다."));
-        System.out.println("member.getProfileImage() = " + member.getProfileImage());
         if (member.getProfileImage() != null){
             imageService.deleteImage(member.getProfileImage().getStoredName());
         }
