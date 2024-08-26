@@ -7,10 +7,7 @@ import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.product.repository.ProductRepository;
 import Auction_shop.auction.domain.product.Product;
-import Auction_shop.auction.web.dto.product.ProductDto;
-import Auction_shop.auction.web.dto.product.ProductListResponseDto;
-import Auction_shop.auction.web.dto.product.ProductResponseDto;
-import Auction_shop.auction.web.dto.product.ProductUpdateDto;
+import Auction_shop.auction.web.dto.product.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
     private final ImageService imageService;
     private final MemberService memberService;
     private final LikeService likeService;
@@ -58,91 +56,26 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public ProductResponseDto save(ProductDto productDto, Long memberId, List<MultipartFile> images) {
+    public Product save(ProductDto productDto, Long memberId, List<MultipartFile> images) {
         Member member = memberService.getById(memberId);
 
         // DTO를 엔티티로 변환
-        Product product = Product.builder()
-                .title(productDto.getTitle())
-                .member(member)
-                .conditions(productDto.getConditions())
-                .categories(productDto.getCategories())
-                .tradeTypes(productDto.getTradeTypes())
-                .tradeLocation(productDto.getTradeLocation())
-                .initial_price(productDto.getInitial_price())
-                .startTime(productDto.getStartTime())
-                .endTime(productDto.getEndTime())
-                .updateTime(productDto.getStartTime())
-                .isSold(false)
-                .minimum_price(productDto.getMinimum_price())
-                .details(productDto.getDetails())
-                .build();
+        Product product = productMapper.toEntity(productDto, member);
 
         member.addProduct(product);
 
         List<Image> imageList = imageService.saveImages(images);
         product.setImageList(imageList);
 
-        // 엔티티 저장
-        Product savedProduct = productRepository.save(product);
-
-        // 엔티티를 응답DTO로 변환 후 리턴
-        ProductResponseDto responseDto = ProductResponseDto.builder()
-                .memberId(savedProduct.getMember().getId())
-                .product_id(savedProduct.getProduct_id())
-                .title(savedProduct.getTitle())
-                .conditions(savedProduct.getConditions())
-                .categories(savedProduct.getCategories())
-                .tradeTypes(savedProduct.getTradeTypes())
-                .tradeLocation(productDto.getTradeLocation())
-                .initial_price(savedProduct.getInitial_price())
-                .current_price(savedProduct.getCurrent_price())
-                .minimum_price(savedProduct.getMinimum_price())
-                .createdBy(savedProduct.getCreatedBy())
-                .startTime(savedProduct.getStartTime())
-                .likeCount(savedProduct.getLikeCount())
-                .endTime(savedProduct.getEndTime())
-                .details(savedProduct.getDetails())
-                .imageUrls(savedProduct.getImageUrls())
-                .build();
-
-        return responseDto;
+        return productRepository.save(product);
     }
 
     @Override
-    public List<ProductListResponseDto> findAllProduct(Long memberId){
-        List<Product> products = productRepository.findAll();
-
-        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
-
-        List<ProductListResponseDto> collect = products.stream()
-                .sorted(Comparator.comparing(Product::getProduct_id).reversed())
-                .map(product -> {
-                    String imageUrl = null;
-                    if(!product.getImageList().isEmpty()){
-                        imageUrl = product.getImageList().get(0).getAccessUrl();
-                    }
-                    ProductListResponseDto dto = ProductListResponseDto.builder()
-                            .product_id(product.getProduct_id())
-                            .title(product.getTitle())
-                            .conditions(product.getConditions())
-                            .initial_price(product.getInitial_price())
-                            .categories(product.getCategories())
-                            .tradeTypes(product.getTradeTypes())
-                            .current_price(product.getCurrent_price())
-                            .tradeLocation(product.getTradeLocation())
-                            .createdBy(product.getCreatedBy())
-                            .likeCount(product.getLikeCount())
-                            .isSold(product.isSold())
-                            .imageUrl(imageUrl)
-                            .isLiked(likedProductsIds.contains(product.getProduct_id()))
-                            .build();
-                    return dto;
-                })
-                .collect(Collectors.toList());
-        return collect;
+    public List<Product> findAllProduct(Long memberId){
+        return productRepository.findAll();
     }
 
+    //Todo 하단부터 리팩
     @Override
     public List<ProductListResponseDto> findAllByMemberId(Long memberId){
         List<Product> products = productRepository.findAllByMemberId(memberId);

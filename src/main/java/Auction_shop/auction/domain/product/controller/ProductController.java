@@ -1,12 +1,11 @@
 package Auction_shop.auction.domain.product.controller;
 
+import Auction_shop.auction.domain.like.service.LikeService;
+import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.security.jwt.JwtUtil;
-import Auction_shop.auction.web.dto.product.ProductDto;
-import Auction_shop.auction.web.dto.product.ProductListResponseDto;
-import Auction_shop.auction.web.dto.product.ProductResponseDto;
+import Auction_shop.auction.web.dto.product.*;
 import Auction_shop.auction.domain.product.service.ProductService;
 import Auction_shop.auction.domain.product.validation.ProductValidator;
-import Auction_shop.auction.web.dto.product.ProductUpdateDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,19 +15,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
 @RequestMapping("/product")
 public class ProductController {
     private final ProductService productService;
+    private final LikeService likeService;
+    private final ProductMapper productMapper;
     private final ProductValidator productValidator;
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public ProductController(ProductService productService, ProductValidator productValidator, JwtUtil jwtUtil) {
+    public ProductController(ProductService productService, LikeService likeService, ProductValidator productValidator, ProductMapper productMapper, JwtUtil jwtUtil) {
         this.productService = productService;
+        this.likeService = likeService;
         this.productValidator = productValidator;
+        this.productMapper = productMapper;
         this.jwtUtil = jwtUtil;
     }
 
@@ -49,8 +53,9 @@ public class ProductController {
         }
         Long memberId = jwtUtil.extractMemberId(authorization);
         try {
-            ProductResponseDto productResponseDto = productService.save(productDto, memberId, images);
-            return ResponseEntity.status(HttpStatus.OK).body(productResponseDto);
+            Product product = productService.save(productDto, memberId, images);
+            ProductResponseDto responseDto = productMapper.toResponseDto(product);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch (Exception e) {
             // 서버 에러 500
             log.info("error={}", e.getMessage(), ProductController.class);
@@ -64,10 +69,17 @@ public class ProductController {
     @GetMapping()
     public ResponseEntity<Object> getAllProduct(@RequestHeader("Authorization") String authorization){
         Long memberId = jwtUtil.extractMemberId(authorization);
-        List<ProductListResponseDto> collect = productService.findAllProduct(memberId);
-        if (collect == null){
+        List<Product> products = productService.findAllProduct(memberId);
+        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
+
+        if (products == null || products.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+
+        List<ProductListResponseDto> collect = products.stream()
+                .map(product -> productMapper.toListResponeDto(product, likedProductsIds.contains(product.getProduct_id())))
+                .collect(Collectors.toList());
+
         return ResponseEntity.status(HttpStatus.OK).body(collect);
     }
 
