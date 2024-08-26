@@ -37,5 +37,7 @@ public class ProductResponseDto {
         this.isOwner = isOwner;
     }
 
-
+    public void setIsLiked(boolean isLiked){
+        this.isLiked = isLiked;
+    }
 }

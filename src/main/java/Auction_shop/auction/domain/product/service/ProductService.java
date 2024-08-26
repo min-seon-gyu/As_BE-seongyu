@@ -14,9 +14,9 @@ public interface ProductService {
     List<Product> findAllProduct(Long memberId);
 
     //Todo 하단부터 리팩
-    List<ProductListResponseDto> findAllByMemberId(Long MemberId);
-    ProductResponseDto findProductById(Long memberId, Long product_id);
-    ProductResponseDto updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images);
+    List<Product> findAllByMemberId(Long MemberId);
+    Product findProductById(Long memberId, Long product_id);
+    Product updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images);
     int findCurrentPriceById(Long productId);
     void purchaseProductItem(Long product_id);
     boolean deleteProductById(Long product_id);

@@ -27,6 +27,7 @@ public class ProductMapplerImpl implements ProductMapper{
                 .likeCount(product.getLikeCount())
                 .endTime(product.getEndTime())
                 .details(product.getDetails())
+                .isSold(product.isSold())
                 .imageUrls(product.getImageUrls())
                 .build();
 

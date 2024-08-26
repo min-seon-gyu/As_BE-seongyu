@@ -32,36 +32,12 @@ public class ProductServiceImpl implements ProductService{
 
     private final Random random = new Random();
 
-    @Transactional
-    public void createDummyProducts(int count) {
-        for (int i = 0; i < count; i++) {
-            Product product = Product.builder()
-                    .title("Product " + (i + 1))
-                    .conditions("New")
-                    .categories(createRandomCategories())
-                    .tradeTypes(createRandomTradeTypes())
-                    .tradeLocation("Location " + random.nextInt(100))
-                    .initial_price(random.nextInt(1000) + 100) // 최소 100
-                    .minimum_price(random.nextInt(500) + 50) // 최소 50
-                    .startTime(LocalDateTime.now().minusDays(random.nextInt(10)))
-                    .endTime(LocalDateTime.now().plusDays(random.nextInt(10)))
-                    .updateTime(LocalDateTime.now())
-                    .isSold(false)
-                    .details("This is a description for product " + (i + 1))
-                    .build();
-
-            productRepository.save(product);
-        }
-    }
-
     @Override
     @Transactional
     public Product save(ProductDto productDto, Long memberId, List<MultipartFile> images) {
         Member member = memberService.getById(memberId);
-
         // DTO를 엔티티로 변환
         Product product = productMapper.toEntity(productDto, member);
-
         member.addProduct(product);
 
         List<Image> imageList = imageService.saveImages(images);
@@ -75,74 +51,22 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findAll();
     }
 
-    //Todo 하단부터 리팩
     @Override
-    public List<ProductListResponseDto> findAllByMemberId(Long memberId){
-        List<Product> products = productRepository.findAllByMemberId(memberId);
-        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
-        List<ProductListResponseDto> collect = products.stream()
-                .map(product -> {
-                    String imageUrl = null;
-                    if(!product.getImageList().isEmpty()){
-                        imageUrl = product.getImageList().get(0).getAccessUrl();
-                    }
-                    ProductListResponseDto dto = ProductListResponseDto.builder()
-                            .product_id(product.getProduct_id())
-                            .title(product.getTitle())
-                            .conditions(product.getConditions())
-                            .categories(product.getCategories())
-                            .tradeTypes(product.getTradeTypes())
-                            .initial_price(product.getInitial_price())
-                            .current_price(product.getCurrent_price())
-                            .tradeLocation(product.getTradeLocation())
-                            .createdBy(product.getCreatedBy())
-                            .likeCount(product.getLikeCount())
-                            .isSold(product.isSold())
-                            .imageUrl(imageUrl)
-                            .isLiked(likedProductsIds.contains(product.getProduct_id()))
-                            .build();
-                    return dto;
-                })
-                .collect(Collectors.toList());
-        return collect;
+    public List<Product> findAllByMemberId(Long memberId){
+        return productRepository.findAllByMemberId(memberId);
     }
 
+    //Todo 하단부터 리팩
     @Override
-    public ProductResponseDto findProductById(Long memberId, Long product_id) {
-        Optional<Product> product = productRepository.findById(product_id);
-        boolean isLiked = likeService.isLiked(memberId, product_id);
-        if (product.isPresent()) {
-            Product findProduct = product.get();
-            ProductResponseDto responseDto = ProductResponseDto.builder()
-                    .memberId(findProduct.getMember().getId())
-                    .product_id(findProduct.getProduct_id())
-                    .title(findProduct.getTitle())
-                    .conditions(findProduct.getConditions())
-                    .categories(findProduct.getCategories())
-                    .tradeTypes(findProduct.getTradeTypes())
-                    .tradeLocation(findProduct.getTradeLocation())
-                    .initial_price(findProduct.getInitial_price())
-                    .current_price(findProduct.getCurrent_price())
-                    .startTime(findProduct.getStartTime())
-                    .endTime(findProduct.getEndTime())
-                    .minimum_price(findProduct.getMinimum_price())
-                    .createdBy(findProduct.getCreatedBy())
-                    .details(findProduct.getDetails())
-                    .likeCount(findProduct.getLikeCount())
-                    .isSold(findProduct.isSold())
-                    .isLiked(isLiked)
-                    .imageUrls(findProduct.getImageUrls())
-                    .build();
-
-            return responseDto;
-        } else {
-            return null;
-        }
+    public Product findProductById(Long memberId, Long product_id) {
+        Product product = productRepository.findById(product_id)
+                .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
+        return product;
     }
 
     @Override
     @Transactional
-    public ProductResponseDto updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images) {
+    public Product updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images) {
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
@@ -161,21 +85,7 @@ public class ProductServiceImpl implements ProductService{
 
         product.updateProduct(productUpdateDto.getTitle(), productUpdateDto.getCategories(), productUpdateDto.getDetails(), productUpdateDto.getTradeLocation(), productUpdateDto.getConditions());
 
-        ProductResponseDto productResponseDto = ProductResponseDto.builder()
-                .product_id(product_id)
-                .title(product.getTitle())
-                .conditions(product.getConditions())
-                .categories(product.getCategories())
-                .tradeTypes(product.getTradeTypes())
-                .tradeLocation(product.getTradeLocation())
-                .initial_price(product.getInitial_price())
-                .createdBy(product.getCreatedBy())
-                .likeCount(product.getLikeCount())
-                .details(product.getDetails())
-                .imageUrls(product.getImageUrls())
-                .build();
-
-        return productResponseDto;
+        return product;
     }
 
     @Override
@@ -267,6 +177,28 @@ public class ProductServiceImpl implements ProductService{
                     product.getImageList().remove(imageToDelete);
                 }
             }
+        }
+    }
+
+    @Transactional
+    public void createDummyProducts(int count) {
+        for (int i = 0; i < count; i++) {
+            Product product = Product.builder()
+                    .title("Product " + (i + 1))
+                    .conditions("New")
+                    .categories(createRandomCategories())
+                    .tradeTypes(createRandomTradeTypes())
+                    .tradeLocation("Location " + random.nextInt(100))
+                    .initial_price(random.nextInt(1000) + 100) // 최소 100
+                    .minimum_price(random.nextInt(500) + 50) // 최소 50
+                    .startTime(LocalDateTime.now().minusDays(random.nextInt(10)))
+                    .endTime(LocalDateTime.now().plusDays(random.nextInt(10)))
+                    .updateTime(LocalDateTime.now())
+                    .isSold(false)
+                    .details("This is a description for product " + (i + 1))
+                    .build();
+
+            productRepository.save(product);
         }
     }
 
