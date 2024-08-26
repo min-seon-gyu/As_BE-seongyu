@@ -10,6 +10,7 @@ import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.web.dto.product.ProductDto;
 import Auction_shop.auction.web.dto.product.ProductListResponseDto;
 import Auction_shop.auction.web.dto.product.ProductResponseDto;
+import Auction_shop.auction.web.dto.product.ProductUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -208,13 +209,13 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public ProductResponseDto updateProductById(ProductDto productDto, Long product_id, List<MultipartFile> images) {
+    public ProductResponseDto updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images) {
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
         List<String> existingImageUrls = product.getImageUrls();
 
-        List<String> urlsToRetain = productDto.getImageUrlsToKeep();
+        List<String> urlsToRetain = productUpdateDto.getImageUrlsToKeep();
 
         List<String> urlsToDelete = existingImageUrls.stream()
                 .filter(url -> !urlsToRetain.contains(url))
@@ -225,7 +226,7 @@ public class ProductServiceImpl implements ProductService{
         List<Image> imageList = imageService.saveImages(images);
         product.getImageList().addAll(imageList);
 
-        product.updateProduct(productDto.getTitle(), productDto.getCategories(), productDto.getTradeTypes(), productDto.getDetails(), productDto.getTradeLocation());
+        product.updateProduct(productUpdateDto.getTitle(), productUpdateDto.getCategories(), productUpdateDto.getDetails(), productUpdateDto.getTradeLocation(), productUpdateDto.getConditions());
 
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .product_id(product_id)

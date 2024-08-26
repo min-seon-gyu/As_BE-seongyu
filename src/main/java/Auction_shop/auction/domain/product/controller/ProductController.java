@@ -6,6 +6,7 @@ import Auction_shop.auction.web.dto.product.ProductListResponseDto;
 import Auction_shop.auction.web.dto.product.ProductResponseDto;
 import Auction_shop.auction.domain.product.service.ProductService;
 import Auction_shop.auction.domain.product.validation.ProductValidator;
+import Auction_shop.auction.web.dto.product.ProductUpdateDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,17 +94,17 @@ public class ProductController {
      */
     @PutMapping("/update/{product_id}")
     public ResponseEntity<Object> updateProductById(
-            @PathVariable Long product_id, @RequestPart(value = "product") ProductDto productDto,
+            @PathVariable Long product_id, @RequestPart(value = "product") ProductUpdateDto productUpdateDto,
             @RequestPart(value = "images", required = false) final List<MultipartFile> images, BindingResult bindingResult) {
-        productValidator.validate(productDto, bindingResult);
-        log.info("bindingResult={}", bindingResult);
+//        productValidator.validate(productUpdateDto, bindingResult);
+//        log.info("bindingResult={}", bindingResult);
 
 //        if (bindingResult.hasErrors()) {
 //            // 클라이언트 에러 400
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Type : " + bindingResult.getFieldError().getDefaultMessage());
 //        }
         try {
-            ProductResponseDto productResponseDto = productService.updateProductById(productDto, product_id, images);
+            ProductResponseDto productResponseDto = productService.updateProductById(productUpdateDto, product_id, images);
             if (productResponseDto == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("product_id doesn't exist in Database");
             } else {
