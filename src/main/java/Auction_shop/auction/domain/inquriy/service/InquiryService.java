@@ -91,8 +91,16 @@ public class InquiryService {
 
     //문의 게시글 삭제
     @Transactional
-    public void deleteInquiry(Long inquiryId){
-        inquiryRepository.deleteById(inquiryId);
+    public boolean deleteInquiry(Long inquiryId){
+        boolean isFound = inquiryRepository.existsById(inquiryId);
+        Inquiry inquiry = getById(inquiryId);
+        if(isFound){
+            for(Image image : inquiry.getImageList()){
+                imageService.deleteImage(image.getStoredName());
+            }
+            inquiryRepository.deleteById(inquiryId);
+        }
+        return isFound;
     }
 
     //사진 삭제 메서드
