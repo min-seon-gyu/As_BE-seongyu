@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,23 +45,22 @@ public class AddressService {
 
     //주소 삭제
     @Transactional
-    public void deleteAddress(Long memberId, Long addressId){
+    public void deleteAddresses(Long memberId, List<Long> deleteList) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 회원이 없습니다."));
 
-        Optional<Address> addressToRemove = member.getAddresses().stream()
-                .filter(address -> address.getId().equals(addressId))
-                .findFirst();
+        List<Address> addressesToRemove = member.getAddresses().stream()
+                .filter(address -> deleteList.contains(address.getId()))
+                .collect(Collectors.toList());
 
-        if (addressToRemove.isPresent()) {
-            Address address = addressToRemove.get();
+        for (Address address : addressesToRemove) {
             if (address.isDefaultAddress()) {
                 System.out.println("기본 주소지로 설정된 주소는 삭제가 불가능합니다.");
                 throw new IllegalArgumentException("기본 주소지로 설정된 주소는 삭제가 불가능합니다.");
             }
-
-            member.getAddresses().remove(address);
         }
+
+        member.getAddresses().removeAll(addressesToRemove);
     }
 
     //주소 수정

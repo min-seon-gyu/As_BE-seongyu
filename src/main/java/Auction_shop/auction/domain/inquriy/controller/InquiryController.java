@@ -93,8 +93,12 @@ public class InquiryController {
 
     //삭제
     @DeleteMapping("/{inquiryId}")
-    public ResponseEntity<Void> deleteInquiry(@PathVariable Long inquiryId){
-        inquiryService.deleteInquiry(inquiryId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Object> deleteInquiry(@PathVariable Long inquiryId){
+        boolean isFound = inquiryService.deleteInquiry(inquiryId);
+        if (isFound) {
+            return ResponseEntity.status(HttpStatus.OK).body("delete success");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete failed. check product_id and Database");
+        }
     }
 }

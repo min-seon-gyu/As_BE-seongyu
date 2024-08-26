@@ -72,7 +72,7 @@ public class Member extends BaseEntity {
     @Builder.Default
     private boolean available = false;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Address> addresses = new ArrayList<>();
 

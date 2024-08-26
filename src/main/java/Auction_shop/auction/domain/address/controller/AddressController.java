@@ -5,9 +5,9 @@ import Auction_shop.auction.domain.address.service.AddressService;
 import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.address.AddressRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,11 +27,11 @@ public class AddressController {
     }
 
     // 주소 삭제 dafaultAddress인 경우 삭제 못하게 변경
-    @DeleteMapping("/{addressId}")
+    @DeleteMapping()
     public ResponseEntity<Void> deleteAddress(@RequestHeader("Authorization") String authorization,
-                                              @PathVariable Long addressId) {
+                                              @RequestBody List<Long> deleteList) {
         Long memberId = jwtUtil.extractMemberId(authorization);
-        addressService.deleteAddress(memberId, addressId);
+        addressService.deleteAddresses(memberId, deleteList);
         return ResponseEntity.noContent().build();
     }
 
