@@ -19,6 +19,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         /// FIXME: 6/24/24 테스트 위해 .setAllowedOrigins("*"), 이후에 허용 범위 수정
+        // NOTE: localhost(Ipv4):8080/ws 경로로 웹소켓 연결 요청 ex) ws://localhost:8080/ws
         registry.addEndpoint("/ws").setAllowedOrigins("*");
     }
 }
