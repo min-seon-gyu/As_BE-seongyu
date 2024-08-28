@@ -26,7 +26,7 @@ public class ChatController {
         String destination = "/sub/chatroom/" + roomId;
         chatService.createChat(chat);
         try {
-            messagingTemplate.convertAndSend(destination, chat.get메세지());   // 도착 경로로 메세지 전달
+            messagingTemplate.convertAndSend(destination, chat.getMessage());   // 도착 경로로 메세지 전달
         } catch (Exception e) {
             log.error("ChatError = {}", e);
             messagingTemplate.convertAndSend(destination, "Error:" + e.getMessage());

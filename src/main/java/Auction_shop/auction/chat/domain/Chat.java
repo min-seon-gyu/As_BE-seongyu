@@ -20,9 +20,9 @@ public class Chat {
     @Id
     private String id;
     private Long roomId; // 채팅방번호
-    private String 유저ID;
-    private String 메세지;
+    private String userId;
+    private String message;
 
     @CreatedDate
-    private LocalDateTime 생성시간;
+    private LocalDateTime createdAt;
 }
