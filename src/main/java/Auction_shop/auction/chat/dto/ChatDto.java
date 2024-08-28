@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class ChatDto {
     private String id;
     private Long roomId; // 채팅방번호
-    private String 유저ID;
-    private String 메세지;
-    private LocalDateTime 생성시간;
+    private String userId;
+    private String message;
+    private LocalDateTime createdAt;
 }
