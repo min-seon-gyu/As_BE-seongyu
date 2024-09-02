@@ -2,6 +2,7 @@ package Auction_shop.auction.web.dto.product;
 
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.product.Product;
+import Auction_shop.auction.domain.product.ProductDocument;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,25 +36,21 @@ public class ProductMapplerImpl implements ProductMapper{
     }
 
     @Override
-    public ProductListResponseDto toListResponeDto(Product product, boolean isLiked) {
-        String imageUrl = null;
-        if (!product.getImageList().isEmpty()) {
-            imageUrl = product.getImageList().get(0).getAccessUrl(); // 첫 번째 이미지 URL 가져오기
-        }
+    public ProductListResponseDto toListResponeDto(ProductDocument productDocument, boolean isLiked) {
 
         ProductListResponseDto responseDto = ProductListResponseDto.builder()
-                .product_id(product.getProduct_id())
-                .title(product.getTitle())
-                .conditions(product.getConditions())
-                .initial_price(product.getInitial_price())
-                .categories(product.getCategories())
-                .tradeTypes(product.getTradeTypes())
-                .current_price(product.getCurrent_price())
-                .tradeLocation(product.getTradeLocation())
-                .createdBy(product.getCreatedBy())
-                .likeCount(product.getLikeCount())
-                .isSold(product.isSold())
-                .imageUrl(imageUrl)
+                .product_id(productDocument.getId())
+                .title(productDocument.getTitle())
+                .conditions(productDocument.getConditions())
+                .initial_price(productDocument.getInitialPrice())
+                .categories(productDocument.getCategories())
+                .tradeTypes(productDocument.getTradeTypes())
+                .current_price(productDocument.getCurrentPrice())
+                .tradeLocation(productDocument.getTradeLocation())
+                .createdBy(productDocument.getCreatedBy())
+                .likeCount(productDocument.getLikeCount())
+                .isSold(productDocument.isSold())
+                .imageUrl(productDocument.getImageUrl())
                 .isLiked(isLiked)
                 .build();
         return responseDto;
@@ -77,5 +74,24 @@ public class ProductMapplerImpl implements ProductMapper{
                 .details(productDto.getDetails())
                 .build();
         return product;
+    }
+
+    @Override
+    public ProductDocument toDocument(Product product) {
+        ProductDocument productDocument = ProductDocument.builder()
+                .id(product.getProduct_id())
+                .title(product.getTitle())
+                .sold(product.isSold())
+                .conditions(product.getConditions())
+                .categories(product.getCategories())
+                .tradeTypes(product.getTradeTypes())
+                .tradeLocation(product.getTradeLocation())
+                .initialPrice(product.getInitial_price())
+                .currentPrice(product.getCurrent_price())
+                .imageUrl(product.getImageUrls().stream().findFirst().orElse(null)) // 첫 번째 이미지 URL
+                .createdBy(product.getCreatedBy())
+                .likeCount(product.getLikeCount())
+                .build();
+        return productDocument;
     }
 }

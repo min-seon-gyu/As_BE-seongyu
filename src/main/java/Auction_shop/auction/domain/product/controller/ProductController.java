@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.product.controller;
 
 import Auction_shop.auction.domain.like.service.LikeService;
 import Auction_shop.auction.domain.product.Product;
+import Auction_shop.auction.domain.product.ProductDocument;
 import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.product.*;
 import Auction_shop.auction.domain.product.service.ProductService;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @Slf4j
@@ -70,11 +72,11 @@ public class ProductController {
     @GetMapping()
     public ResponseEntity<Object> getAllProduct(@RequestHeader("Authorization") String authorization){
         Long memberId = jwtUtil.extractMemberId(authorization);
-        List<Product> products = productService.findAllProduct(memberId);
+        Iterable<ProductDocument> products = productService.findAllProduct(memberId);
         List<Long> likedProductsIds = likeService.getLikeItems(memberId);
 
-        List<ProductListResponseDto> collect = products.stream()
-                .map(product -> productMapper.toListResponeDto(product, likedProductsIds.contains(product.getProduct_id())))
+        List<ProductListResponseDto> collect = StreamSupport.stream(products.spliterator(), false)
+                .map(product -> productMapper.toListResponeDto(product, likedProductsIds.contains(product.getId())))
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(collect);
@@ -92,6 +94,8 @@ public class ProductController {
         if (product == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error - Product not found, product_id doesn't exist in Database :(");
         }
+        System.out.println("memberId = " + memberId);
+        System.out.println("name = " + name);
         boolean isLiked = likeService.isLiked(memberId, product_id);
         boolean isOwner = product.getCreatedBy().equals(name);
         ProductResponseDto responseDto = productMapper.toResponseDto(product);

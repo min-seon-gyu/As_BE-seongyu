@@ -5,7 +5,7 @@ import Auction_shop.auction.domain.like.repository.LikeRepository;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.product.Product;
-import Auction_shop.auction.domain.product.repository.ProductRepository;
+import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class LikeServiceImpl implements LikeService {
 
     private final LikeRepository likeRepository;
-    private final ProductRepository productRepository;
+    private final ProductJpaRepository productRepository;
     private final MemberService memberService;
 
     @Override

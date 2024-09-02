@@ -2,10 +2,11 @@ package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
-import Auction_shop.auction.domain.like.service.LikeService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
-import Auction_shop.auction.domain.product.repository.ProductRepository;
+import Auction_shop.auction.domain.product.ProductDocument;
+import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
+import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.web.dto.product.*;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService{
-    private final ProductRepository productRepository;
+    private final ProductJpaRepository productJpaRepository;
+    private final ProductElasticsearchRepository productElasticsearchRepository;
     private final ProductMapper productMapper;
     private final ImageService imageService;
     private final MemberService memberService;
-    private final LikeService likeService;
 
     private final Random random = new Random();
 
@@ -36,30 +37,34 @@ public class ProductServiceImpl implements ProductService{
     @Transactional
     public Product save(ProductDto productDto, Long memberId, List<MultipartFile> images) {
         Member member = memberService.getById(memberId);
-        // DTO를 엔티티로 변환
+
         Product product = productMapper.toEntity(productDto, member);
         member.addProduct(product);
 
         List<Image> imageList = imageService.saveImages(images);
         product.setImageList(imageList);
 
-        return productRepository.save(product);
+        Product savedProduct = productJpaRepository.save(product);
+
+        ProductDocument productDocument = productMapper.toDocument(savedProduct);
+        productElasticsearchRepository.save(productDocument);
+
+        return savedProduct;
     }
 
     @Override
-    public List<Product> findAllProduct(Long memberId){
-        return productRepository.findAll();
+    public Iterable<ProductDocument> findAllProduct(Long memberId){
+        return productElasticsearchRepository.findAll();
     }
 
     @Override
-    public List<Product> findAllByMemberId(Long memberId){
-        return productRepository.findAllByMemberId(memberId);
+    public Iterable<ProductDocument> findAllByMemberId(Long memberId){
+        return productElasticsearchRepository.findByMemberId(memberId);
     }
 
-    //Todo 하단부터 리팩
     @Override
     public Product findProductById(Long memberId, Long product_id) {
-        Product product = productRepository.findById(product_id)
+        Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
         return product;
     }
@@ -67,7 +72,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public Product updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images) {
-        Product product = productRepository.findById(product_id)
+        Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
         List<String> existingImageUrls = product.getImageUrls();
@@ -85,13 +90,16 @@ public class ProductServiceImpl implements ProductService{
 
         product.updateProduct(productUpdateDto.getTitle(), productUpdateDto.getCategories(), productUpdateDto.getDetails(), productUpdateDto.getTradeLocation(), productUpdateDto.getConditions());
 
+        ProductDocument productDocument = productMapper.toDocument(product);
+        productElasticsearchRepository.save(productDocument);
+
         return product;
     }
 
     @Override
     @Transactional
     public void purchaseProductItem(Long product_id){
-        Product product = productRepository.findById(product_id)
+        Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
         if (product.isSold()){
@@ -99,28 +107,31 @@ public class ProductServiceImpl implements ProductService{
         }
 
         product.setIsSold(true);
+        productJpaRepository.save(product);
 
-        productRepository.save(product);
+        ProductDocument productDocument = productMapper.toDocument(product);
+        productElasticsearchRepository.save(productDocument);
     }
 
     @Override
     @Transactional
     public boolean deleteProductById(Long product_id) {
-        boolean isFound = productRepository.existsById(product_id);
-        Product product = productRepository.findById(product_id)
+        boolean isFound = productJpaRepository.existsById(product_id);
+        Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
         if (isFound) {
             for (Image image : product.getImageList()){
                 imageService.deleteImage(image.getStoredName());
             }
-            productRepository.deleteById(product_id);
+            productJpaRepository.deleteById(product_id);
+            productElasticsearchRepository.deleteById(product_id);
         }
         return isFound;
     }
 
     @Override
     public int findCurrentPriceById(Long productId){
-        int price = productRepository.findCurrentPriceById(productId);
+        int price = productJpaRepository.findCurrentPriceById(productId);
         return price;
     }
 
@@ -135,7 +146,7 @@ public class ProductServiceImpl implements ProductService{
         Page<Product> page;
         do {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            page = productRepository.findActiveProduct(currentTime, pageable);
+            page = productJpaRepository.findActiveProduct(currentTime, pageable);
 
             List<Product> updatedProducts = new ArrayList<>();
             for (Product product : page.getContent()) {
@@ -160,7 +171,7 @@ public class ProductServiceImpl implements ProductService{
     @Transactional
     public void saveUpdatedProducts(List<Product> updatedProducts) {
         if (!updatedProducts.isEmpty()) {
-            productRepository.saveAll(updatedProducts);
+            productJpaRepository.saveAll(updatedProducts);
         }
     }
 
@@ -198,7 +209,7 @@ public class ProductServiceImpl implements ProductService{
                     .details("This is a description for product " + (i + 1))
                     .build();
 
-            productRepository.save(product);
+            productJpaRepository.save(product);
         }
     }
 
