@@ -18,14 +18,13 @@ public class AlertService {
     }
 
     @Transactional
-    public Long add(AlertCreateDto alertCreateDto){
+    public Long add(Long memberId, String content){
         Alert alert = Alert.builder()
-                .memberId(alertCreateDto.getMemberId())
-                .content(alertCreateDto.getContent())
+                .memberId(memberId)
+                .content(content)
                 .build();
 
         alertRepository.save(alert);
-
         return alert.getId();
     }
 
