@@ -26,10 +26,14 @@ public class BaseEntity {
     private LocalDateTime updatedAt;
 
     @CreatedBy
-    @Column(updatable = false)
+    @Column
     private String createdBy;
 
     @LastModifiedBy
     @Column
     private String modifiedBy;
+
+    public void updateCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 }

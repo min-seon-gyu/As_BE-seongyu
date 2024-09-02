@@ -138,4 +138,5 @@ public class Product extends BaseEntity {
     public int getLikeCount(){
         return likes.size();
     }
+
 }

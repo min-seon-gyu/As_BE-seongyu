@@ -13,14 +13,13 @@ import java.util.List;
 public interface ProductService {
     Product save(ProductDto productDto, Long memberId, List<MultipartFile> images);
     Iterable<ProductDocument> findAllProduct(Long memberId);
-
-    //Todo 하단부터 리팩
     Iterable<ProductDocument> findAllByNickname(String nickname);
     Product findProductById(Long memberId, Long product_id);
     Product updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images);
     int findCurrentPriceById(Long productId);
     void purchaseProductItem(Long product_id);
     boolean deleteProductById(Long product_id);
+    void updateCreateBy(String oldNickname, String newNickname, Long memberId);
     void updateProductPrices();
     void createDummyProducts(int count);
 }

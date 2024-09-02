@@ -3,7 +3,7 @@ package Auction_shop.auction.domain.product.service;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
-import Auction_shop.auction.domain.member.service.MemberService;
+import Auction_shop.auction.domain.member.repository.MemberRepository;
 import Auction_shop.auction.domain.product.ProductDocument;
 import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
 import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
@@ -27,16 +27,17 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService{
     private final ProductJpaRepository productJpaRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
+    private final MemberRepository memberRepository;
     private final ProductMapper productMapper;
     private final ImageService imageService;
-    private final MemberService memberService;
 
     private final Random random = new Random();
 
     @Override
     @Transactional
     public Product save(ProductDto productDto, Long memberId, List<MultipartFile> images) {
-        Member member = memberService.getById(memberId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow();
 
         Product product = productMapper.toEntity(productDto, member);
         member.addProduct(product);
@@ -94,6 +95,26 @@ public class ProductServiceImpl implements ProductService{
         productElasticsearchRepository.save(productDocument);
 
         return product;
+    }
+
+    @Override
+    @Transactional
+    public void updateCreateBy(String oldNickname, String newNickname, Long memberId){
+        List<Product> products = productJpaRepository.findAllByMemberId(memberId);
+        List<ProductDocument> productDocuments = new ArrayList<>();
+
+        for (Product product : products) {
+            product.updateCreatedBy(newNickname);
+            ProductDocument productDocument = productMapper.toDocument(product);
+            productDocuments.add(productDocument);
+        }
+
+        // Elasticsearch 배치 저장
+        try {
+            productElasticsearchRepository.saveAll(productDocuments);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

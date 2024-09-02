@@ -6,6 +6,8 @@ import Auction_shop.auction.domain.address.Address;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.address.repository.AddressRepository;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
+import Auction_shop.auction.domain.product.ProductDocument;
+import Auction_shop.auction.domain.product.service.ProductService;
 import Auction_shop.auction.domain.refreshToken.repository.RefreshTokenRepository;
 import Auction_shop.auction.web.dto.member.MemberResponseDto;
 import Auction_shop.auction.web.dto.member.MemberUpdateDto;
@@ -23,6 +25,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final AddressRepository addressRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ProductService productService;
     private final ImageService imageService;
 
     @Transactional
@@ -64,6 +67,10 @@ public class MemberService {
             throw new RuntimeException("방금 누군가가 해당 닉네임으로 닉네임 변경을 했습니다.");
         }
 
+        if (!member.getNickname().equals(memberUpdateDto.getNickname())){
+            productService.updateCreateBy(member.getNickname(), memberUpdateDto.getNickname(), memberId);
+        }
+
         if (member.getProfileImage() != null){
             imageService.deleteImage(member.getProfileImage().getStoredName());
         }
@@ -89,6 +96,7 @@ public class MemberService {
         }
 
         member.update(memberUpdateDto.getName() ,memberUpdateDto.getNickname(), memberUpdateDto.getEmail(), memberUpdateDto.getPhone(), address);
+
         return member;
     }
 
