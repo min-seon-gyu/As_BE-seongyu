@@ -58,8 +58,8 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Iterable<ProductDocument> findAllByMemberId(Long memberId){
-        return productElasticsearchRepository.findByMemberId(memberId);
+    public Iterable<ProductDocument> findAllByNickname(String nickname){
+        return productElasticsearchRepository.findByCreatedBy(nickname);
     }
 
     @Override

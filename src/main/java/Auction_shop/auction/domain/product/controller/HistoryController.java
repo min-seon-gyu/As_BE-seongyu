@@ -33,7 +33,8 @@ public class HistoryController {
     public ResponseEntity<List<ProductListResponseDto>> getSellList(@RequestHeader("Authorization") String authorization
     ){
         Long memberId = jwtUtil.extractMemberId(authorization);
-        Iterable<ProductDocument> products = productService.findAllByMemberId(memberId);
+        String nickname = jwtUtil.extractNickname(authorization);
+        Iterable<ProductDocument> products = productService.findAllByNickname(nickname);
         List<Long> likedProductsIds = likeService.getLikeItems(memberId);
 
         List<ProductListResponseDto> collect = StreamSupport.stream(products.spliterator(), false)

@@ -15,7 +15,7 @@ public interface ProductService {
     Iterable<ProductDocument> findAllProduct(Long memberId);
 
     //Todo 하단부터 리팩
-    Iterable<ProductDocument> findAllByMemberId(Long MemberId);
+    Iterable<ProductDocument> findAllByNickname(String nickname);
     Product findProductById(Long memberId, Long product_id);
     Product updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images);
     int findCurrentPriceById(Long productId);

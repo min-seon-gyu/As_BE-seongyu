@@ -17,9 +17,6 @@ public class ProductDocument {
     @Field(name = "product_id", type = FieldType.Long)
     private Long id;
 
-    @Field(name = "member_id")
-    private Long memberId;
-
     @Field(type = FieldType.Text, analyzer = "standard")
     private String title;
 
