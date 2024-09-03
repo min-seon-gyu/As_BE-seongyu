@@ -14,6 +14,7 @@ public interface ProductService {
     Product save(ProductDto productDto, Long memberId, List<MultipartFile> images);
     Iterable<ProductDocument> findAllProduct(Long memberId);
     Iterable<ProductDocument> findAllByNickname(String nickname);
+    Iterable<ProductDocument> findByTitle(String title);
     Product findProductById(Long memberId, Long product_id);
     Product updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images);
     int findCurrentPriceById(Long productId);

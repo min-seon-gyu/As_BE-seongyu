@@ -64,6 +64,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public Iterable<ProductDocument> findByTitle(String title){
+        return productElasticsearchRepository.findByTitleLike(title);
+    }
+
+    @Override
     public Product findProductById(Long memberId, Long product_id) {
         Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));

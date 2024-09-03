@@ -17,7 +17,7 @@ public class ProductDocument {
     @Field(name = "product_id", type = FieldType.Long)
     private Long id;
 
-    @Field(type = FieldType.Text, analyzer = "standard")
+    @Field(type = FieldType.Text, analyzer = "ngram_analyzer") // ngram 분석기 사용
     private String title;
 
     @Field(type = FieldType.Boolean)
