@@ -4,7 +4,6 @@ import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.payments.Payments;
 import Auction_shop.auction.domain.payments.repository.PaymentsRepository;
-import Auction_shop.auction.domain.product.repository.ProductRepository;
 import Auction_shop.auction.domain.product.service.ProductService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
