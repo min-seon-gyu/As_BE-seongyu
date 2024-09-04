@@ -198,6 +198,11 @@ public class ProductServiceImpl implements ProductService{
     public void saveUpdatedProducts(List<Product> updatedProducts) {
         if (!updatedProducts.isEmpty()) {
             productJpaRepository.saveAll(updatedProducts);
+
+            List<ProductDocument> productDocuments = updatedProducts.stream()
+                    .map(productMapper::toDocument)
+                    .collect(Collectors.toList());
+            productElasticsearchRepository.saveAll(productDocuments);
         }
     }
 

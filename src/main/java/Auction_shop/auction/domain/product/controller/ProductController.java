@@ -82,14 +82,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(collect);
     }
 
-    /**
-     * 상품 이름 검색
-     */
-    @GetMapping("/{title}")
-    public ResponseEntity<Object> getByTitle(@PathVariable String title){
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findByTitle(title));
-    }
-
 
     /**
      * 상품 상세 조회
