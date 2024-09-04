@@ -17,6 +17,7 @@ public class ProductDocument {
     @Field(name = "product_id", type = FieldType.Long)
     private Long id;
 
+    //사전에 elasticsearch index ngram_analyzer 설정 필요
     @Field(type = FieldType.Text, analyzer = "ngram_analyzer") // ngram 분석기 사용
     private String title;
 
