@@ -64,8 +64,22 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Iterable<ProductDocument> findByTitle(String title){
+    public Iterable<ProductDocument> findByTitleLike(String title){
         return productElasticsearchRepository.findByTitleLike(title);
+    }
+
+    @Override
+    public List<ProductDocument> getNewProducts() {
+        List<ProductDocument> products = productElasticsearchRepository.findTop20ByOrderByCreatedAtDesc();
+        int numberOfElementsToReturn = Math.min(products.size(), 5);
+        return getRandomElements(products, numberOfElementsToReturn);
+    }
+
+    @Override
+    public List<ProductDocument> getHotProducts(){
+        List<ProductDocument> products = productElasticsearchRepository.findTop20ByOrderByLikeCountDesc();
+        int numberOfElementsToReturn = Math.min(products.size(), 5);
+        return getRandomElements(products, numberOfElementsToReturn);
     }
 
     @Override
@@ -220,6 +234,15 @@ public class ProductServiceImpl implements ProductService{
                 }
             }
         }
+    }
+
+    private List<ProductDocument> getRandomElements(List<ProductDocument> list, int number) {
+        Random random = new Random();
+        return random.ints(0, list.size())
+                .distinct()
+                .limit(number)
+                .mapToObj(list::get)
+                .collect(Collectors.toList());
     }
 
     @Transactional

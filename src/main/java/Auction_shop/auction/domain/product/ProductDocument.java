@@ -7,6 +7,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Builder
@@ -50,4 +51,7 @@ public class ProductDocument {
 
     @Field(type = FieldType.Integer, name = "like_count")
     private int likeCount;
+
+    @Field(type = FieldType.Date, name = "created_at") // 생성 시간 필드 추가
+    private LocalDate createdAt; // 생성 시간 필드
 }
