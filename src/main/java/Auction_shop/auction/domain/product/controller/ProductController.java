@@ -105,7 +105,7 @@ public class ProductController {
     }
 
     /**
-     * HOT 경매 추천 (좋아요 순)
+     * HOT 경매 추천 (좋아요)
      */
     @GetMapping("/hot")
     public ResponseEntity<Object> getHotAuctions() {
