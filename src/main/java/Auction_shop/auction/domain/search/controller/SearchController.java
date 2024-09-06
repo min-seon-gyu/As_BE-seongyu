@@ -27,7 +27,7 @@ public class SearchController {
     public ResponseEntity<Object> getByTitle(@RequestHeader("Authorization") String authorization, @PathVariable String title){
         Long memberId = jwtUtil.extractMemberId(authorization);
         searchService.saveSearchTerm(memberId, title);
-        Iterable<ProductDocument> collect = productService.findByTitle(title);
+        Iterable<ProductDocument> collect = productService.findByTitleLike(title);
         return ResponseEntity.status(HttpStatus.OK).body(collect);
     }
 

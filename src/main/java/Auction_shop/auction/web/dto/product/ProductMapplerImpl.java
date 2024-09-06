@@ -57,6 +57,19 @@ public class ProductMapplerImpl implements ProductMapper{
     }
 
     @Override
+    public ProductRecommendedDto toRecommendedDto(ProductDocument productDocument) {
+        ProductRecommendedDto recommendedDto = ProductRecommendedDto.builder()
+                .product_id(productDocument.getId())
+                .title(productDocument.getTitle())
+                .tradeTypes(productDocument.getTradeTypes())
+                .initial_price(productDocument.getInitialPrice())
+                .current_price(productDocument.getCurrentPrice())
+                .imageUrl(productDocument.getImageUrl())
+                .build();
+        return recommendedDto;
+    }
+
+    @Override
     public Product toEntity(ProductDto productDto, Member member) {
         Product product = Product.builder()
                 .title(productDto.getTitle())
@@ -90,6 +103,7 @@ public class ProductMapplerImpl implements ProductMapper{
                 .currentPrice(product.getCurrent_price())
                 .imageUrl(product.getImageUrls().stream().findFirst().orElse(null)) // 첫 번째 이미지 URL
                 .createdBy(product.getCreatedBy())
+                .createdAt(product.getCreatedAt())
                 .likeCount(product.getLikeCount())
                 .build();
         return productDocument;

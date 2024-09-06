@@ -82,6 +82,34 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(collect);
     }
 
+    /**
+     * NEW 경매 추천
+     */
+    @GetMapping("/new")
+    public ResponseEntity<Object> getNewAuctions() {
+        List<ProductDocument> products = productService.getNewProducts();
+
+        List<ProductRecommendedDto> collect = products.stream()
+                .map(product -> productMapper.toRecommendedDto(product))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(collect);
+    }
+
+    /**
+     * HOT 경매 추천 (좋아요)
+     */
+    @GetMapping("/hot")
+    public ResponseEntity<Object> getHotAuctions() {
+        List<ProductDocument> products = productService.getHotProducts();
+
+        List<ProductRecommendedDto> collect = products.stream()
+                .map(product -> productMapper.toRecommendedDto(product))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(collect);
+    }
+
 
     /**
      * 상품 상세 조회
