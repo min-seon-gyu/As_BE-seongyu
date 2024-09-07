@@ -25,6 +25,7 @@ public class MemberResponseDto {
     private String phone;
     private Long point;
     private boolean available;
+    private List<String> categories;
     private String profileImageUrl;
     private String role;
 
@@ -41,6 +42,7 @@ public class MemberResponseDto {
                 .profileImageUrl(Optional.ofNullable(member.getProfileImage())
                         .map(Image::getAccessUrl)
                         .orElse(null))
+                .categories(member.getCategories())
                 .role(member.getRole())
                 .available(member.isAvailable())
                 .build();

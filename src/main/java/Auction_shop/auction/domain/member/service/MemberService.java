@@ -95,7 +95,7 @@ public class MemberService {
             addressRepository.save(address);
         }
 
-        member.update(memberUpdateDto.getName() ,memberUpdateDto.getNickname(), memberUpdateDto.getEmail(), memberUpdateDto.getPhone(), address);
+        member.update(memberUpdateDto.getName() ,memberUpdateDto.getNickname(), memberUpdateDto.getEmail(), memberUpdateDto.getPhone(), address, memberUpdateDto.getCategories());
 
         return member;
     }

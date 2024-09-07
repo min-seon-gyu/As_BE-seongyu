@@ -13,7 +13,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -68,6 +70,10 @@ public class Member extends BaseEntity {
     @Builder.Default
     private List<Payments> payments = new ArrayList<>();
 
+    @ElementCollection
+    @Column(nullable = false)
+    private List<String> categories = new ArrayList<>();
+
     @Column
     @Builder.Default
     private boolean available = false;
@@ -79,13 +85,17 @@ public class Member extends BaseEntity {
     @Version
     private Long version;
 
-    public void update(String name, String nickname, String email, String phone, Address address) {
+    public void update(String name, String nickname, String email, String phone, Address address, List<String> categories) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.phone = phone;
         if (address != null) {
             this.addresses.add(address);
+        }
+        if (categories != null) {
+            this.categories.clear();
+            this.categories = categories;
         }
         this.available = true;
     }
@@ -100,19 +110,9 @@ public class Member extends BaseEntity {
         inquiry.setMember(this);
     }
 
-    public void removeInquiry(Inquiry inquiry){
-        this.inquiries.remove(inquiry);
-        inquiry.setMember(null);
-    }
-
     public void addProduct(Product product){
         this.products.add(product);
         product.setMember(this);
-    }
-
-    public void removeProduct(Product product){
-        this.products.remove(product);
-        product.setMember(null);
     }
 
     public void addLike(Like like) {
@@ -129,7 +129,4 @@ public class Member extends BaseEntity {
         this.addresses.add(address);
     }
 
-    public void removeAddress(Address address){
-        this.addresses.remove(address);
-    }
 }
