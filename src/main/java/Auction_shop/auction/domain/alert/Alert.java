@@ -17,6 +17,8 @@ public class Alert {
     @Column(name = "alert_id")
     private Long id;
     @Column(nullable = false)
+    private Long memberId;
+    @Column(nullable = false)
     private String memberNickname;
     @Column(nullable = false)
     private String content;
