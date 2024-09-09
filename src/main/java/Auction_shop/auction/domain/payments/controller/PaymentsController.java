@@ -4,8 +4,7 @@ import Auction_shop.auction.domain.alert.AlertType;
 import Auction_shop.auction.domain.alert.util.AlertUtil;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.payments.service.PaymentsService;
-import Auction_shop.auction.domain.product.Product;
-import Auction_shop.auction.domain.product.repository.ProductRepository;
+import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentsController {
     private final PaymentsService paymentsService;
-    private final ProductRepository productRepository;
+    private final ProductJpaRepository productRepository;
     private final JwtUtil jwtUtil;
     private final AlertUtil alertUtil;
 

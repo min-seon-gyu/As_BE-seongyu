@@ -11,13 +11,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class AlertUtil {
     private final AlertService alertService;
-    private final SSEConnection sseConnection;
+    private final SSEConnection sseConnection = new SSEConnection();;
 
     public void run(Long memberId, String memberNickname, String content, AlertType alertType){
         SseEmitter emitter = sseConnection.getEmitter(Long.toString(memberId));
         if (emitter != null) {
             sseConnection.sendEvent(emitter, content, null);
         }
-        alertService.add(memberNickname, "AddLike", alertType);
+        alertService.add(memberId, memberNickname, "AddLike", alertType);
     }
 }
