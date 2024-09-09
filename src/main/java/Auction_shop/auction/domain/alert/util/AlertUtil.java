@@ -18,6 +18,6 @@ public class AlertUtil {
         if (emitter != null) {
             sseConnection.sendEvent(emitter, content, null);
         }
-        alertService.add(memberNickname, "AddLike", alertType);
+        alertService.add(memberId, memberNickname, "AddLike", alertType);
     }
 }

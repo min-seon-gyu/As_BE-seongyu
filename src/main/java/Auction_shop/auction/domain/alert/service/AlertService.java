@@ -19,8 +19,9 @@ public class AlertService {
     }
 
     @Transactional
-    public Long add(String memberNickname, String content, AlertType alertType){
+    public Long add(Long memberId, String memberNickname, String content, AlertType alertType){
         Alert alert = Alert.builder()
+                .memberId(memberId)
                 .alertType(alertType)
                 .memberNickname(memberNickname)
                 .content(content)
