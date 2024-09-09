@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AlertResponseDto {
     private Long id;;
-    private Long memberId;
+    private String memberNickname;
     private String content;
+    private String alertType;
 }
