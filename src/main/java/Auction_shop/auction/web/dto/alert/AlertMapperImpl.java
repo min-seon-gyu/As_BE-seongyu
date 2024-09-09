@@ -13,7 +13,8 @@ public class AlertMapperImpl implements AlertMapper {
     public AlertResponseDto toResponseDto(Alert alert) {
         AlertResponseDto responseDto = new AlertResponseDto().builder()
                 .id(alert.getId())
-                .memberId(alert.getMemberId())
+                .alertType(alert.getAlertType().getContent())
+                .memberNickname(alert.getMemberNickname())
                 .content(alert.getContent()).
                 build();
         return responseDto;
