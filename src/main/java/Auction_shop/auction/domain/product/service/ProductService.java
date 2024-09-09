@@ -18,6 +18,7 @@ public interface ProductService {
     Iterable<ProductDocument> findByTitleLike(String title);
 
     //물건 추천
+    List<ProductDocument> getUserCategoryProducts(Long memberId);
     List<ProductDocument> getNewProducts();
     List<ProductDocument> getHotProducts();
 

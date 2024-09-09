@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -17,4 +20,5 @@ public class MemberUpdateDto {
     private String address;
     private String detailAddress;
     private String zipcode;
+    private Set<String> categories;
 }

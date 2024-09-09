@@ -69,6 +69,19 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public List<ProductDocument> getUserCategoryProducts(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow();
+        Set<String> categories = member.getCategories();
+        List<ProductDocument> products = productElasticsearchRepository.findByCategoriesIn(categories);
+        if (!products.isEmpty()) {
+            int numberOfElementsToReturn = Math.min(products.size(), 5);
+            return getRandomElements(products, numberOfElementsToReturn);
+        }
+        return null;
+    }
+
+    @Override
     public List<ProductDocument> getNewProducts() {
         List<ProductDocument> products = productElasticsearchRepository.findTop20ByOrderByCreatedAtDesc();
         int numberOfElementsToReturn = Math.min(products.size(), 5);
@@ -257,6 +270,7 @@ public class ProductServiceImpl implements ProductService{
                     .initial_price(random.nextInt(1000) + 100) // 최소 100
                     .minimum_price(random.nextInt(500) + 50) // 최소 50
                     .startTime(LocalDateTime.now().minusDays(random.nextInt(10)))
+                    .imageList(null)
                     .endTime(LocalDateTime.now().plusDays(random.nextInt(10)))
                     .updateTime(LocalDateTime.now())
                     .isSold(false)
@@ -264,16 +278,18 @@ public class ProductServiceImpl implements ProductService{
                     .build();
 
             productJpaRepository.save(product);
+            ProductDocument document = productMapper.toDocument(product);
+            productElasticsearchRepository.save(document);
         }
     }
 
     private Set<String> createRandomCategories() {
         Set<String> categories = new HashSet<>();
-        categories.add("Electronics");
-        categories.add("Fashion");
-        categories.add("Home");
-        categories.add("Toys");
-        categories.add("Books");
+        categories.add("검색");
+        categories.add("테스트");
+        categories.add("용");
+        categories.add("더미");
+        categories.add("데이터");
         return categories;
     }
 
