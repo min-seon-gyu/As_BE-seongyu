@@ -72,7 +72,7 @@ public class Member extends BaseEntity {
 
     @ElementCollection
     @Column(nullable = false)
-    private List<String> categories = new ArrayList<>();
+    private Set<String> categories = new HashSet<>();
 
     @Column
     @Builder.Default
@@ -85,7 +85,7 @@ public class Member extends BaseEntity {
     @Version
     private Long version;
 
-    public void update(String name, String nickname, String email, String phone, Address address, List<String> categories) {
+    public void update(String name, String nickname, String email, String phone, Address address, Set<String> categories) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;

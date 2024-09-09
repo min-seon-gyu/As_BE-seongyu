@@ -9,10 +9,7 @@ import lombok.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -99,7 +96,11 @@ public class Product extends BaseEntity {
         this.isSold = isSold;
     }
 
-    public List<String> getImageUrls(){
+    public List<String> getImageUrls() {
+        if (imageList == null) {
+            return Collections.emptyList(); // imageList가 null일 경우 빈 리스트 반환
+        }
+
         return imageList.stream()
                 .map(Image::getAccessUrl)
                 .collect(Collectors.toList());

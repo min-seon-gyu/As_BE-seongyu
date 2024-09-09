@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -83,10 +84,29 @@ public class ProductController {
     }
 
     /**
+     * 유저 경매 추천
+     */
+    @GetMapping("/category")
+    public ResponseEntity<Object> getUserCategoryProducts(@RequestHeader("Authorization") String authorization) {
+        Long memberId = jwtUtil.extractMemberId(authorization);
+        List<ProductDocument> products = productService.getUserCategoryProducts(memberId);
+
+        if (products == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList());
+        }
+
+        List<ProductRecommendedDto> collect = products.stream()
+                .map(product -> productMapper.toRecommendedDto(product))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(collect);
+    }
+
+    /**
      * NEW 경매 추천
      */
     @GetMapping("/new")
-    public ResponseEntity<Object> getNewAuctions() {
+    public ResponseEntity<Object> getNewProducts() {
         List<ProductDocument> products = productService.getNewProducts();
 
         List<ProductRecommendedDto> collect = products.stream()
@@ -100,7 +120,7 @@ public class ProductController {
      * HOT 경매 추천 (좋아요)
      */
     @GetMapping("/hot")
-    public ResponseEntity<Object> getHotAuctions() {
+    public ResponseEntity<Object> getHotProducts() {
         List<ProductDocument> products = productService.getHotProducts();
 
         List<ProductRecommendedDto> collect = products.stream()

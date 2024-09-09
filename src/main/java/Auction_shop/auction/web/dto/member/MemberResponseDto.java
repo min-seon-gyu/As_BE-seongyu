@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -25,7 +26,7 @@ public class MemberResponseDto {
     private String phone;
     private Long point;
     private boolean available;
-    private List<String> categories;
+    private Set<String> categories;
     private String profileImageUrl;
     private String role;
 
