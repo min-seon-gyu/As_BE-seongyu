@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.product.service;
 
+import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
@@ -28,10 +29,9 @@ public class ProductServiceImpl implements ProductService{
     private final ProductJpaRepository productJpaRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
     private final MemberRepository memberRepository;
+    private final BidService bidService;
     private final ProductMapper productMapper;
     private final ImageService imageService;
-
-    private final Random random = new Random();
 
     @Override
     @Transactional
@@ -256,47 +256,5 @@ public class ProductServiceImpl implements ProductService{
                 .limit(number)
                 .mapToObj(list::get)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void createDummyProducts(int count) {
-        for (int i = 0; i < count; i++) {
-            Product product = Product.builder()
-                    .title("Product " + (i + 1))
-                    .conditions("New")
-                    .categories(createRandomCategories())
-                    .tradeTypes(createRandomTradeTypes())
-                    .tradeLocation("Location " + random.nextInt(100))
-                    .initial_price(random.nextInt(1000) + 100) // 최소 100
-                    .minimum_price(random.nextInt(500) + 50) // 최소 50
-                    .startTime(LocalDateTime.now().minusDays(random.nextInt(10)))
-                    .imageList(null)
-                    .endTime(LocalDateTime.now().plusDays(random.nextInt(10)))
-                    .updateTime(LocalDateTime.now())
-                    .isSold(false)
-                    .details("This is a description for product " + (i + 1))
-                    .build();
-
-            productJpaRepository.save(product);
-            ProductDocument document = productMapper.toDocument(product);
-            productElasticsearchRepository.save(document);
-        }
-    }
-
-    private Set<String> createRandomCategories() {
-        Set<String> categories = new HashSet<>();
-        categories.add("검색");
-        categories.add("테스트");
-        categories.add("용");
-        categories.add("더미");
-        categories.add("데이터");
-        return categories;
-    }
-
-    private Set<String> createRandomTradeTypes() {
-        Set<String> tradeTypes = new HashSet<>();
-        tradeTypes.add("Sell");
-        tradeTypes.add("Trade");
-        return tradeTypes;
     }
 }
