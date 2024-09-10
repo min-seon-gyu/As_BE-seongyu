@@ -114,6 +114,10 @@ public class Product extends BaseEntity {
         this.conditions = conditions;
     }
 
+    public void bidProduct(int bidAmount){
+        this.current_price = bidAmount;
+    }
+
     public void updateCurrentPrice(int current_price){
         this.current_price = current_price;
     }
