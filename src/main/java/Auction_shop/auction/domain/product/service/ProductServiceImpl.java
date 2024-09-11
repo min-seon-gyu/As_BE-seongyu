@@ -1,11 +1,13 @@
 package Auction_shop.auction.domain.product.service;
 
+import Auction_shop.auction.domain.bid.Bid;
 import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
 import Auction_shop.auction.domain.product.ProductDocument;
+import Auction_shop.auction.domain.product.ProductType;
 import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
 import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.domain.product.Product;
@@ -167,6 +169,21 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Scheduled(fixedRate = 10000)
+    public void checkProductToEnd() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        Pageable pageable = PageRequest.of(0, 100); // 페이지 크기 설정
+        Page<Product> expiredProducts = productJpaRepository.findExpiredProduct(currentTime, ProductType.ASCENDING, pageable); // 만료된 제품 조회
+
+        for (Product product : expiredProducts) {
+            product.setIsSold(true); // 경매 종료
+            Bid highestBid = finalizeAuction(product.getId()); // 가장 높은 입찰 찾기
+            if (highestBid != null) {
+                confirmPurchase(highestBid); // 구매 확정
+        }
+    }
+
+    @Override
     @Transactional
     public boolean deleteProductById(Long product_id) {
         boolean isFound = productJpaRepository.existsById(product_id);
@@ -189,6 +206,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     //더미 10,000개로 확인 결과 성능에 영향은 없지만 추후 redis
+    //하향식 경매 가격 내리기
     @Override
     @Scheduled(fixedRate = 60000)
     public void updateProductPrices() {
@@ -199,7 +217,7 @@ public class ProductServiceImpl implements ProductService{
         Page<Product> page;
         do {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            page = productJpaRepository.findActiveProduct(currentTime, pageable);
+            page = productJpaRepository.findActiveProduct(currentTime, ProductType.DESCENDING, pageable);
 
             List<Product> updatedProducts = new ArrayList<>();
             for (Product product : page.getContent()) {

@@ -35,8 +35,8 @@ public interface ProductService {
     //물건 삭제
     boolean deleteProductById(Long product_id);
 
-    //상향식 경매 종료 처리
-
+    //상향식 경매 종료 체크
+    void checkProductToEnd();
 
     //닉네임 변경후 물건 생성자명 변경
     void updateCreateBy(String oldNickname, String newNickname, Long memberId);
