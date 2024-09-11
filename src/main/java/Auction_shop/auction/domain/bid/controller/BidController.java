@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.bid.controller;
 
 import Auction_shop.auction.domain.bid.Bid;
 import Auction_shop.auction.domain.bid.service.BidService;
+import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.bid.BidMapper;
 import Auction_shop.auction.web.dto.bid.BidResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,13 @@ public class BidController {
 
     private final BidService bidService;
     private final BidMapper bidMapper;
+    private final JwtUtil jwtUtil;
 
     //상향식 입찰 넣기
     @PostMapping("/{productId}")
-    public ResponseEntity<BidResponseDto> addBid(@PathVariable("productId") Long productId, @RequestParam int bidAmount){
-        System.out.println("bidAmount = " + bidAmount);
-        Bid bid = bidService.placeBid(productId, bidAmount);
+    public ResponseEntity<BidResponseDto> addBid(@RequestHeader("Authorization") String authorization, @PathVariable("productId") Long productId, @RequestParam int bidAmount){
+        Long userId = jwtUtil.extractMemberId(authorization);
+        Bid bid = bidService.placeBid(userId, productId, bidAmount);
         BidResponseDto collect = bidMapper.toResponseDto(bid);
         return ResponseEntity.ok(collect);
     }

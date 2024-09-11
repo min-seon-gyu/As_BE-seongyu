@@ -21,7 +21,7 @@ public class BidService {
     private final ProductElasticsearchRepository productElasticsearchRepository;
     private final ProductMapper productMapper;
 
-    public Bid placeBid(Long productId, int bidAmount){
+    public Bid placeBid(Long userId, Long productId, int bidAmount){
 
         Product product = productJpaRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException(productId + "에 해당하는 물건이 없습니다."));
@@ -37,7 +37,8 @@ public class BidService {
         product.bidProduct(bidAmount);
 
         Bid bid = Bid.builder()
-                .product_id(productId)
+                .productId(productId)
+                .userId(userId)
                 .amount(bidAmount)
                 .bidTime(LocalDateTime.now())
                 .build();

@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Bid {
 
-    private Long product_id;
+    private Long productId;
+    private Long userId;
     private int amount;
     private LocalDateTime bidTime;
 

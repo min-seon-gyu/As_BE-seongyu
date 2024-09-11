@@ -19,7 +19,7 @@ public class BidRepository {
     private final ObjectMapper objectMapper;
 
     public void save(Bid bid) {
-        String key = "bids" + bid.getProduct_id();
+        String key = "bids" + bid.getProductId();
         try {
             String jsonBid = objectMapper.writeValueAsString(bid); // Bid 객체를 JSON 문자열로 변환
             redisTemplate.opsForList().rightPush(key, jsonBid); // JSON 문자열로 저장
