@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
-public class BidRepository {
+public class BidRedisRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
@@ -44,5 +44,21 @@ public class BidRepository {
                     }
                 })
                 .collect(Collectors.toList());
+    }
+
+    public Bid findHighestBidByProductId(Long productId) {
+        String key = "bids" + productId;
+        String latestJsonBid = redisTemplate.opsForList().rightPop(key); // 가장 최근에 저장된 값 가져오기
+
+        if (latestJsonBid == null) {
+            return null; // 없으면 null 반환
+        }
+
+        try {
+            return objectMapper.readValue(latestJsonBid, Bid.class); // JSON 문자열을 Bid 객체로 변환
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // 예외 처리
+            return null; // 변환 실패 시 null 반환
+        }
     }
 }

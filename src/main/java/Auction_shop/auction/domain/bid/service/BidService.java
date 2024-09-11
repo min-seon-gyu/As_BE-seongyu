@@ -1,7 +1,7 @@
 package Auction_shop.auction.domain.bid.service;
 
 import Auction_shop.auction.domain.bid.Bid;
-import Auction_shop.auction.domain.bid.repository.BidRepository;
+import Auction_shop.auction.domain.bid.repository.BidRedisRepository;
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.ProductDocument;
 import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BidService {
-    private final BidRepository bidRepository;
+    private final BidRedisRepository bidRedisRepository;
     private final ProductJpaRepository productJpaRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
     private final ProductMapper productMapper;
@@ -43,7 +43,7 @@ public class BidService {
                 .bidTime(LocalDateTime.now())
                 .build();
 
-        bidRepository.save(bid);
+        bidRedisRepository.save(bid);
 
         productJpaRepository.save(product);
         ProductDocument document = productMapper.toDocument(product);
@@ -53,6 +53,6 @@ public class BidService {
     }
 
     public List<Bid> getBidsForProduct(Long productId){
-        return bidRepository.findBidsByProductId(productId);
+        return bidRedisRepository.findBidsByProductId(productId);
     }
 }

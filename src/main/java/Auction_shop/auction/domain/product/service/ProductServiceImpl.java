@@ -1,7 +1,7 @@
 package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.bid.Bid;
-import Auction_shop.auction.domain.bid.service.BidService;
+import Auction_shop.auction.domain.bid.repository.BidRedisRepository;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
@@ -27,11 +27,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     private final ProductJpaRepository productJpaRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
     private final MemberRepository memberRepository;
-    private final BidService bidService;
+    private final BidRedisRepository bidRedisRepository;
     private final ProductMapper productMapper;
     private final ImageService imageService;
 
@@ -56,17 +56,17 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Iterable<ProductDocument> findAllProduct(Long memberId){
+    public Iterable<ProductDocument> findAllProduct(Long memberId) {
         return productElasticsearchRepository.findAll();
     }
 
     @Override
-    public Iterable<ProductDocument> findAllByNickname(String nickname){
+    public Iterable<ProductDocument> findAllByNickname(String nickname) {
         return productElasticsearchRepository.findByCreatedBy(nickname);
     }
 
     @Override
-    public Iterable<ProductDocument> findByTitleLike(String title){
+    public Iterable<ProductDocument> findByTitleLike(String title) {
         return productElasticsearchRepository.findByTitleLike(title);
     }
 
@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductDocument> getHotProducts(){
+    public List<ProductDocument> getHotProducts() {
         List<ProductDocument> products = productElasticsearchRepository.findTop20ByOrderByLikeCountDesc();
         int numberOfElementsToReturn = Math.min(products.size(), 5);
         return getRandomElements(products, numberOfElementsToReturn);
@@ -133,7 +133,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public void updateCreateBy(String oldNickname, String newNickname, Long memberId){
+    public void updateCreateBy(String oldNickname, String newNickname, Long memberId) {
         List<Product> products = productJpaRepository.findAllByMemberId(memberId);
         List<ProductDocument> productDocuments = new ArrayList<>();
 
@@ -153,11 +153,11 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public void purchaseProductItem(Long product_id){
+    public void purchaseProductItem(Long product_id) {
         Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
-        if (product.isSold()){
+        if (product.isSold()) {
             throw new RuntimeException("이미 판매된 물품입니다.");
         }
 
@@ -170,17 +170,29 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Scheduled(fixedRate = 10000)
+    @Transactional
     public void checkProductToEnd() {
         LocalDateTime currentTime = LocalDateTime.now();
-        Pageable pageable = PageRequest.of(0, 100); // 페이지 크기 설정
-        Page<Product> expiredProducts = productJpaRepository.findExpiredProduct(currentTime, ProductType.ASCENDING, pageable); // 만료된 제품 조회
+        int pageSize = 2000;
+        int pageNumber = 0;
 
-        for (Product product : expiredProducts) {
-            product.setIsSold(true); // 경매 종료
-            Bid highestBid = finalizeAuction(product.getId()); // 가장 높은 입찰 찾기
-            if (highestBid != null) {
-                confirmPurchase(highestBid); // 구매 확정
-        }
+        Page<Product> page;
+        do {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            page = productJpaRepository.findExpiredProduct(currentTime, ProductType.ASCENDING, pageable); // 만료된 제품 조회
+            List<Product> updatedProducts = new ArrayList<>();
+            for (Product product : page.getContent()) {
+                product.setIsSold(true); // 경매 종료 처리
+                Bid highestBid = bidRedisRepository.findHighestBidByProductId(product.getProduct_id());
+                if (highestBid != null) {
+                    // 경매 우승자에게 알림 보내기
+                    Long userId = highestBid.getUserId();
+                }
+                updatedProducts.add(product);
+            }
+            saveUpdatedProducts(updatedProducts);
+            pageNumber++;
+        } while (page.hasNext());
     }
 
     @Override
@@ -190,7 +202,7 @@ public class ProductServiceImpl implements ProductService{
         Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
         if (isFound) {
-            for (Image image : product.getImageList()){
+            for (Image image : product.getImageList()) {
                 imageService.deleteImage(image.getStoredName());
             }
             productJpaRepository.deleteById(product_id);
@@ -200,7 +212,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public int findCurrentPriceById(Long productId){
+    public int findCurrentPriceById(Long productId) {
         int price = productJpaRepository.findCurrentPriceById(productId);
         return price;
     }
