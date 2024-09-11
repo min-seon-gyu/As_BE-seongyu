@@ -28,6 +28,10 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String conditions;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProductType productType; // 경매 방식 (상향식/하향식)
+
     @ElementCollection
     @Column(nullable = false)
     private Set<String> categories = new HashSet<>();
@@ -64,11 +68,12 @@ public class Product extends BaseEntity {
     private List<Like> likes = new ArrayList<>();
 
     @Builder
-    public Product(Long product_id, Member member, String title, String conditions, Set<String> categories, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
+    public Product(Long product_id, Member member, String title, ProductType productType, String conditions, Set<String> categories, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
                    List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime,boolean isSold) {
         this.product_id = product_id;
         this.member = member;
         this.title = title;
+        this.productType = productType;
         this.conditions = conditions;
         this.categories = categories;
         this.tradeTypes = tradeTypes;
