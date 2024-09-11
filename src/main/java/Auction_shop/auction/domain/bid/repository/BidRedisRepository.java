@@ -48,7 +48,14 @@ public class BidRedisRepository {
 
     public Bid findHighestBidByProductId(Long productId) {
         String key = "bids" + productId;
-        String latestJsonBid = redisTemplate.opsForList().rightPop(key); // 가장 최근에 저장된 값 가져오기
+
+        Long size = redisTemplate.opsForList().size(key);
+
+        if (size == null || size == 0) {
+            return null; // 리스트가 비어있으면 null 반환
+        }
+
+        String latestJsonBid = redisTemplate.opsForList().index(key, size - 1);
 
         if (latestJsonBid == null) {
             return null; // 없으면 null 반환

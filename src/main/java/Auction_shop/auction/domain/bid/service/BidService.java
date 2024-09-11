@@ -62,11 +62,22 @@ public class BidService {
         if (bids.isEmpty()){
             bids = bidJpaRepository.findByProductId(productId);
             for(Bid bid : bids){
+                System.out.println("bid.getAmount() = " + bid.getAmount());
                 bidRedisRepository.save(bid);
             }
             Collections.reverse(bids);
         }
 
         return bids;
+    }
+
+    public Bid getHighestBidForProduct(Long productId){
+        Bid highestBid = bidRedisRepository.findHighestBidByProductId(productId);
+
+        if (highestBid == null){
+            highestBid = bidJpaRepository.findHighestBidByProductId(productId);
+        }
+
+        return highestBid;
     }
 }

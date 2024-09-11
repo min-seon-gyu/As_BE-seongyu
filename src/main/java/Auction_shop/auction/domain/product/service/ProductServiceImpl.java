@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.bid.Bid;
 import Auction_shop.auction.domain.bid.repository.BidRedisRepository;
+import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
@@ -31,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductJpaRepository productJpaRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
     private final MemberRepository memberRepository;
-    private final BidRedisRepository bidRedisRepository;
+    private final BidService bidService;
     private final ProductMapper productMapper;
     private final ImageService imageService;
 
@@ -183,11 +184,14 @@ public class ProductServiceImpl implements ProductService {
             List<Product> updatedProducts = new ArrayList<>();
             for (Product product : page.getContent()) {
                 product.setIsSold(true); // 경매 종료 처리
-                Bid highestBid = bidRedisRepository.findHighestBidByProductId(product.getProduct_id());
+                Bid highestBid = bidService.getHighestBidForProduct(product.getProduct_id());
                 if (highestBid != null) {
                     // 경매 우승자에게 알림 보내기
                     Long userId = highestBid.getUserId();
                 }
+                System.out.println("highestBid.getProductId() = " + highestBid.getProductId());
+                System.out.println("highestBid.getAmount() = " + highestBid.getAmount());
+                System.out.println("highestBid.getUserId() = " + highestBid.getUserId());
                 updatedProducts.add(product);
             }
             saveUpdatedProducts(updatedProducts);
