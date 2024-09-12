@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.ProductDocument;
+import Auction_shop.auction.domain.product.ProductType;
 import Auction_shop.auction.web.dto.product.ProductDto;
 import Auction_shop.auction.web.dto.product.ProductUpdateDto;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,13 +24,13 @@ public interface ProductService {
     List<ProductDocument> getHotProducts();
 
     //물건 세부 조회
-    Product findProductById(Long memberId, Long product_id);
+    Product findProductById(Long product_id);
     Product updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images);
 
     //물건 ID로 현재 가격 찾기
     int findCurrentPriceById(Long productId);
 
-    //물건 구매
+    //물건 구매 (하향식)
     void purchaseProductItem(Long product_id);
 
     //물건 삭제
@@ -40,6 +41,8 @@ public interface ProductService {
 
     //닉네임 변경후 물건 생성자명 변경
     void updateCreateBy(String oldNickname, String newNickname, Long memberId);
+
+    ProductType findProductTypeById(Long productId);
 
     void updateProductPrices();
 }
