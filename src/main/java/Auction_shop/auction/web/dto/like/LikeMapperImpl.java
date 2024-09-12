@@ -27,7 +27,7 @@ public class LikeMapperImpl implements LikeMapper{
         }
 
         LikeListResponseDto responseDto = LikeListResponseDto.builder()
-                .product_id(product.getProduct_id())
+                .product_id(product.getId())
                 .title(product.getTitle())
                 .conditions(product.getConditions())
                 .categories(product.getCategories())
