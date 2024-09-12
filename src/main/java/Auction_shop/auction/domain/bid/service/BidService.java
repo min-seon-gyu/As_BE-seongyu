@@ -20,41 +20,6 @@ import java.util.List;
 public class BidService {
     private final BidRedisRepository bidRedisRepository;
     private final BidJpaRepository bidJpaRepository;
-    private final ProductJpaRepository productJpaRepository;
-    private final ProductElasticsearchRepository productElasticsearchRepository;
-    private final ProductMapper productMapper;
-
-    public Bid placeBid(Long userId, Long productId, int bidAmount){
-
-        Product product = productJpaRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException(productId + "에 해당하는 물건이 없습니다."));
-
-        if (product.isSold()){
-            throw new RuntimeException("이미 판매된 물품입니다.");
-        } else if (LocalDateTime.now().isAfter(product.getEndTime())) {
-            throw new RuntimeException("경매가 종료되었습니다.");
-        } else if (bidAmount <= product.getCurrent_price()) {
-            throw new RuntimeException("방금 누군가가 "+bidAmount+"원 이상의 가격으로 입찰을 넣었습니다.");
-        }
-
-        product.bidProduct(bidAmount);
-
-        Bid bid = Bid.builder()
-                .productId(productId)
-                .userId(userId)
-                .amount(bidAmount)
-                .bidTime(LocalDateTime.now())
-                .build();
-
-        bidRedisRepository.save(bid);
-        bidJpaRepository.save(bid);
-
-        productJpaRepository.save(product);
-        ProductDocument document = productMapper.toDocument(product);
-        productElasticsearchRepository.save(document);
-
-        return bid;
-    }
 
     public List<Bid> getBidsForProduct(Long productId){
         List<Bid> bids = bidRedisRepository.findBidsByProductId(productId);
