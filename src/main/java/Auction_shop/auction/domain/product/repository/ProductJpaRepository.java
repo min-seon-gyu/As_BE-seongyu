@@ -21,8 +21,11 @@ public interface ProductJpaRepository extends JpaRepository<Product,Long> {
     @Query("SELECT p FROM Product p WHERE p.endTime <= :currentTime AND p.productType = :productType AND p.isSold = false")
     Page<Product> findExpiredProduct(@Param("currentTime") LocalDateTime currentTime, @Param("productType") ProductType productType, Pageable pageable);
 
-    @Query("SELECT p.current_price FROM Product p WHERE p.product_id = :productId")
+    @Query("SELECT p.current_price FROM Product p WHERE p.id = :productId")
     int findCurrentPriceById(@Param("productId") Long productId);
+
+    @Query("SELECT p.productType FROM Product p WHERE p.id = :productId")
+    ProductType findProductTypeById(@Param("productId") Long productId);
 
     List<Product> findAllByMemberId(Long memberId);
 }

@@ -14,7 +14,7 @@ public class ProductMapplerImpl implements ProductMapper{
     public ProductResponseDto toResponseDto(Product product) {
         ProductResponseDto responseDto = ProductResponseDto.builder()
                 .memberId(product.getMember().getId())
-                .product_id(product.getProduct_id())
+                .product_id(product.getId())
                 .title(product.getTitle())
                 .productType(product.getProductType())
                 .conditions(product.getConditions())
@@ -96,7 +96,7 @@ public class ProductMapplerImpl implements ProductMapper{
     @Override
     public ProductDocument toDocument(Product product) {
         ProductDocument productDocument = ProductDocument.builder()
-                .id(product.getProduct_id())
+                .id(product.getId())
                 .title(product.getTitle())
                 .productType(product.getProductType())
                 .sold(product.isSold())

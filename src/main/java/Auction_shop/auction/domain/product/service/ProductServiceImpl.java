@@ -1,7 +1,6 @@
 package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.bid.Bid;
-import Auction_shop.auction.domain.bid.repository.BidRedisRepository;
 import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
@@ -99,10 +98,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product findProductById(Long memberId, Long product_id) {
+    public Product findProductById(Long product_id) {
         Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
         return product;
+    }
+
+    @Override
+    public ProductType findProductTypeById(Long productId) {
+        ProductType productType = productJpaRepository.findProductTypeById(productId);
+        return productType;
     }
 
     @Override
@@ -184,14 +189,14 @@ public class ProductServiceImpl implements ProductService {
             List<Product> updatedProducts = new ArrayList<>();
             for (Product product : page.getContent()) {
                 product.setIsSold(true); // 경매 종료 처리
-                Bid highestBid = bidService.getHighestBidForProduct(product.getProduct_id());
+                Bid highestBid = bidService.getHighestBidForProduct(product.getId());
                 if (highestBid != null) {
                     // 경매 우승자에게 알림 보내기
-                    Long userId = highestBid.getUserId();
+                    Long userId = highestBid.getMemberId();
                 }
                 System.out.println("highestBid.getProductId() = " + highestBid.getProductId());
                 System.out.println("highestBid.getAmount() = " + highestBid.getAmount());
-                System.out.println("highestBid.getUserId() = " + highestBid.getUserId());
+                System.out.println("highestBid.getUserId() = " + highestBid.getMemberId());
                 updatedProducts.add(product);
             }
             saveUpdatedProducts(updatedProducts);
