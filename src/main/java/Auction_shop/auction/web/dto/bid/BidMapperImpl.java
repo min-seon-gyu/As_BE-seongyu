@@ -10,7 +10,7 @@ public class BidMapperImpl implements BidMapper {
     public BidResponseDto toResponseDto(Bid bid) {
         BidResponseDto bidResponseDto = BidResponseDto.builder()
                 .amount(bid.getAmount())
-                .userId(bid.getUserId())
+                .memberId(bid.getMemberId())
                 .bidTime(bid.getBidTime())
                 .build();
         return bidResponseDto;

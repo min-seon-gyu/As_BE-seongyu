@@ -22,7 +22,7 @@ public class Bid {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long productId;
-    private Long userId;
+    private Long memberId;
     private int amount;
     private LocalDateTime bidTime;
 

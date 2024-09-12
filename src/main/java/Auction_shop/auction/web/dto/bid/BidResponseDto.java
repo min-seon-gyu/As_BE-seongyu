@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BidResponseDto {
-    private Long userId;
+    private Long memberId;
     private int amount;
     private LocalDateTime bidTime;
 }
