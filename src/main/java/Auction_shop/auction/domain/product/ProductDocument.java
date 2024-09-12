@@ -22,6 +22,9 @@ public class ProductDocument {
     @Field(type = FieldType.Text, analyzer = "ngram_analyzer") // ngram 분석기 사용
     private String title;
 
+    @Field(type = FieldType.Keyword, name = "product_type")
+    private ProductType productType; // 경매 방식 (상향식/하향식)
+
     @Field(type = FieldType.Boolean)
     private boolean sold;  // `isSold`를 `sold`로 변경
 

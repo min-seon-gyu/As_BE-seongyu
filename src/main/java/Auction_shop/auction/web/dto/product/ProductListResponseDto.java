@@ -1,5 +1,6 @@
 package Auction_shop.auction.web.dto.product;
 
+import Auction_shop.auction.domain.product.ProductType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class ProductListResponseDto {
 
     private Long product_id;
     private String title;
+    private ProductType productType;
     private boolean isSold;
     private String conditions;
     private Set<String> categories;

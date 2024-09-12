@@ -3,7 +3,7 @@ package Auction_shop.auction.domain.payments.controller;
 import Auction_shop.auction.domain.alert.AlertType;
 import Auction_shop.auction.domain.alert.util.AlertUtil;
 import Auction_shop.auction.domain.member.Member;
-import Auction_shop.auction.domain.payments.service.PaymentsService;
+import Auction_shop.auction.domain.payments.service.DescendingPaymentsService;
 import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/payments")
 @RequiredArgsConstructor
 public class PaymentsController {
-    private final PaymentsService paymentsService;
+    private final DescendingPaymentsService descendingPaymentsService;
     private final ProductJpaRepository productRepository;
     private final JwtUtil jwtUtil;
     private final AlertUtil alertUtil;
@@ -26,7 +26,7 @@ public class PaymentsController {
         Long memberId = jwtUtil.extractMemberId(authorization);
         String result;
         try {
-            result = paymentsService.PaymentsVerify(impUid, productId, memberId);
+            result = descendingPaymentsService.PaymentsVerify(impUid, productId, memberId);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("결제 검증 중 오류 발생: " + e.getMessage());
         }

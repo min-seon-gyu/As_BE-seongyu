@@ -7,5 +7,5 @@ public interface InquiryMapper {
 
     InquiryResponseDto toResponseDto(Inquiry inquiry);
     InquiryListResponseDto toListResponseDto(Inquiry inquiry);
-    Inquiry toEntity(InquiryCreateDto inquiryDtom, Member member);
+    Inquiry toEntity(InquiryCreateDto inquiryDto, Member member);
 }

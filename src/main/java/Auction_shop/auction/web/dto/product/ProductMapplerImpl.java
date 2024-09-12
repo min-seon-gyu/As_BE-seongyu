@@ -14,8 +14,9 @@ public class ProductMapplerImpl implements ProductMapper{
     public ProductResponseDto toResponseDto(Product product) {
         ProductResponseDto responseDto = ProductResponseDto.builder()
                 .memberId(product.getMember().getId())
-                .product_id(product.getProduct_id())
+                .product_id(product.getId())
                 .title(product.getTitle())
+                .productType(product.getProductType())
                 .conditions(product.getConditions())
                 .categories(product.getCategories())
                 .tradeTypes(product.getTradeTypes())
@@ -41,6 +42,7 @@ public class ProductMapplerImpl implements ProductMapper{
         ProductListResponseDto responseDto = ProductListResponseDto.builder()
                 .product_id(productDocument.getId())
                 .title(productDocument.getTitle())
+                .productType(productDocument.getProductType())
                 .conditions(productDocument.getConditions())
                 .initial_price(productDocument.getInitialPrice())
                 .categories(productDocument.getCategories())
@@ -61,6 +63,7 @@ public class ProductMapplerImpl implements ProductMapper{
         ProductRecommendedDto recommendedDto = ProductRecommendedDto.builder()
                 .product_id(productDocument.getId())
                 .title(productDocument.getTitle())
+                .productType(productDocument.getProductType())
                 .tradeTypes(productDocument.getTradeTypes())
                 .initial_price(productDocument.getInitialPrice())
                 .current_price(productDocument.getCurrentPrice())
@@ -73,6 +76,7 @@ public class ProductMapplerImpl implements ProductMapper{
     public Product toEntity(ProductDto productDto, Member member) {
         Product product = Product.builder()
                 .title(productDto.getTitle())
+                .productType(productDto.getProductType())
                 .member(member)
                 .conditions(productDto.getConditions())
                 .categories(productDto.getCategories())
@@ -92,8 +96,9 @@ public class ProductMapplerImpl implements ProductMapper{
     @Override
     public ProductDocument toDocument(Product product) {
         ProductDocument productDocument = ProductDocument.builder()
-                .id(product.getProduct_id())
+                .id(product.getId())
                 .title(product.getTitle())
+                .productType(product.getProductType())
                 .sold(product.isSold())
                 .conditions(product.getConditions())
                 .categories(product.getCategories())

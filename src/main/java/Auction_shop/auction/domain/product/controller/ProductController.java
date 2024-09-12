@@ -138,7 +138,7 @@ public class ProductController {
     public ResponseEntity<Object> getProductById(@RequestHeader("Authorization") String authorization, @PathVariable Long product_id) {
         Long memberId = jwtUtil.extractMemberId(authorization);
         String name = jwtUtil.extractNickname(authorization);
-        Product product = productService.findProductById(memberId, product_id);
+        Product product = productService.findProductById(product_id);
         if (product == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error - Product not found, product_id doesn't exist in Database :(");
         }

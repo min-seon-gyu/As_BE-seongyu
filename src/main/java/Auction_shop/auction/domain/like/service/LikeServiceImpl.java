@@ -60,7 +60,7 @@ public class LikeServiceImpl implements LikeService {
         Member member = memberService.getById(memberId);
         List<Like> likes = likeRepository.findByMember(member);
         return likes.stream()
-                .map(like -> like.getProduct().getProduct_id()) // 제품 ID 추출
+                .map(like -> like.getProduct().getId()) // 제품 ID 추출
                 .collect(Collectors.toList());
     }
 

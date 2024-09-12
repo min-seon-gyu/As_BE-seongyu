@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.product.validation;
 
+import Auction_shop.auction.domain.product.ProductType;
 import Auction_shop.auction.web.dto.product.ProductDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -30,7 +31,7 @@ public class ProductValidator implements Validator {
         if (productDto.getInitial_price() <= 0) {
             errors.rejectValue("initial_price","initial_price.null","initial_price is null!");
         }
-        if (productDto.getMinimum_price() <= 0) {
+        if (productDto.getProductType() == ProductType.DESCENDING && productDto.getMinimum_price() <= 0) {
             errors.rejectValue("minimum_price","minimum_price","minimum_price is null!");
         }
     }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SearchService {
+public class SearchRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 

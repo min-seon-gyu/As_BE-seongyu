@@ -4,6 +4,8 @@ import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.payments.Payments;
 import Auction_shop.auction.domain.payments.repository.PaymentsRepository;
+import Auction_shop.auction.domain.product.Product;
+import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.domain.product.service.ProductService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -20,12 +22,13 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class PaymentsService {
+public class DescendingPaymentsService {
 
     private IamportClient iamportClient;
 
     private final PaymentsRepository paymentsRepository;
     private final MemberService memberService;
+    private final ProductJpaRepository productJpaRepository;
     private final ProductService productService;
 
     @Value("${iamport.key}")
@@ -41,6 +44,9 @@ public class PaymentsService {
 
     @Transactional
     public String PaymentsVerify(String impUid, Long productId, Long memberId) throws IamportResponseException, IOException {
+
+        Product product = productJpaRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException(productId + "에 해당하는 물건이 없습니다."));
 
         IamportResponse<Payment> iamportResponse;
         try {
@@ -66,6 +72,8 @@ public class PaymentsService {
                 .amount(paidAmount)
                 .merchantUid(merchantUid)
                 .member(member)
+                .impUid(impUid)
+                .product(product)
                 .build();
 
         paymentsRepository.save(payments);

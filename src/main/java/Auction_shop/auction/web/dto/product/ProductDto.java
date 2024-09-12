@@ -1,5 +1,6 @@
 package Auction_shop.auction.web.dto.product;
 
+import Auction_shop.auction.domain.product.ProductType;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Set;
 public class ProductDto {
         private String title;           // 판매글 제목
         private String conditions;
+        private ProductType productType;
         private Set<String> categories;
         private Set<String> tradeTypes;           // 거래 방식
         private String tradeLocation;   // 직거래 희망 장소

@@ -3,6 +3,7 @@ package Auction_shop.auction.domain.product;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.like.Like;
 import Auction_shop.auction.domain.member.Member;
+import Auction_shop.auction.domain.purchase.Purchase;
 import Auction_shop.auction.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long product_id;         // 제품ID
+    private Long id;         // 제품ID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -28,6 +29,10 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String conditions;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProductType productType; // 경매 방식 (상향식/하향식)
+
     @ElementCollection
     @Column(nullable = false)
     private Set<String> categories = new HashSet<>();
@@ -35,7 +40,10 @@ public class Product extends BaseEntity {
     @ElementCollection
     @Column(nullable = false)
     private Set<String> tradeTypes = new HashSet<>();           // 거래 방식
-    @Column(nullable = true)
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    private Purchase purchase;
+
     private String tradeLocation;   // 직거래 희망 거래 장소
     @Column(nullable = false)
     private int initial_price;       // 시작 가격
@@ -64,11 +72,12 @@ public class Product extends BaseEntity {
     private List<Like> likes = new ArrayList<>();
 
     @Builder
-    public Product(Long product_id, Member member, String title, String conditions, Set<String> categories, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
-                   List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime,boolean isSold) {
-        this.product_id = product_id;
+    public Product(Long id, Member member, String title, ProductType productType, String conditions, Set<String> categories, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
+                   List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime, boolean isSold) {
+        this.id = id;
         this.member = member;
         this.title = title;
+        this.productType = productType;
         this.conditions = conditions;
         this.categories = categories;
         this.tradeTypes = tradeTypes;
@@ -112,6 +121,10 @@ public class Product extends BaseEntity {
         this.details = details;
         this.tradeLocation = tradeLocation;
         this.conditions = conditions;
+    }
+
+    public void bidProduct(int bidAmount){
+        this.current_price = bidAmount;
     }
 
     public void updateCurrentPrice(int current_price){

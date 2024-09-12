@@ -44,4 +44,11 @@ public class HistoryController {
         return ResponseEntity.status(HttpStatus.OK).body(collect);
     }
 
+    //구매 내역 조회
+//    @GetMapping("/buy")
+//    public ResponseEntity<List<ProductListResponseDto>> getBuyList(@RequestHeader("Authorization") String authorization){
+//        Long memberId = jwtUtil.extractMemberId(authorization);
+//
+//    }
+
 }
