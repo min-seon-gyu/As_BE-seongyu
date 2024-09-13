@@ -28,4 +28,5 @@ public class ProductListResponseDto {
     private String createdBy;
     private int likeCount;
     private boolean isLiked;
+    private int bidCount;
 }

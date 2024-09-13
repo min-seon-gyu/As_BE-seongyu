@@ -28,6 +28,7 @@ public class ProductResponseDto {
     private boolean isLiked;        // 좋아요 여부
     private String createdBy;       // 등록자 닉네임
     private boolean isOwner;        // 생성자 여부
+    private int bidCount;           //입찰 횟수
 
     private LocalDateTime startTime; // 경매 시작 시간
     private LocalDateTime endTime;   // 경매 종료 시간

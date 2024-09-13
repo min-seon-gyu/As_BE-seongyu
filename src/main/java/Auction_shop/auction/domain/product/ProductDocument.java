@@ -57,4 +57,7 @@ public class ProductDocument {
 
     @Field(type = FieldType.Date, name = "created_at") // 생성 시간 필드 추가
     private LocalDate createdAt; // 생성 시간 필드
+
+    @Field(type = FieldType.Integer, name = "bid_count")
+    private int bidCount;
 }

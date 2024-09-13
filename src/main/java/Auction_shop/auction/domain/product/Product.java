@@ -71,9 +71,11 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
+    private int bidCount;
+
     @Builder
     public Product(Long id, Member member, String title, ProductType productType, String conditions, Set<String> categories, Set<String> tradeTypes, String tradeLocation, int initial_price, int minimum_price,
-                   List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime, boolean isSold) {
+                   List<Image> imageList, String details, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime updateTime, boolean isSold, int bidCount) {
         this.id = id;
         this.member = member;
         this.title = title;
@@ -91,6 +93,7 @@ public class Product extends BaseEntity {
         this.updateTime = updateTime;
         this.isSold = false;
         this.details = details;
+        this.bidCount = bidCount;
     }
 
     public void setImageList(List<Image> imageList){
@@ -125,6 +128,7 @@ public class Product extends BaseEntity {
 
     public void bidProduct(int bidAmount){
         this.current_price = bidAmount;
+        this.bidCount += 1;
     }
 
     public void updateCurrentPrice(int current_price){
