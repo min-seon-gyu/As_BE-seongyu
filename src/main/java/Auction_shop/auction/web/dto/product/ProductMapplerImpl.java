@@ -31,6 +31,7 @@ public class ProductMapplerImpl implements ProductMapper{
                 .details(product.getDetails())
                 .isSold(product.isSold())
                 .imageUrls(product.getImageUrls())
+                .bidCount(product.getBidCount())
                 .build();
 
         return responseDto;
@@ -54,6 +55,7 @@ public class ProductMapplerImpl implements ProductMapper{
                 .isSold(productDocument.isSold())
                 .imageUrl(productDocument.getImageUrl())
                 .isLiked(isLiked)
+                .bidCount(productDocument.getBidCount())
                 .build();
         return responseDto;
     }
@@ -89,6 +91,7 @@ public class ProductMapplerImpl implements ProductMapper{
                 .isSold(false)
                 .minimum_price(productDto.getMinimum_price())
                 .details(productDto.getDetails())
+                .bidCount(0)
                 .build();
         return product;
     }
@@ -110,6 +113,7 @@ public class ProductMapplerImpl implements ProductMapper{
                 .createdBy(product.getCreatedBy())
                 .createdAt(product.getCreatedAt())
                 .likeCount(product.getLikeCount())
+                .bidCount(product.getBidCount())
                 .build();
         return productDocument;
     }
