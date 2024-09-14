@@ -11,6 +11,8 @@ import Auction_shop.auction.domain.product.ProductType;
 import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
 import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.domain.product.Product;
+import Auction_shop.auction.domain.purchase.Purchase;
+import Auction_shop.auction.domain.purchase.service.PurchaseService;
 import Auction_shop.auction.web.dto.product.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductElasticsearchRepository productElasticsearchRepository;
     private final MemberRepository memberRepository;
     private final BidService bidService;
+    private final PurchaseService purchaseService;
     private final ProductMapper productMapper;
     private final ImageService imageService;
 
@@ -159,13 +162,20 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void purchaseProductItem(Long product_id) {
+    public void purchaseProductItem(Long product_id, Long memberId) {
         Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
 
         if (product.isSold()) {
             throw new RuntimeException("이미 판매된 물품입니다.");
         }
+
+        Purchase purchase = Purchase.builder()
+                .memberId(memberId)
+                .product(product)
+                .purchaseDate(LocalDateTime.now())
+                .build();
+        purchaseService.createPurchase(purchase);
 
         product.setIsSold(true);
         productJpaRepository.save(product);
@@ -190,13 +200,18 @@ public class ProductServiceImpl implements ProductService {
             for (Product product : page.getContent()) {
                 product.setIsSold(true); // 경매 종료 처리
                 Bid highestBid = bidService.getHighestBidForProduct(product.getId());
+                Long memberId = highestBid.getMemberId();
                 if (highestBid != null) {
-                    // 경매 우승자에게 알림 보내기
-                    Long userId = highestBid.getMemberId();
+
+                    Purchase purchase = Purchase.builder()
+                            .memberId(memberId)
+                            .product(product)
+                            .purchaseDate(LocalDateTime.now())
+                            .build();
+                    purchaseService.createPurchase(purchase);
+
+                    //Todo 경매 우승자에게 알림 보내기 추가 부탁드립니다
                 }
-                System.out.println("highestBid.getProductId() = " + highestBid.getProductId());
-                System.out.println("highestBid.getAmount() = " + highestBid.getAmount());
-                System.out.println("highestBid.getUserId() = " + highestBid.getMemberId());
                 updatedProducts.add(product);
             }
             saveUpdatedProducts(updatedProducts);
