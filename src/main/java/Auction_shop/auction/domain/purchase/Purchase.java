@@ -26,9 +26,8 @@ public class Purchase {
     @Column(name = "purchase_id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
 
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false)
