@@ -78,7 +78,7 @@ public class DescendingPaymentsService {
 
         paymentsRepository.save(payments);
 
-        productService.purchaseProductItem(productId);
+        productService.purchaseProductItem(productId, memberId);
 
         return "결제가 완료되었습니다.";
     }

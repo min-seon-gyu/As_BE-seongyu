@@ -3,6 +3,7 @@ package Auction_shop.auction.web.dto.product;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.ProductDocument;
+import Auction_shop.auction.domain.purchase.Purchase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -116,5 +117,29 @@ public class ProductMapplerImpl implements ProductMapper{
                 .bidCount(product.getBidCount())
                 .build();
         return productDocument;
+    }
+
+    @Override
+    public ProductListResponseDto purchaseToListResponseDto(Purchase purchase, boolean isLiked) {
+        Product product = purchase.getProduct();
+
+        ProductListResponseDto responseDto = ProductListResponseDto.builder()
+                .product_id(product.getId())
+                .title(product.getTitle())
+                .productType(product.getProductType())
+                .conditions(product.getConditions())
+                .initial_price(product.getInitial_price())
+                .categories(product.getCategories())
+                .tradeTypes(product.getTradeTypes())
+                .current_price(product.getCurrent_price())
+                .tradeLocation(product.getTradeLocation())
+                .createdBy(product.getCreatedBy())
+                .likeCount(product.getLikeCount())
+                .isSold(product.isSold())
+                .imageUrl(product.getImageUrls().stream().findFirst().orElse(null))
+                .isLiked(isLiked)
+                .bidCount(product.getBidCount())
+                .build();
+        return responseDto;
     }
 }

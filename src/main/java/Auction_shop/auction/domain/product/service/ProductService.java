@@ -31,7 +31,7 @@ public interface ProductService {
     int findCurrentPriceById(Long productId);
 
     //물건 구매 (하향식)
-    void purchaseProductItem(Long product_id);
+    void purchaseProductItem(Long product_id, Long memberId);
 
     //물건 삭제
     boolean deleteProductById(Long product_id);

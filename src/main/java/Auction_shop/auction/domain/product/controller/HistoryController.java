@@ -2,6 +2,8 @@ package Auction_shop.auction.domain.product.controller;
 
 import Auction_shop.auction.domain.like.service.LikeService;
 import Auction_shop.auction.domain.product.ProductDocument;
+import Auction_shop.auction.domain.purchase.Purchase;
+import Auction_shop.auction.domain.purchase.service.PurchaseService;
 import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.product.ProductListResponseDto;
 import Auction_shop.auction.domain.product.service.ProductService;
@@ -27,6 +29,7 @@ public class HistoryController {
     private final ProductService productService;
     private final LikeService likeService;
     private final ProductMapper productMapper;
+    private final PurchaseService purchaseService;
 
     //판매 내역 조회
     @GetMapping("/sell")
@@ -45,10 +48,17 @@ public class HistoryController {
     }
 
     //구매 내역 조회
-//    @GetMapping("/buy")
-//    public ResponseEntity<List<ProductListResponseDto>> getBuyList(@RequestHeader("Authorization") String authorization){
-//        Long memberId = jwtUtil.extractMemberId(authorization);
-//
-//    }
+    @GetMapping("/buy")
+    public ResponseEntity<List<ProductListResponseDto>> getBuyList(@RequestHeader("Authorization") String authorization){
+        Long memberId = jwtUtil.extractMemberId(authorization);
+        List<Purchase> purchases = purchaseService.getPurchasesByMemberId(memberId);
+        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
+
+        List<ProductListResponseDto> responseDtos = purchases.stream()
+                .map(purchase -> productMapper.purchaseToListResponseDto(purchase, likedProductsIds.contains(purchase.getProduct().getId())))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responseDtos);
+    }
 
 }
