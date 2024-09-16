@@ -109,6 +109,10 @@ public class ProductController {
     public ResponseEntity<Object> getNewProducts() {
         List<ProductDocument> products = productService.getNewProducts();
 
+        if (products == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList());
+        }
+
         List<ProductRecommendedDto> collect = products.stream()
                 .map(product -> productMapper.toRecommendedDto(product))
                 .collect(Collectors.toList());
@@ -122,6 +126,10 @@ public class ProductController {
     @GetMapping("/hot")
     public ResponseEntity<Object> getHotProducts() {
         List<ProductDocument> products = productService.getHotProducts();
+
+        if (products == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList());
+        }
 
         List<ProductRecommendedDto> collect = products.stream()
                 .map(product -> productMapper.toRecommendedDto(product))
