@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -16,6 +17,7 @@ import java.util.Set;
 public class ProductDocument {
     @Id
     @Field(name = "product_id", type = FieldType.Long)
+    @JsonProperty("product_id")
     private Long id;
 
     //사전에 elasticsearch index ngram_analyzer 설정 필요
