@@ -32,8 +32,6 @@ public class BidRedisRepository {
         String key = "bids" + product_id;
         List<String> jsonBids = redisTemplate.opsForList().range(key, 0, -1); // JSON 문자열 리스트 가져오기
 
-        Collections.reverse(jsonBids);
-
         return jsonBids.stream()
                 .map(json -> {
                     try {
