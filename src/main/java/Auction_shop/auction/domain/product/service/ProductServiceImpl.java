@@ -89,15 +89,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDocument> getNewProducts() {
         List<ProductDocument> products = productElasticsearchRepository.findTop20ByOrderByCreatedAtDesc();
-        int numberOfElementsToReturn = Math.min(products.size(), 5);
-        return getRandomElements(products, numberOfElementsToReturn);
+        if (!products.isEmpty()) {
+            int numberOfElementsToReturn = Math.min(products.size(), 5);
+            return getRandomElements(products, numberOfElementsToReturn);
+        }
+        return null;
     }
 
     @Override
     public List<ProductDocument> getHotProducts() {
         List<ProductDocument> products = productElasticsearchRepository.findTop20ByOrderByLikeCountDesc();
-        int numberOfElementsToReturn = Math.min(products.size(), 5);
-        return getRandomElements(products, numberOfElementsToReturn);
+        if (!products.isEmpty()) {
+            int numberOfElementsToReturn = Math.min(products.size(), 5);
+            return getRandomElements(products, numberOfElementsToReturn);
+        }
+        return null;
     }
 
     @Override
@@ -200,9 +206,8 @@ public class ProductServiceImpl implements ProductService {
             for (Product product : page.getContent()) {
                 product.setIsSold(true); // 경매 종료 처리
                 Bid highestBid = bidService.getHighestBidForProduct(product.getId());
-                Long memberId = highestBid.getMemberId();
                 if (highestBid != null) {
-
+                    Long memberId = highestBid.getMemberId();
                     Purchase purchase = Purchase.builder()
                             .memberId(memberId)
                             .product(product)

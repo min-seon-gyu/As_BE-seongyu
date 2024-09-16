@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BidResponseDto {
-    private Long memberId;
+    private int bidCount;
     private int amount;
     private LocalDateTime bidTime;
+    private String profileImageUrl;
 }

@@ -31,14 +31,14 @@ public class BidController {
 
     //상향식 입찰 넣기
     @PostMapping("/{productId}/{impUid}")
-    public ResponseEntity<String> addBid(@RequestHeader("Authorization") String authorization,
+    public ResponseEntity<String> addBid(
                                                  @PathVariable("productId") Long productId,
                                                  @PathVariable String impUid) {
-        Long memberId = jwtUtil.extractMemberId(authorization);
+//        Long memberId = jwtUtil.extractMemberId(authorization);
         String paymentResult;
         try {
             // 결제 검증
-            paymentResult = ascendingPaymentService.PaymentsVerify(impUid, productId, memberId);
+            paymentResult = ascendingPaymentService.PaymentsVerify(impUid, productId, 2L);
 
             // 입찰 성공 알림 (옵션)
             Member member = productJpaRepository.findById(productId)
@@ -57,10 +57,7 @@ public class BidController {
     //입찰 현황 조회
     @GetMapping("/{productId}")
     public ResponseEntity<List<BidResponseDto>> getBids(@PathVariable Long productId){
-        List<Bid> bids = bidService.getBidsForProduct(productId);
-        List<BidResponseDto> collect = bids.stream()
-                .map(bidMapper::toResponseDto)
-                .collect(Collectors.toList());
+        List<BidResponseDto> collect = bidService.getBidsForProduct(productId);
         return ResponseEntity.ok(collect);
     }
 }
