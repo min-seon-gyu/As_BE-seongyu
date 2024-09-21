@@ -6,6 +6,9 @@ import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
+import Auction_shop.auction.domain.priceChange.PriceChange;
+import Auction_shop.auction.domain.priceChange.repository.PriceChangeJpaRepository;
+import Auction_shop.auction.domain.priceChange.service.PriceChangeService;
 import Auction_shop.auction.domain.product.ProductDocument;
 import Auction_shop.auction.domain.product.ProductType;
 import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
@@ -33,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductJpaRepository productJpaRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
     private final MemberRepository memberRepository;
+    private final PriceChangeService priceChangeService;
     private final BidService bidService;
     private final PurchaseService purchaseService;
     private final ProductMapper productMapper;
@@ -249,7 +253,8 @@ public class ProductServiceImpl implements ProductService {
     //더미 10,000개로 확인 결과 성능에 영향은 없지만 추후 redis
     //하향식 경매 가격 내리기
     @Override
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 10000)
+    @Transactional
     public void updateProductPrices() {
         LocalDateTime currentTime = LocalDateTime.now();
         int pageSize = 2000;
@@ -262,14 +267,27 @@ public class ProductServiceImpl implements ProductService {
 
             List<Product> updatedProducts = new ArrayList<>();
             for (Product product : page.getContent()) {
-                if (currentTime.isAfter(product.getUpdateTime().plusHours(1))) {
+                if (currentTime.isAfter(product.getUpdateTime().plusSeconds(8))) {
                     int newPrice = product.getCurrent_price() - (product.getInitial_price() / (int) product.getTotalHours());
                     if (newPrice < product.getMinimum_price()) {
                         newPrice = product.getMinimum_price();
                     }
-                    product.updateCurrentPrice(newPrice);
-                    product.updateTime(currentTime);
-                    updatedProducts.add(product);
+
+                    if(newPrice != product.getCurrent_price()) {
+                        PriceChange priceChange = PriceChange.builder()
+                                .productId(product.getId())
+                                .previousPrice(product.getCurrent_price())
+                                .newPrice(newPrice)
+                                .changeDate(currentTime)
+                                .changeOrder(priceChangeService.getChangeOrder(product.getId()))
+                                .build();
+
+                        priceChangeService.savePriceChange(priceChange);
+
+                        product.updateCurrentPrice(newPrice);
+                        product.updateTime(currentTime);
+                        updatedProducts.add(product);
+                    }
                 }
             }
             saveUpdatedProducts(updatedProducts);
