@@ -1,5 +1,6 @@
 package Auction_shop.auction.web.dto.like;
 
+import Auction_shop.auction.domain.product.ProductType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,4 +27,6 @@ public class LikeListResponseDto {
     private String createdBy;
     private int likeCount;
     private boolean isLiked;
+    private ProductType productType;
+    private int bidCount;
 }

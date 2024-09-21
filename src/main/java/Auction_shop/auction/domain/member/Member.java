@@ -72,6 +72,7 @@ public class Member extends BaseEntity {
 
     @ElementCollection
     @Column(nullable = false)
+    @Builder.Default
     private Set<String> categories = new HashSet<>();
 
     @Column

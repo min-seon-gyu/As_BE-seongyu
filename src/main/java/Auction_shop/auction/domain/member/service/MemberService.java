@@ -71,7 +71,7 @@ public class MemberService {
             productService.updateCreateBy(member.getNickname(), memberUpdateDto.getNickname(), memberId);
         }
 
-        if (member.getProfileImage() != null){
+        if (member.getProfileImage() != null && memberUpdateDto.isChangeImage()){
             imageService.deleteImage(member.getProfileImage().getStoredName());
         }
 
