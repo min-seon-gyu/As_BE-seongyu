@@ -47,5 +47,4 @@ public class PriceChangeService {
     public int getChangeOrder(Long productId){
         return (int)priceChangeJpaRepository.countByProductId(productId) + 1;
     }
-
 }
