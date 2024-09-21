@@ -38,6 +38,8 @@ public class LikeMapperImpl implements LikeMapper{
                 .createdBy(product.getCreatedBy())
                 .likeCount(product.getLikeCount())
                 .imageUrl(imageUrl)
+                .bidCount(product.getBidCount())
+                .productType(product.getProductType())
                 .isSold(product.isSold())
                 .isLiked(true)
                 .build();
