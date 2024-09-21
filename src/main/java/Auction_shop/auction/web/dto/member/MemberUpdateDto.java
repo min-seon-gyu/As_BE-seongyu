@@ -21,4 +21,5 @@ public class MemberUpdateDto {
     private String detailAddress;
     private String zipcode;
     private Set<String> categories;
+    private boolean changeImage;
 }
