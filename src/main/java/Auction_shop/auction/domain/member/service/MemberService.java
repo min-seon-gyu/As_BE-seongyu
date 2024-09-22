@@ -71,6 +71,7 @@ public class MemberService {
             productService.updateCreateBy(member.getNickname(), memberUpdateDto.getNickname(), memberId);
         }
 
+        //이미지 관련 코드가 난잡해서 추후 리팩 예정
         if (member.getProfileImage() != null && memberUpdateDto.isChangeImage()){
             imageService.deleteImage(member.getProfileImage().getStoredName());
         }
@@ -78,7 +79,7 @@ public class MemberService {
         if (image != null && !image.isEmpty()) {
             Image profileImage = imageService.saveImage(image);
             member.setProfileImage(profileImage);
-        }else{
+        }else if (!memberUpdateDto.isChangeImage()){
             member.setProfileImage(null);
         }
         Address address = null;
