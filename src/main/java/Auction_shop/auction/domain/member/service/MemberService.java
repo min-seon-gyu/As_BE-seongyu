@@ -71,17 +71,18 @@ public class MemberService {
             productService.updateCreateBy(member.getNickname(), memberUpdateDto.getNickname(), memberId);
         }
 
-        //이미지 관련 코드가 난잡해서 추후 리팩 예정
-        if (member.getProfileImage() != null && memberUpdateDto.isChangeImage()){
-            imageService.deleteImage(member.getProfileImage().getStoredName());
+        if (memberUpdateDto.isChangeImage()){
+            if (member.getProfileImage() != null) {
+                imageService.deleteImage(member.getProfileImage().getStoredName());
+            }
+            if (image == null && image.isEmpty()){
+                member.setProfileImage(null);
+            }else {
+                Image profileImage = imageService.saveImage(image);
+                member.setProfileImage(profileImage);
+            }
         }
 
-        if (image != null && !image.isEmpty()) {
-            Image profileImage = imageService.saveImage(image);
-            member.setProfileImage(profileImage);
-        }else if (!memberUpdateDto.isChangeImage()){
-            member.setProfileImage(null);
-        }
         Address address = null;
         if (memberUpdateDto.getAddress() != null) {
             address = Address.builder()
