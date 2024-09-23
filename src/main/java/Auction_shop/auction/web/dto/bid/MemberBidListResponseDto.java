@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberBidListResponseDto {
 
+    private Long productId;
     private String imageUrl;
     private String title;
     private int initial_price;

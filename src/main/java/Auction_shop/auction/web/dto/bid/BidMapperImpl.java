@@ -35,6 +35,7 @@ public class BidMapperImpl implements BidMapper {
         }
 
         MemberBidListResponseDto responseDto = MemberBidListResponseDto.builder()
+                .productId(bid.getProductId())
                 .imageUrl(product.getImageUrls().stream().findFirst().orElse(null))
                 .initial_price(product.getInitial_price())
                 .current_price(product.getCurrent_price())
