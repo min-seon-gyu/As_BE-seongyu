@@ -2,20 +2,18 @@ package Auction_shop.auction.domain.bid.controller;
 
 import Auction_shop.auction.domain.alert.AlertType;
 import Auction_shop.auction.domain.alert.util.AlertUtil;
-import Auction_shop.auction.domain.bid.Bid;
 import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.payments.service.AscendingPaymentService;
 import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.security.jwt.JwtUtil;
-import Auction_shop.auction.web.dto.bid.BidMapper;
 import Auction_shop.auction.web.dto.bid.BidResponseDto;
+import Auction_shop.auction.web.dto.bid.MemberBidListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +23,6 @@ public class BidController {
     private final BidService bidService;
     private final AscendingPaymentService ascendingPaymentService;
     private final ProductJpaRepository productJpaRepository;
-    private final BidMapper bidMapper;
     private final AlertUtil alertUtil;
     private final JwtUtil jwtUtil;
 
@@ -58,6 +55,13 @@ public class BidController {
     @GetMapping("/{productId}")
     public ResponseEntity<List<BidResponseDto>> getBids(@PathVariable Long productId){
         List<BidResponseDto> collect = bidService.getBidsForProduct(productId);
+        return ResponseEntity.ok(collect);
+    }
+
+    @GetMapping("/member")
+    public ResponseEntity<List<MemberBidListResponseDto>> getMemberBids(@RequestHeader("Authorization") String authorization){
+        Long memberId = jwtUtil.extractMemberId(authorization);
+        List<MemberBidListResponseDto> collect = bidService.getMemberBid(memberId);
         return ResponseEntity.ok(collect);
     }
 }
