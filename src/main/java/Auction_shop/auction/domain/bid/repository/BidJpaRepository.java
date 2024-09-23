@@ -10,5 +10,6 @@ import java.util.List;
 public interface BidJpaRepository extends JpaRepository<Bid, Long> {
 
     List<Bid> findByProductId(Long productId);
+    List<Bid> findByMemberId(Long memberId);
     Bid findHighestBidByProductId(Long productId);
 }
