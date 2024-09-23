@@ -62,6 +62,7 @@ public class BidController {
     public ResponseEntity<List<MemberBidListResponseDto>> getMemberBids(@RequestHeader("Authorization") String authorization){
         Long memberId = jwtUtil.extractMemberId(authorization);
         List<MemberBidListResponseDto> collect = bidService.getMemberBid(memberId);
+
         return ResponseEntity.ok(collect);
     }
 }
