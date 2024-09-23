@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -77,6 +78,7 @@ public class ProductController {
         List<Long> likedProductsIds = likeService.getLikeItems(memberId);
 
         List<ProductListResponseDto> collect = StreamSupport.stream(products.spliterator(), false)
+                .sorted(Comparator.comparing(ProductDocument::getId).reversed())
                 .map(product -> productMapper.toListResponeDto(product, likedProductsIds.contains(product.getId())))
                 .collect(Collectors.toList());
 
