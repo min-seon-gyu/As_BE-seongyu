@@ -7,6 +7,7 @@ import Auction_shop.auction.chatRoom.service.ChatRoomService;
 import Auction_shop.auction.sse.SSEConnection;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
+    private final RedisTemplate<String, Long> messageQueue;
 
     // 채팅방 리스트 불러오기
     @GetMapping("/chatroom/list/{userId}")
@@ -48,7 +50,13 @@ public class ChatRoomController {
             Long newChatRoomId = chatRoomService.createNewChatRoom(userId, yourId, postId);
             SSEConnection sseConnection = new SSEConnection();
             SseEmitter emitter = sseConnection.getEmitter(yourId);  // 상대방ID를 통해 상대방의 emitter를 가져옴
-            sseConnection.sendEvent(emitter, "createdNewChatRoom", newChatRoomId);  // SSE를 통해 상대방에게 알림
+
+            if (emitter != null) {
+                sseConnection.sendEvent(emitter, "createdNewChatRoom", newChatRoomId);  // SSE를 통해 상대방에게 알림
+            }
+            if (emitter == null) {  // 상대방이 접속 중이 아닌 상태일 때 메세지 큐에 저장 후 나중에 상대방이 접속 시 생성된 채팅방 번호 제공
+                messageQueue.opsForList().leftPush(yourId, newChatRoomId);  // 메세지 큐에 저장
+            }
 
             return ResponseEntity.ok(newChatRoomId);
         }
