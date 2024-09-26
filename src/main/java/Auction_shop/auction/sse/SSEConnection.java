@@ -31,11 +31,10 @@ public class SSEConnection {
 
         // Emitter 생성 후 만료 시간(TIMEOUT)까지 아무 데이터도 보내지 않는 경우 503에러가 발생한다.
         // "name: connect, data: connect success"와 같은 더미데이터를 전달하여 에러 방지
-
         // 오프라인 상태일 때 구매자에 의해 생성된 채팅방 번호를 전달
         List<Long> chatRoomIds = messageQueue.opsForList().range(userId, 0, -1);
-
         sendEvent(emitter, "connect", chatRoomIds);
+        messageQueue.delete(userId);
 
         // 타임아웃이 발생하면 브라우저에서 재연결 요청을 보내고 새로운 Emitter 객체를 생성하기에 기존의 Emitter를 삭제
         emitter.onTimeout(() -> {

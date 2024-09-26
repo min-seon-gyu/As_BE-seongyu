@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 public class ChatRoomController {
-
+    private final SSEConnection sseConnection;
     private final ChatRoomService chatRoomService;
     private final RedisTemplate<String, Long> messageQueue;
 
@@ -48,7 +47,6 @@ public class ChatRoomController {
         // case 1
         if (chatRoomInfo.isEmpty()) {
             Long newChatRoomId = chatRoomService.createNewChatRoom(userId, yourId, postId);
-            SSEConnection sseConnection = new SSEConnection();
             SseEmitter emitter = sseConnection.getEmitter(yourId);  // 상대방ID를 통해 상대방의 emitter를 가져옴
 
             if (emitter != null) {
