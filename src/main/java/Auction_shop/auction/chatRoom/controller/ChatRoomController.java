@@ -3,6 +3,7 @@ package Auction_shop.auction.chatRoom.controller;
 import Auction_shop.auction.chat.dto.ChatDto;
 import Auction_shop.auction.chatRoom.domain.ChatRoom;
 import Auction_shop.auction.chatRoom.dto.ChatRoomDto;
+import Auction_shop.auction.chatRoom.dto.ChatRoomListResponseDto;
 import Auction_shop.auction.chatRoom.service.ChatRoomService;
 import Auction_shop.auction.sse.SSEConnection;
 import lombok.AllArgsConstructor;
@@ -24,12 +25,12 @@ import java.util.Optional;
 public class ChatRoomController {
     private final SSEConnection sseConnection;
     private final ChatRoomService chatRoomService;
-    private final RedisTemplate<String, Long> messageQueue;
+    private final RedisTemplate<Long, Long> messageQueue;
 
     // 채팅방 리스트 불러오기
     @GetMapping("/chatroom/list/{userId}")
-    public ResponseEntity<List<ChatRoom>> findChatRooms(@PathVariable String userId) {
-        List<ChatRoom> chatRooms = chatRoomService.findChatRoomsByUserId(userId);
+    public ResponseEntity<List<ChatRoomListResponseDto>> findChatRooms(@PathVariable Long userId) {
+        List<ChatRoomListResponseDto> chatRooms = chatRoomService.findChatRoomsByUserId(userId);
         return ResponseEntity.ok(chatRooms);
     }
 
@@ -39,9 +40,9 @@ public class ChatRoomController {
 
     @GetMapping("/chatroom/enter")
     public ResponseEntity<?> enter(@RequestBody ChatRoomDto chatRoomDto) {
-        String userId = chatRoomDto.getUserId();
-        String yourId = chatRoomDto.getYourId();
-        String postId = chatRoomDto.getPostId();
+        Long userId = chatRoomDto.getUserId();
+        Long yourId = chatRoomDto.getYourId();
+        Long postId = chatRoomDto.getPostId();
         Optional<ChatRoom> chatRoomInfo = chatRoomService.findChatRoomInfo(userId, yourId, postId);
 
         // case 1

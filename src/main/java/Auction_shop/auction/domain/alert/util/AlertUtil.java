@@ -14,7 +14,7 @@ public class AlertUtil {
     private final SSEConnection sseConnection;
 
     public void run(Long memberId, String memberNickname, String content, AlertType alertType){
-        SseEmitter emitter = sseConnection.getEmitter(Long.toString(memberId));
+        SseEmitter emitter = sseConnection.getEmitter(memberId);
         if (emitter != null) {
             sseConnection.sendEvent(emitter, content, null);
         }

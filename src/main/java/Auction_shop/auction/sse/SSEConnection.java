@@ -61,7 +61,7 @@ public class SSEConnection {
         }
     }
 
-    public SseEmitter getEmitter(String yourId) {
+    public SseEmitter getEmitter(Long yourId) {
         return emitters.get(yourId);
     }
 

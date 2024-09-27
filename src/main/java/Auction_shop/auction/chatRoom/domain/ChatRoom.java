@@ -16,18 +16,17 @@ public class ChatRoom {
     private Long id;
 
     @Column(nullable = false)
-    private String userId;  // 나의 ID
+    private Long userId;  // 나의 ID
 
     @Column(nullable = false)
-    private String yourId;  // 상대방ID
+    private Long yourId;  // 상대방ID
 
     @Column(nullable = false)
-    private String postId;  // 게시글ID
-
+    private Long postId;  // 게시글ID
     private Long roomId;    // 채팅방번호
 
     @Builder
-    public ChatRoom(String userId, String yourId, String postId, Long roomId) {
+    public ChatRoom(Long userId, Long yourId, Long postId, Long roomId) {
         this.userId = userId;
         this.yourId = yourId;
         this.postId = postId;
