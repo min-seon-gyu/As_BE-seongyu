@@ -3,6 +3,7 @@ package Auction_shop.auction.chatRoom.controller;
 import Auction_shop.auction.chat.dto.ChatDto;
 import Auction_shop.auction.chatRoom.domain.ChatRoom;
 import Auction_shop.auction.chatRoom.dto.ChatRoomDto;
+import Auction_shop.auction.chatRoom.dto.ChatRoomInfoResponseDto;
 import Auction_shop.auction.chatRoom.dto.ChatRoomListResponseDto;
 import Auction_shop.auction.chatRoom.service.ChatRoomService;
 import Auction_shop.auction.sse.SSEConnection;
@@ -64,7 +65,7 @@ public class ChatRoomController {
         ChatRoom chatRoom = chatRoomInfo.get();
 
         // roomId를 꺼내 chat 테이블 조회
-        List<ChatDto> chatLog = chatRoomService.fetchChatLog(chatRoom.getRoomId());
-        return ResponseEntity.ok(chatLog);
+        ChatRoomInfoResponseDto chatInfo = chatRoomService.enterChatRoom(chatRoom.getRoomId());
+        return ResponseEntity.ok(chatInfo);
     }
 }
