@@ -1,6 +1,8 @@
 package Auction_shop.auction.sse;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,13 +10,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
+@AllArgsConstructor
 @RestController
 public class SSEConnection {
-
+    private final RedisTemplate<String, Long> messageQueue;
     private static final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final long TIMEOUT = 5 * 60 * 1000L;
     private final long RECONNECTION_TIMEOUT = 5000L;
@@ -27,7 +31,10 @@ public class SSEConnection {
 
         // Emitter 생성 후 만료 시간(TIMEOUT)까지 아무 데이터도 보내지 않는 경우 503에러가 발생한다.
         // "name: connect, data: connect success"와 같은 더미데이터를 전달하여 에러 방지
-        sendEvent(emitter, "connect", 0L);
+        // 오프라인 상태일 때 구매자에 의해 생성된 채팅방 번호를 전달
+        List<Long> chatRoomIds = messageQueue.opsForList().range(userId, 0, -1);
+        sendEvent(emitter, "connect", chatRoomIds);
+        messageQueue.delete(userId);
 
         // 타임아웃이 발생하면 브라우저에서 재연결 요청을 보내고 새로운 Emitter 객체를 생성하기에 기존의 Emitter를 삭제
         emitter.onTimeout(() -> {
@@ -41,7 +48,7 @@ public class SSEConnection {
         return ResponseEntity.ok(emitter);
     }
 
-    public void sendEvent(SseEmitter emitter, String name, Long roomId) {
+    public void sendEvent(SseEmitter emitter, String name, Object roomId) {
         try {
             emitter.send(SseEmitter.event()
                     .name(name)
