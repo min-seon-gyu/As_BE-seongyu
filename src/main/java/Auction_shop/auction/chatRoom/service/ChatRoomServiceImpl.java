@@ -3,6 +3,7 @@ package Auction_shop.auction.chatRoom.service;
 import Auction_shop.auction.chat.dto.ChatDto;
 import Auction_shop.auction.chat.repository.ChatRepository;
 import Auction_shop.auction.chatRoom.domain.ChatRoom;
+import Auction_shop.auction.chatRoom.dto.ChatRoomInfoResponseDto;
 import Auction_shop.auction.chatRoom.dto.ChatRoomListResponseDto;
 import Auction_shop.auction.chatRoom.repository.ChatRoomRepository;
 import Auction_shop.auction.domain.member.Member;
@@ -31,7 +32,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public List<ChatRoomListResponseDto> findChatRoomsByUserId(Long userId) {
         List<ChatRoom> list = chatRoomRepository.findByUserId(userId);
-        List<ChatRoomListResponseDto> responseDtos = new ArrayList<>();
+        List<ChatRoomListResponseDto> ResponseList = new ArrayList<>();
 
         for (ChatRoom chatRoom : list) {
             Long postId = chatRoom.getPostId();
@@ -60,10 +61,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             responseDto.setLatestChatTime(latestChatTime);
             responseDto.setLatestChatLog(latestChatLog);
 
-            responseDtos.add(responseDto);
+            ResponseList.add(responseDto);
         }
 
-        return responseDtos;
+        return ResponseList;
     }
 
     /**
@@ -91,11 +92,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * roomId를 가진 채팅방의 채팅 내역 전달
-     * @return chatLog(채팅 내역)
+     * @return chatLog(상품명, 채팅 내역, 현재가격)
      */
     @Override
-    public List<ChatDto> fetchChatLog(Long roomId) {
+    public ChatRoomInfoResponseDto enterChatRoom(Long roomId) {
         List<ChatDto> chatLog = chatRepository.findByRoomId(roomId);
-        return chatLog;
+        
+        ChatRoom chatRoom = chatRoomRepository.findFirstByRoomId(roomId);
+        Long postId = chatRoom.getPostId();
+        int currentPriceById = productService.findCurrentPriceById(postId);
+
+        Product product = productService.findProductById(postId);
+        String title = product.getTitle();
+
+        ChatRoomInfoResponseDto infoResponseDto = new ChatRoomInfoResponseDto();
+        infoResponseDto.setChatLog(chatLog);
+        infoResponseDto.setCurrentPrice(currentPriceById);
+        infoResponseDto.setTitle(title);
+
+        return infoResponseDto;
     }
 }

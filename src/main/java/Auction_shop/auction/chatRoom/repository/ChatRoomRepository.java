@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     List<ChatRoom> findByUserId(Long userId);
+    ChatRoom findFirstByRoomId(Long roomId);
     ChatRoom findByUserIdAndYourIdAndPostId(Long userId, Long yourId, Long postId);
 
     @Query("SELECT COUNT(CR) FROM ChatRoom CR")
