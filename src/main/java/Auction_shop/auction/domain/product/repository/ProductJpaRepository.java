@@ -2,14 +2,17 @@ package Auction_shop.auction.domain.product.repository;
 
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.ProductType;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductJpaRepository extends JpaRepository<Product,Long> {
 
@@ -28,4 +31,8 @@ public interface ProductJpaRepository extends JpaRepository<Product,Long> {
     ProductType findProductTypeById(@Param("productId") Long productId);
 
     List<Product> findAllByMemberId(Long memberId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Product p WHERE p.id = :productId")
+    Optional<Product> findByProductIdWithLock(@Param("productId") Long productId);
 }
