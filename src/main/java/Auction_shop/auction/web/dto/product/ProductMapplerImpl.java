@@ -39,7 +39,7 @@ public class ProductMapplerImpl implements ProductMapper{
     }
 
     @Override
-    public ProductListResponseDto toListResponeDto(ProductDocument productDocument, boolean isLiked) {
+    public ProductListResponseDto toListResponseDto(ProductDocument productDocument, boolean isLiked) {
 
         ProductListResponseDto responseDto = ProductListResponseDto.builder()
                 .product_id(productDocument.getId())

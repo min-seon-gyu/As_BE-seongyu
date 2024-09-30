@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberResponseDto {
+public class MemberListResponseDto {
     private Long id;
     private String username;
     private String name;
