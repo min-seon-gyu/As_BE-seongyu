@@ -14,7 +14,6 @@ public interface ProductService {
     Product save(ProductDto productDto, Long memberId, List<MultipartFile> images);
 
     //물건 찾기
-    Iterable<ProductDocument> findAllProduct();
     Iterable<ProductDocument> findAllProduct(Long memberId);
     Iterable<ProductDocument> findAllByNickname(String nickname);
     Iterable<ProductDocument> findByTitleLike(String title);

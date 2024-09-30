@@ -8,5 +8,6 @@ import java.util.List;
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
     List<Inquiry> findByMemberId(Long memberId);
+    List<Inquiry> findByStatus(boolean status);
 
 }
