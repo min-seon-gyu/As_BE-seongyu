@@ -63,11 +63,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Iterable<ProductDocument> findAllProduct() {
-        return productElasticsearchRepository.findAll();
-    }
-
-    @Override
     public Iterable<ProductDocument> findAllProduct(Long memberId) {
         return productElasticsearchRepository.findAll();
     }

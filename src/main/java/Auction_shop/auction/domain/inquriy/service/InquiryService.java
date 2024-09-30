@@ -50,8 +50,8 @@ public class InquiryService {
     }
 
     //문의 전체 조회 (Admin 전용)
-    public List<Inquiry> getAllInquiry() {
-        return inquiryRepository.findAll();
+    public List<Inquiry> getAllByStatus(boolean status) {
+        return inquiryRepository.findByStatus(status);
     }
 
     //유저 문의 조회

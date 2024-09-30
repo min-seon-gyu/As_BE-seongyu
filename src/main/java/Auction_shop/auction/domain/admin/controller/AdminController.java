@@ -5,7 +5,9 @@ import Auction_shop.auction.domain.inquriy.repository.InquiryRepository;
 import Auction_shop.auction.domain.inquriy.service.InquiryService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
-import Auction_shop.auction.domain.product.ProductDocument;
+import Auction_shop.auction.domain.notice.Notice;
+import Auction_shop.auction.domain.notice.repository.NoticeRepository;
+import Auction_shop.auction.domain.notice.service.NoticeService;
 import Auction_shop.auction.domain.product.service.ProductService;
 import Auction_shop.auction.web.dto.admin.CreateAnswerDto;
 import Auction_shop.auction.web.dto.inquiry.InquiryListResponseDto;
@@ -13,7 +15,10 @@ import Auction_shop.auction.web.dto.inquiry.InquiryMapper;
 import Auction_shop.auction.web.dto.inquiry.InquiryResponseDto;
 import Auction_shop.auction.web.dto.member.MemberListResponseDto;
 import Auction_shop.auction.web.dto.member.MemberMapper;
-import Auction_shop.auction.web.dto.product.ProductListResponseDto;
+import Auction_shop.auction.web.dto.notice.NoticeCreateDto;
+import Auction_shop.auction.web.dto.notice.NoticeMapper;
+import Auction_shop.auction.web.dto.notice.NoticeResponseDto;
+import Auction_shop.auction.web.dto.notice.NoticeUpdateDto;
 import Auction_shop.auction.web.dto.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,11 +34,15 @@ import java.util.stream.StreamSupport;
 public class AdminController {
     private final ProductService productService;
     private final InquiryService inquiryService;
+    private final NoticeService noticeService;
     private final MemberRepository memberRepository;
     private final InquiryRepository inquiryRepository;
+    private final NoticeRepository noticeRepository;
     private final MemberMapper memberMapper;
     private final InquiryMapper inquiryMapper;
-    private final ProductMapper productMapper;
+    private final NoticeMapper noticeMapper;
+
+    //회원 관련
 
     //전체 회원 조회
     @GetMapping("/member")
@@ -46,22 +54,21 @@ public class AdminController {
         return ResponseEntity.ok(collect);
     }
 
-    //전체 문의 조회
-    @GetMapping("/inquiries")
-    public ResponseEntity<List<InquiryListResponseDto>> getAllInquiry(){
-        List<Inquiry> inquiries = inquiryRepository.findAll();
-        List<InquiryListResponseDto> collect = inquiries.stream()
-                .map(inquiryMapper::toListResponseDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(collect);
+    //회원 삭제
+    @DeleteMapping("/member/{id}")
+    public ResponseEntity<Void> deleteMember(@PathVariable("id") Long id){
+        memberRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
-    //전체 경매 조회
-    @GetMapping("/products")
-    public ResponseEntity<List<ProductListResponseDto>> getAllProduct(){
-        Iterable<ProductDocument> products = productService.findAllProduct();
-        List<ProductListResponseDto> collect = StreamSupport.stream(products.spliterator(), false)
-                .map(product -> productMapper.toListResponseDto(product, false))
+    //문의 관련
+
+    //문의 조회
+    @GetMapping("/inquiries/{status}")
+    public ResponseEntity<List<InquiryListResponseDto>> getInquiries(@PathVariable("status") boolean status){
+        List<Inquiry> inquiries = inquiryRepository.findByStatus(status);
+        List<InquiryListResponseDto> collect = inquiries.stream()
+                .map(inquiryMapper::toListResponseDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(collect);
     }
@@ -74,13 +81,6 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(collect);
     }
 
-    //회원 삭제
-    @DeleteMapping("/member/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable("id") Long id){
-        memberRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
-
     //문의 삭제
     @DeleteMapping("/inquiry/{id}")
     public ResponseEntity<Void> deleteInquiry(@PathVariable("id") Long id){
@@ -88,10 +88,37 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    //경매 관련
+
     //경매 삭제
     @DeleteMapping("/product/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long id){
         productService.deleteProductById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    //공지 관련
+
+    //공지 등록
+    @PostMapping("/notice")
+    public ResponseEntity<NoticeResponseDto> createNotice(@RequestBody NoticeCreateDto noticeCreateDto){
+        Notice notice = noticeService.createNotice(noticeCreateDto);
+        NoticeResponseDto collect = noticeMapper.toResponseDto(notice);
+        return ResponseEntity.status(HttpStatus.CREATED).body(collect);
+    }
+
+    //공지 수정
+    @PutMapping("/notice/{id}")
+    public ResponseEntity<NoticeResponseDto> updateNotice(@PathVariable("id") Long id, @RequestBody NoticeUpdateDto noticeUpdateDto){
+        Notice notice = noticeService.updateNotice(id, noticeUpdateDto);
+        NoticeResponseDto collect = noticeMapper.toResponseDto(notice);
+        return ResponseEntity.ok(collect);
+    }
+
+    //공지 삭제
+    @DeleteMapping("/notice/{id}")
+    public ResponseEntity<Void> deleteNotice(@PathVariable("id") Long id){
+        noticeRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
