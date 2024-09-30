@@ -37,7 +37,7 @@ public class AdminController {
     private final ProductMapper productMapper;
 
     //전체 회원 조회
-    @GetMapping
+    @GetMapping("/member")
     public ResponseEntity<List<MemberListResponseDto>> getAllMember(){
         List<Member> members = memberRepository.findAll();
         List<MemberListResponseDto> collect = members.stream()
@@ -47,7 +47,7 @@ public class AdminController {
     }
 
     //전체 문의 조회
-    @GetMapping
+    @GetMapping("/inquiries")
     public ResponseEntity<List<InquiryListResponseDto>> getAllInquiry(){
         List<Inquiry> inquiries = inquiryRepository.findAll();
         List<InquiryListResponseDto> collect = inquiries.stream()
@@ -57,7 +57,7 @@ public class AdminController {
     }
 
     //전체 경매 조회
-    @GetMapping
+    @GetMapping("/products")
     public ResponseEntity<List<ProductListResponseDto>> getAllProduct(){
         Iterable<ProductDocument> products = productService.findAllProduct();
         List<ProductListResponseDto> collect = StreamSupport.stream(products.spliterator(), false)

@@ -2,9 +2,13 @@ package Auction_shop.auction.web.dto.member;
 
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.member.Member;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Component
+@RequiredArgsConstructor
 public class MemberMapperImpl implements MemberMapper{
     @Override
     public MemberResponseDto toResponseDto(Member member) {
