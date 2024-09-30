@@ -41,7 +41,7 @@ public class HistoryController {
         List<Long> likedProductsIds = likeService.getLikeItems(memberId);
 
         List<ProductListResponseDto> collect = StreamSupport.stream(products.spliterator(), false)
-                .map(product -> productMapper.toListResponeDto(product, likedProductsIds.contains(product.getId())))
+                .map(product -> productMapper.toListResponseDto(product, likedProductsIds.contains(product.getId())))
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(collect);

@@ -79,7 +79,7 @@ public class ProductController {
 
         List<ProductListResponseDto> collect = StreamSupport.stream(products.spliterator(), false)
                 .sorted(Comparator.comparing(ProductDocument::getId).reversed())
-                .map(product -> productMapper.toListResponeDto(product, likedProductsIds.contains(product.getId())))
+                .map(product -> productMapper.toListResponseDto(product, likedProductsIds.contains(product.getId())))
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(collect);

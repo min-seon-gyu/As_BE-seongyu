@@ -34,29 +34,6 @@ public class InquiryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(collect);
     }
 
-    //답변 등록
-    @PostMapping("/admin/{inquiryId}")
-    public ResponseEntity<InquiryResponseDto> addAnswer(@PathVariable Long inquiryId, String answer){
-        Inquiry inquiry = inquiryService.addAnswer(inquiryId, answer);
-        InquiryResponseDto collect = inquiryMapper.toResponseDto(inquiry);
-        return ResponseEntity.status(HttpStatus.CREATED).body(collect);
-    }
-
-    //전체 조회(어드민)
-    @GetMapping()
-    public ResponseEntity<List<InquiryListResponseDto>> getAllInquiry(){
-        List<Inquiry> inquiries = inquiryService.getAllInquiry();
-
-        if (inquiries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        List<InquiryListResponseDto> collect = inquiries.stream()
-                .map(inquiryMapper::toListResponseDto)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(collect);
-    }
-
     //멤버 문의 조회
     @GetMapping("/member")
     public ResponseEntity<List<InquiryListResponseDto>> getAllByMemberId(@RequestHeader("Authorization") String authorization){
