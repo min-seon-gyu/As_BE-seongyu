@@ -3,6 +3,7 @@ package Auction_shop.auction.domain.member.controller;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.security.jwt.JwtUtil;
+import Auction_shop.auction.web.dto.member.MemberMapper;
 import Auction_shop.auction.web.dto.member.MemberResponseDto;
 import Auction_shop.auction.web.dto.member.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
+    private final MemberMapper memberMapper;
     private final JwtUtil jwtUtil;
 
     @GetMapping()
     public ResponseEntity<MemberResponseDto> getByMemberId(@RequestHeader("Authorization") String authorization){
         Long memberId = jwtUtil.extractMemberId(authorization);
         Member member = memberService.getById(memberId);
-        return ResponseEntity.ok(MemberResponseDto.create(member));
+        MemberResponseDto collect = memberMapper.toResponseDto(member);
+        return ResponseEntity.ok(collect);
     }
 
     @PatchMapping("/{memberId}")
@@ -29,7 +32,8 @@ public class MemberController {
                                                           @RequestPart(value = "member") MemberUpdateDto memberUpdateDto,
                                                           @RequestPart(value = "image", required = false) MultipartFile image){
         Member member = memberService.updateMember(memberId, memberUpdateDto, image);
-        return ResponseEntity.ok(MemberResponseDto.create(member));
+        MemberResponseDto collect = memberMapper.toResponseDto(member);
+        return ResponseEntity.ok(collect);
     }
 
     @DeleteMapping()
