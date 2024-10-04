@@ -11,6 +11,7 @@ import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.service.ProductService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
@@ -29,6 +31,48 @@ public class ChatRoomServiceImpl implements ChatRoomService {
      * 채팅방 목록 가져오기
      * @return list(채팅방 목록)
      */
+//    @Override
+//    public List<ChatRoomListResponseDto> findChatRoomsByUserId(Long userId) {
+//        List<ChatRoom> list = chatRoomRepository.findByUserId(userId);
+////        ChatRoom tmp = list.get(0);
+//        log.info("list size  = {}", list.size());
+//        List<ChatRoomListResponseDto> ResponseList = new ArrayList<>();
+//
+//        for (ChatRoom chatRoom : list) {
+//            Long postId = chatRoom.getPostId();
+//            log.info("postId={}",postId);
+//            Product product = productService.findProductById(postId);
+//            // 이미지 없을수도 있음
+//            String firstImageUrl = product.getImageUrls().get(0);
+//
+//            Long yourId = chatRoom.getYourId();
+//            Member member = memberService.getById(yourId);
+//            // 이미지 없을수도 있음
+//            String firstProfileUrl = member.getProfileImage().getAccessUrl();
+//            String nickname = member.getNickname();
+//
+//            Long roomId = chatRoom.getRoomId();
+//            ChatDto latestChatInfo = chatRepository.findLatestChatByRoomId(roomId);
+//            String latestChatLog = latestChatInfo.getMessage();
+//            LocalDateTime latestChatTime = latestChatInfo.getCreatedAt();
+//
+//            ChatRoomListResponseDto responseDto = new ChatRoomListResponseDto();
+//            responseDto.setUserId(userId);
+//            responseDto.setYourId(yourId);
+//            responseDto.setPostId(postId);
+//            responseDto.setRoomId(roomId);
+//
+//            responseDto.setImageUrl(firstImageUrl);
+//            responseDto.setProfileUrl(firstProfileUrl);
+//            responseDto.setNickname(nickname);
+//            responseDto.setLatestChatTime(latestChatTime);
+//            responseDto.setLatestChatLog(latestChatLog);
+//
+//            ResponseList.add(responseDto);
+//        }
+//
+//        return ResponseList;
+//    }
     @Override
     public List<ChatRoomListResponseDto> findChatRoomsByUserId(Long userId) {
         List<ChatRoom> list = chatRoomRepository.findByUserId(userId);
@@ -37,17 +81,29 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         for (ChatRoom chatRoom : list) {
             Long postId = chatRoom.getPostId();
             Product product = productService.findProductById(postId);
-            String firstImageUrl = product.getImageUrls().get(0);
+            String firstImageUrl = product.getImageUrls().stream().findFirst().orElse(null);
 
             Long yourId = chatRoom.getYourId();
             Member member = memberService.getById(yourId);
-            String firstProfileUrl = member.getProfileImage().getAccessUrl();
+            String firstProfileUrl;
+            if (member.getProfileImage() != null) {
+                firstProfileUrl = member.getProfileImage().getAccessUrl();
+            }else{
+                firstProfileUrl = null;
+            }
             String nickname = member.getNickname();
 
             Long roomId = chatRoom.getRoomId();
             ChatDto latestChatInfo = chatRepository.findLatestChatByRoomId(roomId);
-            String latestChatLog = latestChatInfo.getMessage();
-            LocalDateTime latestChatTime = latestChatInfo.getCreatedAt();
+            String latestChatLog;
+            LocalDateTime latestChatTime;
+            if(latestChatInfo != null) {
+                latestChatLog = latestChatInfo.getMessage();
+                latestChatTime = latestChatInfo.getCreatedAt();
+            }else{
+                latestChatLog = null;
+                latestChatTime = null;
+            }
 
             ChatRoomListResponseDto responseDto = new ChatRoomListResponseDto();
             responseDto.setUserId(userId);
