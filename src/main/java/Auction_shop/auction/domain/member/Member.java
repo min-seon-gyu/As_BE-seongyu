@@ -130,4 +130,8 @@ public class Member extends BaseEntity {
         this.addresses.add(address);
     }
 
+    public void updateRole(String role){
+        this.role = role;
+    }
+
 }
