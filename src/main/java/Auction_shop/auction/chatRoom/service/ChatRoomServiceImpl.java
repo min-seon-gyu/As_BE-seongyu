@@ -31,6 +31,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
      * 채팅방 목록 가져오기
      * @return list(채팅방 목록)
      */
+
 //    @Override
 //    public List<ChatRoomListResponseDto> findChatRoomsByUserId(Long userId) {
 //        List<ChatRoom> list = chatRoomRepository.findByUserId(userId);
