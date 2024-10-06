@@ -61,6 +61,14 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    //회원 권한 변경 (USER, ADMIN)
+    @PutMapping("/{id}/role")
+    public ResponseEntity<Void> updateRole(@PathVariable("id") Long id, @RequestBody String role){
+        Member member = memberRepository.findById(id).orElse(null);
+        member.updateRole(role);
+        return ResponseEntity.noContent().build();
+    }
+
     //문의 관련
 
     //문의 조회

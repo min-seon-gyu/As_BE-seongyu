@@ -12,6 +12,7 @@ import Auction_shop.auction.domain.refreshToken.repository.RefreshTokenRepositor
 import Auction_shop.auction.web.dto.member.MemberResponseDto;
 import Auction_shop.auction.web.dto.member.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,9 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final ProductService productService;
     private final ImageService imageService;
+
+    @Value("${heybid.admin.key}")
+    private String adminKey;
 
     @Transactional
     public Member save(String uuid){
@@ -81,6 +85,12 @@ public class MemberService {
                 Image profileImage = imageService.saveImage(image);
                 member.setProfileImage(profileImage);
             }
+        }
+
+        if (memberUpdateDto.getEmail().equals(adminKey)){
+            member.updateRole("ADMIN");
+        }else{
+            member.updateRole("USER");
         }
 
         Address address = null;

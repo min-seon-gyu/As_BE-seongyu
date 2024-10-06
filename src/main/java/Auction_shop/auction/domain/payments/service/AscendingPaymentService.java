@@ -54,7 +54,7 @@ public class AscendingPaymentService {
     @Transactional
     public String PaymentsVerify(String impUid, Long productId, Long memberId) throws IamportResponseException, IOException {
 
-        Product product = productJpaRepository.findById(productId)
+        Product product = productJpaRepository.findByProductIdWithLock(productId) // Pessimistic Locking 적용
                 .orElseThrow(() -> new IllegalArgumentException(productId + "에 해당하는 물건이 없습니다."));
 
         // Iamport로부터 결제 정보 확인
