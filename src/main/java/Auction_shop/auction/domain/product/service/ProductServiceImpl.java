@@ -1,13 +1,13 @@
 package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.bid.Bid;
+import Auction_shop.auction.domain.bid.BidType;
 import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
 import Auction_shop.auction.domain.priceChange.PriceChange;
-import Auction_shop.auction.domain.priceChange.repository.PriceChangeJpaRepository;
 import Auction_shop.auction.domain.priceChange.service.PriceChangeService;
 import Auction_shop.auction.domain.product.ProductDocument;
 import Auction_shop.auction.domain.product.ProductType;
@@ -218,7 +218,7 @@ public class ProductServiceImpl implements ProductService {
                             .purchaseDate(LocalDateTime.now())
                             .build();
                     purchaseService.createPurchase(purchase);
-
+                    highestBid.changeStatus(BidType.SUCCESS);
                     //Todo 경매 우승자에게 알림 보내기 추가 부탁드립니다
                 }
                 updatedProducts.add(product);

@@ -1,6 +1,7 @@
 package Auction_shop.auction.domain.payments.service;
 
 import Auction_shop.auction.domain.bid.Bid;
+import Auction_shop.auction.domain.bid.BidType;
 import Auction_shop.auction.domain.bid.repository.BidJpaRepository;
 import Auction_shop.auction.domain.bid.repository.BidRedisRepository;
 import Auction_shop.auction.domain.member.Member;
@@ -80,6 +81,8 @@ public class AscendingPaymentService {
         Payments existingPayment = paymentsRepository.findTopByProductIdOrderByCreatedAtDesc(productId).orElse(null);
         if (existingPayment != null) {
             cancelPayment(existingPayment.getImpUid());
+            Bid existingBid = bidJpaRepository.findBidByPaymentId(existingPayment.getId());
+            existingBid.changeStatus(BidType.FAILED);
             paymentsRepository.delete(existingPayment);
         }
 
@@ -100,9 +103,11 @@ public class AscendingPaymentService {
 
         Bid bid = Bid.builder()
                 .productId(productId)
+                .paymentId(newPayment.getId())
                 .memberId(memberId)
                 .amount(bidAmount)
                 .bidTime(LocalDateTime.now())
+                .bidStatus(BidType.PROGRESS)
                 .build();
 
         bidRedisRepository.save(bid);
