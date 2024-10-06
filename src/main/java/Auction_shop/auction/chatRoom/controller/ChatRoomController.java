@@ -39,11 +39,8 @@ public class ChatRoomController {
     // case 1 : 채팅방이 없는 상태라면 채팅방 생성 후 채팅방 번호 응답 (채팅을 처음 시작하는 경우)
     // case 2 : 채팅방이 있는 상태라면 채팅방 정보와 채팅 내역을 불러와 응답
 
-    @GetMapping("/chatroom/enter")
-    public ResponseEntity<?> enter(@RequestBody ChatRoomDto chatRoomDto) {
-        Long userId = chatRoomDto.getUserId();
-        Long yourId = chatRoomDto.getYourId();
-        Long postId = chatRoomDto.getPostId();
+    @GetMapping("/chatroom/enter/{userId}/{yourId}/{postId}")
+    public ResponseEntity<?> enter(@PathVariable Long userId, @PathVariable Long yourId, @PathVariable Long postId) {
         Optional<ChatRoom> chatRoomInfo = chatRoomService.findChatRoomInfo(userId, yourId, postId);
 
         // case 1

@@ -34,9 +34,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 //    @Override
 //    public List<ChatRoomListResponseDto> findChatRoomsByUserId(Long userId) {
 //        List<ChatRoom> list = chatRoomRepository.findByUserId(userId);
-////        ChatRoom tmp = list.get(0);
-//        log.info("list size  = {}", list.size());
 //        List<ChatRoomListResponseDto> ResponseList = new ArrayList<>();
+//        log.info("list size  = {}", list.size());
 //
 //        for (ChatRoom chatRoom : list) {
 //            Long postId = chatRoom.getPostId();
@@ -44,11 +43,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 //            Product product = productService.findProductById(postId);
 //            // 이미지 없을수도 있음
 //            String firstImageUrl = product.getImageUrls().get(0);
+//            log.info("firstImageUrl={}",firstImageUrl);
 //
 //            Long yourId = chatRoom.getYourId();
+//            log.info("yourId={}",yourId);
 //            Member member = memberService.getById(yourId);
 //            // 이미지 없을수도 있음
 //            String firstProfileUrl = member.getProfileImage().getAccessUrl();
+//            log.info("firstProfileUrl={}",firstProfileUrl);
 //            String nickname = member.getNickname();
 //
 //            Long roomId = chatRoom.getRoomId();
