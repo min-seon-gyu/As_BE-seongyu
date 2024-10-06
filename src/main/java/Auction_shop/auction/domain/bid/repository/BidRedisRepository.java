@@ -62,26 +62,27 @@ public class BidRedisRepository {
                 .collect(Collectors.toList());
     }
 
-    public Bid findHighestBidByProductId(Long productId) {
-        String key = "bids" + productId;
-
-        Long size = redisTemplate.opsForList().size(key);
-
-        if (size == null || size == 0) {
-            return null; // 리스트가 비어있으면 null 반환
-        }
-
-        String latestJsonBid = redisTemplate.opsForList().index(key, size - 1);
-
-        if (latestJsonBid == null) {
-            return null; // 없으면 null 반환
-        }
-
-        try {
-            return objectMapper.readValue(latestJsonBid, Bid.class); // JSON 문자열을 Bid 객체로 변환
-        } catch (JsonProcessingException e) {
-            e.printStackTrace(); // 예외 처리
-            return null; // 변환 실패 시 null 반환
-        }
-    }
+    //미사용 함수 ) 추후에 사용 할 시 주석 해제
+//    public Bid findHighestBidByProductId(Long productId) {
+//        String key = "bids" + productId;
+//
+//        Long size = redisTemplate.opsForList().size(key);
+//
+//        if (size == null || size == 0) {
+//            return null; // 리스트가 비어있으면 null 반환
+//        }
+//
+//        String latestJsonBid = redisTemplate.opsForList().index(key, size - 1);
+//
+//        if (latestJsonBid == null) {
+//            return null; // 없으면 null 반환
+//        }
+//
+//        try {
+//            return objectMapper.readValue(latestJsonBid, Bid.class); // JSON 문자열을 Bid 객체로 변환
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace(); // 예외 처리
+//            return null; // 변환 실패 시 null 반환
+//        }
+//    }
 }
