@@ -1,9 +1,6 @@
 package Auction_shop.auction.domain.bid;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +20,14 @@ public class Bid {
     private Long id;
     private Long productId;
     private Long memberId;
+    private Long paymentId;
     private int amount;
     private LocalDateTime bidTime;
 
+    @Enumerated(EnumType.STRING)
+    private BidType bidStatus;
+
+    public void changeStatus(BidType bidStatus) {
+        this.bidStatus = bidStatus;
+    }
 }
