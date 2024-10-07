@@ -20,6 +20,7 @@ public class BidMapperImpl implements BidMapper {
                 .profileImageUrl(profileImageUrl)
                 .bidTime(bid.getBidTime())
                 .bidCount(bidCount)
+                .bidStatus(bid.getBidStatus())
                 .build();
         return bidResponseDto;
     }
@@ -27,22 +28,14 @@ public class BidMapperImpl implements BidMapper {
     @Override
     public MemberBidListResponseDto toMemberBidListResponseDto(Bid bid, Product product) {
 
-        boolean isTopBid;
-        if (product.getCurrent_price() == bid.getAmount()){
-            isTopBid = true;
-        } else {
-            isTopBid = false;
-        }
-
         MemberBidListResponseDto responseDto = MemberBidListResponseDto.builder()
                 .productId(bid.getProductId())
                 .imageUrl(product.getImageUrls().stream().findFirst().orElse(null))
                 .initial_price(product.getInitial_price())
                 .current_price(product.getCurrent_price())
                 .title(product.getTitle())
+                .bidStatus(bid.getBidStatus())
                 .amount(bid.getAmount())
-                .bidTime(bid.getBidTime())
-                .isTopBid(isTopBid)
                 .build();
         return responseDto;
     }

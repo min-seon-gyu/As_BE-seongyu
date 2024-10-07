@@ -1,5 +1,6 @@
 package Auction_shop.auction.web.dto.bid;
 
+import Auction_shop.auction.domain.bid.BidStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +21,5 @@ public class MemberBidListResponseDto {
     private int current_price;
     private int amount;
     private LocalDateTime bidTime;
-    private boolean isTopBid;
+    private BidStatus bidStatus;
 }
