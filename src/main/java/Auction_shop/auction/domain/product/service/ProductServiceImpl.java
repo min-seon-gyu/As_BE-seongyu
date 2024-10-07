@@ -149,7 +149,7 @@ public class ProductServiceImpl implements ProductService {
         List<Image> imageList = imageService.saveImages(images);
         product.getImageList().addAll(imageList);
 
-        product.updateProduct(productUpdateDto.getTitle(), productUpdateDto.getCategories(), productUpdateDto.getDetails(), productUpdateDto.getTradeLocation(), productUpdateDto.getConditions());
+        product.updateProduct(productUpdateDto.getTitle(), productUpdateDto.getCategories(), productUpdateDto.getTradeType(), productUpdateDto.getDetails(), productUpdateDto.getTradeLocation(), productUpdateDto.getConditions());
 
         ProductDocument productDocument = productMapper.toDocument(product);
         productElasticsearchRepository.save(productDocument);

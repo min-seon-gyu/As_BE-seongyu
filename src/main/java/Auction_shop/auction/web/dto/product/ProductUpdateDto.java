@@ -17,6 +17,7 @@ public class ProductUpdateDto {
     private String title;
     private String details;
     private Set<String> categories;
+    private Set<String> tradeType;
     private String tradeLocation;
     private String conditions;
     private List<String> imageUrlsToKeep;
