@@ -35,6 +35,7 @@ public class BidMapperImpl implements BidMapper {
                 .current_price(product.getCurrent_price())
                 .title(product.getTitle())
                 .bidStatus(bid.getBidStatus())
+                .bidTime(bid.getBidTime())
                 .amount(bid.getAmount())
                 .build();
         return responseDto;
