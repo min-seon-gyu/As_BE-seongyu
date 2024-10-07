@@ -68,12 +68,7 @@ public class BidService {
     }
 
     public Bid getHighestBidForProduct(Long productId){
-        Bid highestBid = bidRedisRepository.findHighestBidByProductId(productId);
-
-        if (highestBid == null){
-            highestBid = bidJpaRepository.findHighestBidByProductId(productId);
-        }
-
+        Bid highestBid = bidJpaRepository.findTopByProductIdOrderByBidTimeDesc(productId);
         return highestBid;
     }
 
@@ -101,5 +96,9 @@ public class BidService {
 
         Collections.reverse(responseList);
         return responseList;
+    }
+
+    public Bid getBidByPaymentId(Long paymentId){
+        return bidJpaRepository.findBidByPaymentId(paymentId);
     }
 }

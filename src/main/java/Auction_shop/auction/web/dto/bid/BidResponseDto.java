@@ -1,5 +1,6 @@
 package Auction_shop.auction.web.dto.bid;
 
+import Auction_shop.auction.domain.bid.BidStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,4 +17,5 @@ public class BidResponseDto {
     private int amount;
     private LocalDateTime bidTime;
     private String profileImageUrl;
+    private BidStatus bidStatus;
 }
