@@ -83,6 +83,7 @@ public class AscendingPaymentService {
             cancelPayment(existingPayment.getImpUid());
             Bid existingBid = bidJpaRepository.findBidByPaymentId(existingPayment.getId());
             existingBid.changeStatus(BidStatus.FAILED);
+            bidRedisRepository.updateBidInRedis(existingBid);
             paymentsRepository.delete(existingPayment);
         }
 
@@ -110,8 +111,8 @@ public class AscendingPaymentService {
                 .bidStatus(BidStatus.PROGRESS)
                 .build();
 
-        bidRedisRepository.save(bid);
         bidJpaRepository.save(bid);
+        bidRedisRepository.save(bid);
 
         productJpaRepository.save(product);
         ProductDocument document = productMapper.toDocument(product);
