@@ -118,9 +118,10 @@ public class Product extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    public void updateProduct(String title, Set<String> categories, String details, String tradeLocation, String conditions){
+    public void updateProduct(String title, Set<String> categories, Set<String> tradeType,String details, String tradeLocation, String conditions){
         this.title = title;
         this.categories = categories;
+        this.tradeTypes = tradeType;
         this.details = details;
         this.tradeLocation = tradeLocation;
         this.conditions = conditions;

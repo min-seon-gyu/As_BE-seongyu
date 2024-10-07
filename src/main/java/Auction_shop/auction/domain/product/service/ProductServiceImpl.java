@@ -1,13 +1,14 @@
 package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.bid.Bid;
+import Auction_shop.auction.domain.bid.BidStatus;
+import Auction_shop.auction.domain.bid.repository.BidRedisRepository;
 import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
 import Auction_shop.auction.domain.priceChange.PriceChange;
-import Auction_shop.auction.domain.priceChange.repository.PriceChangeJpaRepository;
 import Auction_shop.auction.domain.priceChange.service.PriceChangeService;
 import Auction_shop.auction.domain.product.ProductDocument;
 import Auction_shop.auction.domain.product.ProductType;
@@ -41,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
     private final PurchaseService purchaseService;
     private final ProductMapper productMapper;
     private final ImageService imageService;
+    private final BidRedisRepository bidRedisRepository;
 
     @Override
     @Transactional
@@ -111,6 +113,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Iterable<ProductDocument> getProductsFromTop5Members() {
+        List<Member> topMembers = memberRepository.findTop3ByOrderByPointDesc();
+        List<Long> memberIds = topMembers.stream().map(Member::getId).collect(Collectors.toList());
+        return productElasticsearchRepository.findByMemberIdIn(memberIds);
+    }
+
+    @Override
     public Product findProductById(Long product_id) {
         Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
@@ -142,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
         List<Image> imageList = imageService.saveImages(images);
         product.getImageList().addAll(imageList);
 
-        product.updateProduct(productUpdateDto.getTitle(), productUpdateDto.getCategories(), productUpdateDto.getDetails(), productUpdateDto.getTradeLocation(), productUpdateDto.getConditions());
+        product.updateProduct(productUpdateDto.getTitle(), productUpdateDto.getCategories(), productUpdateDto.getTradeType(), productUpdateDto.getDetails(), productUpdateDto.getTradeLocation(), productUpdateDto.getConditions());
 
         ProductDocument productDocument = productMapper.toDocument(product);
         productElasticsearchRepository.save(productDocument);
@@ -180,6 +189,11 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("이미 판매된 물품입니다.");
         }
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 유저가 없습니다."));
+
+        member.addPoint(1000L);
+
         Purchase purchase = Purchase.builder()
                 .memberId(memberId)
                 .product(product)
@@ -212,13 +226,19 @@ public class ProductServiceImpl implements ProductService {
                 Bid highestBid = bidService.getHighestBidForProduct(product.getId());
                 if (highestBid != null) {
                     Long memberId = highestBid.getMemberId();
+
+                    Member member = memberRepository.findById(memberId)
+                            .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 유저가 없습니다."));
+                    member.addPoint(1000L);
+
                     Purchase purchase = Purchase.builder()
                             .memberId(memberId)
                             .product(product)
                             .purchaseDate(LocalDateTime.now())
                             .build();
                     purchaseService.createPurchase(purchase);
-
+                    highestBid.changeStatus(BidStatus.SUCCESS);
+                    bidRedisRepository.updateBidInRedis(highestBid);
                     //Todo 경매 우승자에게 알림 보내기 추가 부탁드립니다
                 }
                 updatedProducts.add(product);

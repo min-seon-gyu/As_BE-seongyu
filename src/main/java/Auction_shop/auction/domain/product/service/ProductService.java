@@ -23,6 +23,9 @@ public interface ProductService {
     List<ProductDocument> getNewProducts();
     List<ProductDocument> getHotProducts();
 
+    //포인트 높은 사람들의 물건 추천
+    Iterable<ProductDocument> getProductsFromTop5Members();
+
     //물건 세부 조회
     Product findProductById(Long product_id);
     Product updateProductById(ProductUpdateDto productUpdateDto, Long product_id, List<MultipartFile> images);
