@@ -20,6 +20,9 @@ public class ProductDocument {
     @JsonProperty("product_id")
     private Long id;
 
+    @Field(name = "member_id", type = FieldType.Long)
+    private Long memberId;
+
     //사전에 elasticsearch index ngram_analyzer 설정 필요
     @Field(type = FieldType.Text, analyzer = "ngram_analyzer") // ngram 분석기 사용
     private String title;

@@ -3,6 +3,7 @@ package Auction_shop.auction.domain.member.controller;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.security.jwt.JwtUtil;
+import Auction_shop.auction.web.dto.member.MemberListResponseDto;
 import Auction_shop.auction.web.dto.member.MemberMapper;
 import Auction_shop.auction.web.dto.member.MemberResponseDto;
 import Auction_shop.auction.web.dto.member.MemberUpdateDto;
@@ -10,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,5 +57,14 @@ public class MemberController {
 
         boolean isDuplicate = memberService.nameCheck(nickname);
         return ResponseEntity.ok(!isDuplicate);
+    }
+
+    @GetMapping("/point")
+    public ResponseEntity<List<MemberListResponseDto>> getPoint(){
+        List<Member> members = memberService.getTop3MembersByPoints();
+        List<MemberListResponseDto> collect = members.stream()
+                .map(memberMapper::toListResponseDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(collect);
     }
 }
