@@ -1,5 +1,5 @@
 package Auction_shop.auction.domain.bid;
 
-public enum BidType {
+public enum BidStatus {
     SUCCESS, FAILED, PROGRESS
 }

@@ -1,7 +1,7 @@
 package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.bid.Bid;
-import Auction_shop.auction.domain.bid.BidType;
+import Auction_shop.auction.domain.bid.BidStatus;
 import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
@@ -218,7 +218,7 @@ public class ProductServiceImpl implements ProductService {
                             .purchaseDate(LocalDateTime.now())
                             .build();
                     purchaseService.createPurchase(purchase);
-                    highestBid.changeStatus(BidType.SUCCESS);
+                    highestBid.changeStatus(BidStatus.SUCCESS);
                     //Todo 경매 우승자에게 알림 보내기 추가 부탁드립니다
                 }
                 updatedProducts.add(product);

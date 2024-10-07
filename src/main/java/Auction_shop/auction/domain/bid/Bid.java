@@ -25,9 +25,9 @@ public class Bid {
     private LocalDateTime bidTime;
 
     @Enumerated(EnumType.STRING)
-    private BidType bidStatus;
+    private BidStatus bidStatus;
 
-    public void changeStatus(BidType bidStatus) {
+    public void changeStatus(BidStatus bidStatus) {
         this.bidStatus = bidStatus;
     }
 }
