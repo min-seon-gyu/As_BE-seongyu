@@ -2,6 +2,7 @@ package Auction_shop.auction.domain.product.service;
 
 import Auction_shop.auction.domain.bid.Bid;
 import Auction_shop.auction.domain.bid.BidStatus;
+import Auction_shop.auction.domain.bid.repository.BidRedisRepository;
 import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
@@ -41,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
     private final PurchaseService purchaseService;
     private final ProductMapper productMapper;
     private final ImageService imageService;
+    private final BidRedisRepository bidRedisRepository;
 
     @Override
     @Transactional
@@ -236,6 +238,7 @@ public class ProductServiceImpl implements ProductService {
                             .build();
                     purchaseService.createPurchase(purchase);
                     highestBid.changeStatus(BidStatus.SUCCESS);
+                    bidRedisRepository.updateBidInRedis(highestBid);
                     //Todo 경매 우승자에게 알림 보내기 추가 부탁드립니다
                 }
                 updatedProducts.add(product);
