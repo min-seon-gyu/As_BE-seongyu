@@ -140,6 +140,22 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(collect);
     }
 
+    /**
+     * Point 높은 상위 3명의 물건 추천
+     */
+    @GetMapping("/point")
+    public ResponseEntity<Object> getProductsFromTop5Members(@RequestHeader("Authorization") String authorization) {
+        Long memberId = jwtUtil.extractMemberId(authorization);
+        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
+        Iterable<ProductDocument> products = productService.getProductsFromTop5Members();
+
+        List<ProductListResponseDto> collect = StreamSupport.stream(products.spliterator(), false)
+                .map(product -> productMapper.toListResponseDto(product, likedProductsIds.contains(product.getId())))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(collect);
+    }
+
 
     /**
      * 상품 상세 조회

@@ -111,6 +111,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Iterable<ProductDocument> getProductsFromTop5Members() {
+        List<Member> topMembers = memberRepository.findTop3ByOrderByPointDesc();
+        List<Long> memberIds = topMembers.stream().map(Member::getId).collect(Collectors.toList());
+        return productElasticsearchRepository.findByMemberIdIn(memberIds);
+    }
+
+    @Override
     public Product findProductById(Long product_id) {
         Product product = productJpaRepository.findById(product_id)
                 .orElseThrow(() -> new IllegalArgumentException(product_id + "에 해당하는 물건이 없습니다."));
@@ -180,6 +187,11 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("이미 판매된 물품입니다.");
         }
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 유저가 없습니다."));
+
+        member.addPoint(1000L);
+
         Purchase purchase = Purchase.builder()
                 .memberId(memberId)
                 .product(product)
@@ -212,6 +224,11 @@ public class ProductServiceImpl implements ProductService {
                 Bid highestBid = bidService.getHighestBidForProduct(product.getId());
                 if (highestBid != null) {
                     Long memberId = highestBid.getMemberId();
+
+                    Member member = memberRepository.findById(memberId)
+                            .orElseThrow(() -> new IllegalArgumentException(memberId + "에 해당하는 유저가 없습니다."));
+                    member.addPoint(1000L);
+
                     Purchase purchase = Purchase.builder()
                             .memberId(memberId)
                             .product(product)

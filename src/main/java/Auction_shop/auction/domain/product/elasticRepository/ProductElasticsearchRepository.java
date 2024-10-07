@@ -1,5 +1,6 @@
 package Auction_shop.auction.domain.product.elasticRepository;
 
+import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.ProductDocument;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
@@ -23,4 +24,8 @@ public interface ProductElasticsearchRepository extends ElasticsearchRepository<
 
     @Query("{\"bool\": {\"must\": [{\"term\": {\"sold\": false}}]}}")
     List<ProductDocument> findTop20ByOrderByCreatedAtDesc();
+
+    //포인트가 높은 사람들의 물건 조회하기
+    Iterable<ProductDocument> findByMemberIdIn(List<Long> memberIds);
+
 }

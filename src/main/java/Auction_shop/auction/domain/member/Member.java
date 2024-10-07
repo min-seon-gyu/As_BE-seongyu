@@ -134,4 +134,8 @@ public class Member extends BaseEntity {
         this.role = role;
     }
 
+    public void addPoint(Long point){
+        this.point += point;
+    }
+
 }

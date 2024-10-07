@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -110,6 +111,10 @@ public class MemberService {
         member.update(memberUpdateDto.getName() ,memberUpdateDto.getNickname(), memberUpdateDto.getEmail(), memberUpdateDto.getPhone(), address, memberUpdateDto.getCategories());
 
         return member;
+    }
+
+    public List<Member> getTop3MembersByPoints() {
+        return memberRepository.findTop3ByOrderByPointDesc();
     }
 
     public MemberResponseDto getMemberByRefreshToken(String refreshToken){

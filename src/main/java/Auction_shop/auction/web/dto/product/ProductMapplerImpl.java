@@ -101,6 +101,7 @@ public class ProductMapplerImpl implements ProductMapper{
     public ProductDocument toDocument(Product product) {
         ProductDocument productDocument = ProductDocument.builder()
                 .id(product.getId())
+                .memberId(product.getMember().getId())
                 .title(product.getTitle())
                 .productType(product.getProductType())
                 .sold(product.isSold())
