@@ -121,25 +121,16 @@ public class ProductMapplerImpl implements ProductMapper{
     }
 
     @Override
-    public ProductListResponseDto purchaseToListResponseDto(Purchase purchase, boolean isLiked) {
+    public ProductPurchaseListDto purchaseToListResponseDto(Purchase purchase) {
         Product product = purchase.getProduct();
 
-        ProductListResponseDto responseDto = ProductListResponseDto.builder()
+        ProductPurchaseListDto responseDto = ProductPurchaseListDto.builder()
                 .product_id(product.getId())
                 .title(product.getTitle())
-                .productType(product.getProductType())
-                .conditions(product.getConditions())
                 .initial_price(product.getInitial_price())
-                .categories(product.getCategories())
-                .tradeTypes(product.getTradeTypes())
                 .current_price(product.getCurrent_price())
-                .tradeLocation(product.getTradeLocation())
-                .createdBy(product.getCreatedBy())
-                .likeCount(product.getLikeCount())
-                .isSold(product.isSold())
                 .imageUrl(product.getImageUrls().stream().findFirst().orElse(null))
-                .isLiked(isLiked)
-                .bidCount(product.getBidCount())
+                .purchase_date(purchase.getPurchaseDate())
                 .build();
         return responseDto;
     }

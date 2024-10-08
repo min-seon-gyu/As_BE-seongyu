@@ -12,5 +12,5 @@ public interface ProductMapper {
     ProductListResponseDto toListResponseDto(ProductDocument productDocument, boolean isLiked);
     ProductRecommendedDto toRecommendedDto(ProductDocument productDocument);
     Product toEntity(ProductDto productDto, Member member);
-    ProductListResponseDto purchaseToListResponseDto(Purchase purchase, boolean isLiked);
+    ProductPurchaseListDto purchaseToListResponseDto(Purchase purchase);
 }
