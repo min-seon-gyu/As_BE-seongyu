@@ -18,13 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @AllArgsConstructor
 @RestController
 public class SSEConnection {
-    private final RedisTemplate<String, Long> messageQueue;
-    private static final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final RedisTemplate<Long, Long> messageQueue;
+    private static final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final long TIMEOUT = 5 * 60 * 1000L;
     private final long RECONNECTION_TIMEOUT = 5000L;
 
     @GetMapping(value = "/sse/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> connectSSEConnect(@RequestParam String userId) {
+    public ResponseEntity<SseEmitter> connectSSEConnect(@RequestParam Long userId) {
         SseEmitter emitter = new SseEmitter(TIMEOUT);
         // 여러 유저의 emitter 인스턴스를 저장. 이후 특정 userId에 맞는 emitter 인스턴스를 찾아 해당 유저에게 통신
         emitters.put(userId, emitter);
