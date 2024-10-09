@@ -28,14 +28,14 @@ public class BidController {
 
     //상향식 입찰 넣기
     @PostMapping("/{productId}/{impUid}")
-    public ResponseEntity<String> addBid(
+    public ResponseEntity<String> addBid(@RequestHeader("Authorization") String authorization,
                                                  @PathVariable("productId") Long productId,
                                                  @PathVariable String impUid) {
-//        Long memberId = jwtUtil.extractMemberId(authorization);
+        Long memberId = jwtUtil.extractMemberId(authorization);
         String paymentResult;
         try {
             // 결제 검증
-            paymentResult = ascendingPaymentService.PaymentsVerify(impUid, productId, 1L);
+            paymentResult = ascendingPaymentService.PaymentsVerify(impUid, productId, memberId);
 
             // 입찰 성공 알림 (옵션)
             Member member = productJpaRepository.findById(productId)

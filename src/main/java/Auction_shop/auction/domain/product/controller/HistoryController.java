@@ -8,6 +8,7 @@ import Auction_shop.auction.security.jwt.JwtUtil;
 import Auction_shop.auction.web.dto.product.ProductListResponseDto;
 import Auction_shop.auction.domain.product.service.ProductService;
 import Auction_shop.auction.web.dto.product.ProductMapper;
+import Auction_shop.auction.web.dto.product.ProductPurchaseListDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -47,18 +48,17 @@ public class HistoryController {
         return ResponseEntity.status(HttpStatus.OK).body(collect);
     }
 
-    //구매 내역 조회
+    //구매(낙찰) 내역 조회
     @GetMapping("/buy")
-    public ResponseEntity<List<ProductListResponseDto>> getBuyList(@RequestHeader("Authorization") String authorization){
+    public ResponseEntity<List<ProductPurchaseListDto>> getBuyList(@RequestHeader("Authorization") String authorization){
         Long memberId = jwtUtil.extractMemberId(authorization);
         List<Purchase> purchases = purchaseService.getPurchasesByMemberId(memberId);
-        List<Long> likedProductsIds = likeService.getLikeItems(memberId);
 
-        List<ProductListResponseDto> responseDtos = purchases.stream()
-                .map(purchase -> productMapper.purchaseToListResponseDto(purchase, likedProductsIds.contains(purchase.getProduct().getId())))
+        List<ProductPurchaseListDto> collect = purchases.stream()
+                .map(purchase -> productMapper.purchaseToListResponseDto(purchase))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(responseDtos);
+        return ResponseEntity.ok(collect);
     }
 
 }
