@@ -287,7 +287,7 @@ public class ProductServiceImpl implements ProductService {
 
             List<Product> updatedProducts = new ArrayList<>();
             for (Product product : page.getContent()) {
-                if (currentTime.isAfter(product.getUpdateTime().plusSeconds(8))) {
+                if (currentTime.isAfter(product.getUpdateTime().plusMinutes(1))) {
                     int newPrice = product.getCurrent_price() - (product.getInitial_price() / (int) product.getTotalHours());
                     if (newPrice < product.getMinimum_price()) {
                         newPrice = product.getMinimum_price();
