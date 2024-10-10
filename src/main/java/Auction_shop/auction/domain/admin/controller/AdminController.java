@@ -5,6 +5,7 @@ import Auction_shop.auction.domain.inquriy.repository.InquiryRepository;
 import Auction_shop.auction.domain.inquriy.service.InquiryService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
+import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.notice.Notice;
 import Auction_shop.auction.domain.notice.repository.NoticeRepository;
 import Auction_shop.auction.domain.notice.service.NoticeService;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+    private final MemberService memberService;
     private final ProductService productService;
     private final InquiryService inquiryService;
     private final NoticeService noticeService;
@@ -62,7 +64,7 @@ public class AdminController {
     //회원 삭제
     @DeleteMapping("/member/{id}")
     public ResponseEntity<Void> deleteMember(@PathVariable("id") Long id){
-        memberRepository.deleteById(id);
+        memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
