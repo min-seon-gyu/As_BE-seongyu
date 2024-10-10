@@ -1,5 +1,7 @@
 package Auction_shop.auction.domain.member.service;
 
+import Auction_shop.auction.domain.bid.BidStatus;
+import Auction_shop.auction.domain.bid.service.BidService;
 import Auction_shop.auction.domain.image.Image;
 import Auction_shop.auction.domain.image.service.ImageService;
 import Auction_shop.auction.domain.address.Address;
@@ -7,8 +9,10 @@ import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.address.repository.AddressRepository;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
 import Auction_shop.auction.domain.product.ProductDocument;
+import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.domain.product.service.ProductService;
 import Auction_shop.auction.domain.refreshToken.repository.RefreshTokenRepository;
+import Auction_shop.auction.web.dto.bid.MemberBidListResponseDto;
 import Auction_shop.auction.web.dto.member.MemberResponseDto;
 import Auction_shop.auction.web.dto.member.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final AddressRepository addressRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ProductJpaRepository productRepository;
+    private final BidService bidService;
     private final ProductService productService;
     private final ImageService imageService;
 
@@ -148,9 +154,18 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long memberId) {
-        System.out.println("memberId = " + memberId);
+        List<MemberBidListResponseDto> memberBid = bidService.getMemberBid(memberId);
+        boolean isBiddingActive = memberBid.stream().anyMatch(b -> b.getBidStatus() == BidStatus.PROGRESS);
+        if(isBiddingActive){
+            throw new RuntimeException("해당 유저가 입찰을 진행 중 입니다.");
+        }
+
+        boolean isSellingActive =  productRepository.existsActiveProductsByMemberId(memberId);
+        if(isSellingActive){
+            throw new RuntimeException("해당 유저가 판매를 진행 중 입니다.");
+        }
+
         memberRepository.deleteById(memberId);
-        System.out.println("삭제 완료");
     }
 
 }
