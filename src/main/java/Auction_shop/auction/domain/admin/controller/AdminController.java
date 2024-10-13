@@ -5,10 +5,13 @@ import Auction_shop.auction.domain.inquriy.repository.InquiryRepository;
 import Auction_shop.auction.domain.inquriy.service.InquiryService;
 import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.repository.MemberRepository;
+import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.notice.Notice;
 import Auction_shop.auction.domain.notice.repository.NoticeRepository;
 import Auction_shop.auction.domain.notice.service.NoticeService;
 import Auction_shop.auction.domain.product.service.ProductService;
+import Auction_shop.auction.domain.report.Report;
+import Auction_shop.auction.domain.report.repository.ReportRepository;
 import Auction_shop.auction.web.dto.admin.CreateAnswerDto;
 import Auction_shop.auction.web.dto.inquiry.InquiryListResponseDto;
 import Auction_shop.auction.web.dto.inquiry.InquiryMapper;
@@ -19,7 +22,8 @@ import Auction_shop.auction.web.dto.notice.NoticeCreateDto;
 import Auction_shop.auction.web.dto.notice.NoticeMapper;
 import Auction_shop.auction.web.dto.notice.NoticeResponseDto;
 import Auction_shop.auction.web.dto.notice.NoticeUpdateDto;
-import Auction_shop.auction.web.dto.product.ProductMapper;
+import Auction_shop.auction.web.dto.report.ReportListResponseDto;
+import Auction_shop.auction.web.dto.report.ReportMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,20 +36,23 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+    private final MemberService memberService;
     private final ProductService productService;
     private final InquiryService inquiryService;
     private final NoticeService noticeService;
     private final MemberRepository memberRepository;
     private final InquiryRepository inquiryRepository;
     private final NoticeRepository noticeRepository;
+    private final ReportRepository reportRepository;
     private final MemberMapper memberMapper;
     private final InquiryMapper inquiryMapper;
     private final NoticeMapper noticeMapper;
+    private final ReportMapper reportMapper;
 
     //회원 관련
 
     //전체 회원 조회
-    @GetMapping("/member")
+    @GetMapping("/members")
     public ResponseEntity<List<MemberListResponseDto>> getAllMember(){
         List<Member> members = memberRepository.findAll();
         List<MemberListResponseDto> collect = members.stream()
@@ -57,7 +64,7 @@ public class AdminController {
     //회원 삭제
     @DeleteMapping("/member/{id}")
     public ResponseEntity<Void> deleteMember(@PathVariable("id") Long id){
-        memberRepository.deleteById(id);
+        memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -128,5 +135,15 @@ public class AdminController {
     public ResponseEntity<Void> deleteNotice(@PathVariable("id") Long id){
         noticeRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    //신고 관련
+
+    //신고 전체 조회
+    @GetMapping("/reports")
+    public ResponseEntity<ReportListResponseDto> getAllReport(){
+        List<Report> reports = reportRepository.findAll();
+        ReportListResponseDto collect = reportMapper.toListResponseDto(reports);
+        return ResponseEntity.ok(collect);
     }
 }

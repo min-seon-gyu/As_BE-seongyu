@@ -1,19 +1,17 @@
 package Auction_shop.auction.chatRoom.controller;
 
-import Auction_shop.auction.chat.dto.ChatDto;
 import Auction_shop.auction.chatRoom.domain.ChatRoom;
-import Auction_shop.auction.chatRoom.dto.ChatRoomDto;
 import Auction_shop.auction.chatRoom.dto.ChatRoomInfoResponseDto;
 import Auction_shop.auction.chatRoom.dto.ChatRoomListResponseDto;
 import Auction_shop.auction.chatRoom.service.ChatRoomService;
 import Auction_shop.auction.sse.SSEConnection;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -24,9 +22,10 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 public class ChatRoomController {
+    @Qualifier("longRedisTemplate")
+    private final RedisTemplate<String, Long> messageQueue;
     private final SSEConnection sseConnection;
     private final ChatRoomService chatRoomService;
-    private final RedisTemplate<Long, Long> messageQueue;
 
     // 채팅방 리스트 불러오기
     @GetMapping("/chatroom/list/{userId}")
@@ -42,17 +41,17 @@ public class ChatRoomController {
     @GetMapping("/chatroom/enter/{userId}/{yourId}/{postId}")
     public ResponseEntity<?> enter(@PathVariable Long userId, @PathVariable Long yourId, @PathVariable Long postId) {
         Optional<ChatRoom> chatRoomInfo = chatRoomService.findChatRoomInfo(userId, yourId, postId);
-
         // case 1
         if (chatRoomInfo.isEmpty()) {
             Long newChatRoomId = chatRoomService.createNewChatRoom(userId, yourId, postId);
             SseEmitter emitter = sseConnection.getEmitter(yourId);  // 상대방ID를 통해 상대방의 emitter를 가져옴
-
             if (emitter != null) {
                 sseConnection.sendEvent(emitter, "createdNewChatRoom", newChatRoomId);  // SSE를 통해 상대방에게 알림
             }
             if (emitter == null) {  // 상대방이 접속 중이 아닌 상태일 때 메세지 큐에 저장 후 나중에 상대방이 접속 시 생성된 채팅방 번호 제공
-                messageQueue.opsForList().leftPush(yourId, newChatRoomId);  // 메세지 큐에 저장
+                // Redis의 key로 문자열이 들어가기에 Long타입의 yourId를 String으로 변환하여 저장
+                String idTypeChange = String.valueOf(yourId);
+                messageQueue.opsForList().leftPush(idTypeChange, newChatRoomId);  // 메세지 큐에 저장
             }
 
             return ResponseEntity.ok(newChatRoomId);

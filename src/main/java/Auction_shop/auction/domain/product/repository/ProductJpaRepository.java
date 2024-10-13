@@ -32,6 +32,9 @@ public interface ProductJpaRepository extends JpaRepository<Product,Long> {
 
     List<Product> findAllByMemberId(Long memberId);
 
+    @Query("SELECT COUNT(p) > 0 FROM Product p WHERE p.member.id = :memberId AND p.isSold = false")
+    boolean existsActiveProductsByMemberId(@Param("memberId") Long memberId);
+
     //동시성 방지를 위해 Lock 을 건 물건 반환
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT p FROM Product p WHERE p.id = :productId")
