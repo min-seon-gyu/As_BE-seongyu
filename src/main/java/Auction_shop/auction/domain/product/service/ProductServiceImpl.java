@@ -12,7 +12,7 @@ import Auction_shop.auction.domain.priceChange.PriceChange;
 import Auction_shop.auction.domain.priceChange.service.PriceChangeService;
 import Auction_shop.auction.domain.product.ProductDocument;
 import Auction_shop.auction.domain.product.ProductType;
-import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
+import Auction_shop.auction.domain.product.repository.ProductElasticsearchRepository;
 import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.purchase.Purchase;

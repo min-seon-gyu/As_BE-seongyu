@@ -6,7 +6,7 @@ import Auction_shop.auction.domain.member.Member;
 import Auction_shop.auction.domain.member.service.MemberService;
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.ProductDocument;
-import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
+import Auction_shop.auction.domain.product.repository.ProductElasticsearchRepository;
 import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.web.dto.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
