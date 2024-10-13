@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class ProductPurchaseListDto {
     private Long product_id;
     private String title;
+    private String productType;
     private int initial_price;
     private int current_price;
     private LocalDateTime purchase_date;

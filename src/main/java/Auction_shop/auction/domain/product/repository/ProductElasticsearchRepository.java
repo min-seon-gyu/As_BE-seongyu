@@ -1,4 +1,4 @@
-package Auction_shop.auction.domain.product.elasticRepository;
+package Auction_shop.auction.domain.product.repository;
 
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.ProductDocument;

@@ -127,6 +127,7 @@ public class ProductMapplerImpl implements ProductMapper{
         ProductPurchaseListDto responseDto = ProductPurchaseListDto.builder()
                 .product_id(product.getId())
                 .title(product.getTitle())
+                .productType(product.getProductType().name())
                 .initial_price(product.getInitial_price())
                 .current_price(product.getCurrent_price())
                 .imageUrl(product.getImageUrls().stream().findFirst().orElse(null))

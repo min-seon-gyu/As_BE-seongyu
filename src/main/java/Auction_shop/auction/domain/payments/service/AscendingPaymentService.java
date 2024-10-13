@@ -10,7 +10,7 @@ import Auction_shop.auction.domain.payments.Payments;
 import Auction_shop.auction.domain.payments.repository.PaymentsRepository;
 import Auction_shop.auction.domain.product.Product;
 import Auction_shop.auction.domain.product.ProductDocument;
-import Auction_shop.auction.domain.product.elasticRepository.ProductElasticsearchRepository;
+import Auction_shop.auction.domain.product.repository.ProductElasticsearchRepository;
 import Auction_shop.auction.domain.product.repository.ProductJpaRepository;
 import Auction_shop.auction.web.dto.product.ProductMapper;
 import com.siot.IamportRestClient.IamportClient;
