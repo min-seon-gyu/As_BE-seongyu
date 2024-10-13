@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class MemberBidListResponseDto {
 
     private Long productId;
+    private String productType;
     private String imageUrl;
     private String title;
     private int initial_price;
