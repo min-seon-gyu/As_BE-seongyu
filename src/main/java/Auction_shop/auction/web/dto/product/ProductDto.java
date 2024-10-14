@@ -16,7 +16,6 @@ public class ProductDto {
         private Set<String> tradeTypes;           // 거래 방식
         private String tradeLocation;   // 직거래 희망 장소
         private int initial_price;       // 시작 가격
-
         private int minimum_price;      // 최저 가격
 
         private LocalDateTime startTime; // 경매 시작 시간
