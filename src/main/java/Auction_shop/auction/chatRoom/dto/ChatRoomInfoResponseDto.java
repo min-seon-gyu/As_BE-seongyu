@@ -1,6 +1,6 @@
 package Auction_shop.auction.chatRoom.dto;
 
-import Auction_shop.auction.chat.dto.ChatDto;
+import Auction_shop.auction.chat.dto.ChatLogDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,8 @@ import java.util.List;
 @Setter
 public class ChatRoomInfoResponseDto {
 
-    List<ChatDto> chatLog;
-    int currentPrice;
-    String title;
+    private List<ChatLogDto> chatLog;
+    private Long roomId;
+    private int currentPrice;
+    private String title;
 }

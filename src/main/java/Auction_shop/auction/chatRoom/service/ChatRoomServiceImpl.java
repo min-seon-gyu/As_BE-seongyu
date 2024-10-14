@@ -1,6 +1,7 @@
 package Auction_shop.auction.chatRoom.service;
 
 import Auction_shop.auction.chat.dto.ChatDto;
+import Auction_shop.auction.chat.dto.ChatLogDto;
 import Auction_shop.auction.chat.repository.ChatRepository;
 import Auction_shop.auction.chatRoom.domain.ChatRoom;
 import Auction_shop.auction.chatRoom.dto.ChatRoomInfoResponseDto;
@@ -27,67 +28,28 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRepository chatRepository;
     private final ProductService productService;
     private final MemberService memberService;
+
     /**
      * 채팅방 목록 가져오기
      * @return list(채팅방 목록)
      */
-
-//    @Override
-//    public List<ChatRoomListResponseDto> findChatRoomsByUserId(Long userId) {
-//        List<ChatRoom> list = chatRoomRepository.findByUserId(userId);
-//        List<ChatRoomListResponseDto> ResponseList = new ArrayList<>();
-//        log.info("list size  = {}", list.size());
-//
-//        for (ChatRoom chatRoom : list) {
-//            Long postId = chatRoom.getPostId();
-//            log.info("postId={}",postId);
-//            Product product = productService.findProductById(postId);
-//            // 이미지 없을수도 있음
-//            String firstImageUrl = product.getImageUrls().get(0);
-//            log.info("firstImageUrl={}",firstImageUrl);
-//
-//            Long yourId = chatRoom.getYourId();
-//            log.info("yourId={}",yourId);
-//            Member member = memberService.getById(yourId);
-//            // 이미지 없을수도 있음
-//            String firstProfileUrl = member.getProfileImage().getAccessUrl();
-//            log.info("firstProfileUrl={}",firstProfileUrl);
-//            String nickname = member.getNickname();
-//
-//            Long roomId = chatRoom.getRoomId();
-//            ChatDto latestChatInfo = chatRepository.findLatestChatByRoomId(roomId);
-//            String latestChatLog = latestChatInfo.getMessage();
-//            LocalDateTime latestChatTime = latestChatInfo.getCreatedAt();
-//
-//            ChatRoomListResponseDto responseDto = new ChatRoomListResponseDto();
-//            responseDto.setUserId(userId);
-//            responseDto.setYourId(yourId);
-//            responseDto.setPostId(postId);
-//            responseDto.setRoomId(roomId);
-//
-//            responseDto.setImageUrl(firstImageUrl);
-//            responseDto.setProfileUrl(firstProfileUrl);
-//            responseDto.setNickname(nickname);
-//            responseDto.setLatestChatTime(latestChatTime);
-//            responseDto.setLatestChatLog(latestChatLog);
-//
-//            ResponseList.add(responseDto);
-//        }
-//
-//        return ResponseList;
-//    }
     @Override
     public List<ChatRoomListResponseDto> findChatRoomsByUserId(Long userId) {
         List<ChatRoom> list = chatRoomRepository.findByUserId(userId);
+        log.info("채팅리스트={}", list.size());
         List<ChatRoomListResponseDto> ResponseList = new ArrayList<>();
 
         for (ChatRoom chatRoom : list) {
             Long postId = chatRoom.getPostId();
+            log.info("게시물ID={}", postId);
             Product product = productService.findProductById(postId);
+            // 이미지 없을수도 있음
             String firstImageUrl = product.getImageUrls().stream().findFirst().orElse(null);
 
             Long yourId = chatRoom.getYourId();
+            log.info("상대방ID={}", yourId);
             Member member = memberService.getById(yourId);
+            // 이미지 없을수도 있음
             String firstProfileUrl;
             if (member.getProfileImage() != null) {
                 firstProfileUrl = member.getProfileImage().getAccessUrl();
@@ -97,7 +59,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             String nickname = member.getNickname();
 
             Long roomId = chatRoom.getRoomId();
+            log.info("방번호ID={}", roomId);
             ChatDto latestChatInfo = chatRepository.findLatestChatByRoomId(roomId);
+            log.info("최근채팅방정보 조회 완료");
             String latestChatLog;
             LocalDateTime latestChatTime;
             if(latestChatInfo != null) {
@@ -155,7 +119,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
      */
     @Override
     public ChatRoomInfoResponseDto enterChatRoom(Long roomId) {
-        List<ChatDto> chatLog = chatRepository.findByRoomId(roomId);
+        List<ChatLogDto> chatLog = chatRepository.findByRoomId(roomId);
         
         ChatRoom chatRoom = chatRoomRepository.findFirstByRoomId(roomId);
         Long postId = chatRoom.getPostId();
@@ -166,6 +130,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         ChatRoomInfoResponseDto infoResponseDto = new ChatRoomInfoResponseDto();
         infoResponseDto.setChatLog(chatLog);
+        infoResponseDto.setRoomId(roomId);
         infoResponseDto.setCurrentPrice(currentPriceById);
         infoResponseDto.setTitle(title);
 
