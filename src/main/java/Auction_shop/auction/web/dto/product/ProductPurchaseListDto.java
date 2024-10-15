@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductPurchaseListDto {
-    private Long product_id;
+    private Long productId;
     private String title;
     private String productType;
     private int initial_price;
     private int current_price;
-    private LocalDateTime purchase_date;
+    private LocalDateTime bidTime;
     private String imageUrl;
 }
