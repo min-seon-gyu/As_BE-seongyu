@@ -128,12 +128,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         Product product = productService.findProductById(postId);
         String title = product.getTitle();
 
+        log.info("roomId={}", roomId);
         ChatRoomInfoResponseDto infoResponseDto = new ChatRoomInfoResponseDto();
         infoResponseDto.setChatLog(chatLog);
         infoResponseDto.setRoomId(roomId);
         infoResponseDto.setCurrentPrice(currentPriceById);
         infoResponseDto.setTitle(title);
 
+        log.info("infoResponseDto.getRoomId={}", infoResponseDto.getRoomId());
         return infoResponseDto;
     }
 }
