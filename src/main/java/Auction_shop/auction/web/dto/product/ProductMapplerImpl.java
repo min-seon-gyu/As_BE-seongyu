@@ -125,13 +125,13 @@ public class ProductMapplerImpl implements ProductMapper{
         Product product = purchase.getProduct();
 
         ProductPurchaseListDto responseDto = ProductPurchaseListDto.builder()
-                .product_id(product.getId())
+                .productId(product.getId())
                 .title(product.getTitle())
                 .productType(product.getProductType().name())
                 .initial_price(product.getInitial_price())
                 .current_price(product.getCurrent_price())
                 .imageUrl(product.getImageUrls().stream().findFirst().orElse(null))
-                .purchase_date(purchase.getPurchaseDate())
+                .bidTime(purchase.getPurchaseDate())
                 .build();
         return responseDto;
     }
